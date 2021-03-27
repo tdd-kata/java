@@ -15,7 +15,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class DemoApplicationTests {
+public class ApplicationTests {
 
 	@Autowired
 	private TestRestTemplate restTemplate;
@@ -23,6 +23,7 @@ public class DemoApplicationTests {
 	@Test
 	public void getCar_returnsCarDetails() throws Exception {
 		// arrange
+		// TODO: configure mysql
 
 		// act
 		ResponseEntity<Car> response = restTemplate
