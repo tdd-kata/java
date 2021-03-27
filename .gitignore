@@ -6,6 +6,7 @@ target/
 
 ### Eclipse ###
 .metadata
+.sonarlint
 
 ### STS ###
 .apt_generated

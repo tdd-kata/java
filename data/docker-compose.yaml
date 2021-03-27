@@ -1,0 +1,17 @@
+version: "3.3"
+
+services:
+  mysql:
+    container_name: test
+    image: mysql:8.0.23
+    environment:
+      MYSQL_ROOT_HOST: "%"
+      MYSQL_ROOT_PASSWORD: testdb
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+      TZ: Asia/Seoul
+    restart: always
+    ports:
+      - "13306:3306"
+    volumes:
+      - ./my.cnf:/etc/mysql/conf.d/test.cnf,ro
+      - ./docker-entrypoint-initdb.d/:/docker-entrypoint-initdb.d/
