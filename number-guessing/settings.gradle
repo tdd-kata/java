@@ -1,0 +1,2 @@
+rootProject.name = 'number-guessing'
+include('console-app', 'console-app-model')
