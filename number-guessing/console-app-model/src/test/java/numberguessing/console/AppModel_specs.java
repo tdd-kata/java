@@ -4,9 +4,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.stream.Stream;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvFileSource;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
@@ -27,8 +28,8 @@ class TestAppModel {
   void sut_correctly_prints_select_mode_message() {
     var sut = new AppModel(new PositiveIntegerGeneratorStub(50));
     String actual = sut.flushOutput();
-    assertThat(actual).isEqualTo("1: Single Play Game" + NEW_LINE + "2: Multiplayer game" + NEW_LINE + "3: Exit"
-        + NEW_LINE + "Enter Selection: ");
+    assertThat(actual).isEqualTo("1: Single player game" + NEW_LINE + "2: Multiplayer game" + NEW_LINE + "3: Exit"
+        + NEW_LINE + "Enter selection: ");
   }
 
   @Test
@@ -83,6 +84,74 @@ class TestAppModel {
     sut.processInput(Integer.toString(guess));
 
     String actual = sut.flushOutput();
-    assertThat(actual).isEqualTo("Correct! ");
+    assertThat(actual).startsWith("Correct! ");
+  }
+
+  @ParameterizedTest
+  @ValueSource(ints = { 1, 10, 100 })
+  void sut_correctly_prints_guess_count_if_single_player_game_finished(int fails) {
+    var sut = new AppModel(new PositiveIntegerGeneratorStub(50));
+    sut.processInput("1");
+    for (int i = 0; i < fails; i++) {
+      sut.processInput("30");
+    }
+    sut.flushOutput();
+    sut.processInput("50");
+
+    String actual = sut.flushOutput();
+    assertThat(actual).contains((fails + 1) + " guesses." + NEW_LINE);
+  }
+
+  @Test
+  void sut_correctly_prints_one_guess_if_single_player_game_finished() {
+    var sut = new AppModel(new PositiveIntegerGeneratorStub(50));
+    sut.processInput("1");
+    sut.flushOutput();
+    sut.processInput("50");
+
+    String actual = sut.flushOutput();
+    assertThat(actual).contains("1 guess.");
+  }
+
+  @Test
+  void sut_prints_select_mode_message_if_single_player_game_finished() {
+    var sut = new AppModel(new PositiveIntegerGeneratorStub(50));
+    sut.processInput("1");
+    sut.flushOutput();
+    sut.processInput("50");
+
+    String actual = sut.flushOutput();
+    assertThat(actual).endsWith("1: Single player game" + NEW_LINE + "2: Multiplayer game" + NEW_LINE + "3: Exit"
+        + NEW_LINE + "Enter selection: ");
+  }
+
+  @Test
+  void sut_returns_to_mode_selection_if_single_player_game_finished() {
+    var sut = new AppModel(new PositiveIntegerGeneratorStub(50));
+
+    sut.processInput("1");
+    sut.processInput("50");
+    sut.processInput("3");
+
+    boolean actual = sut.isCompleted();
+    assertTrue(actual);
+  }
+
+  @ParameterizedTest
+  // 상황을 추측하지 말고 디버깅
+  // @ValueSource(strings = "1, 10, 100")
+  @ValueSource(strings = "100, 10, 1")
+  void sut_generates_answer_for_each_game(String source) {
+    int[] answers = Stream.of(source.split(",")).map(String::trim).mapToInt(Integer::parseInt).toArray();
+    var sut = new AppModel(new PositiveIntegerGeneratorStub(answers));
+    for (int answer : answers) {
+      sut.processInput("1");
+      sut.flushOutput();
+      sut.processInput(Integer.toString(answer));
+    }
+
+    String actual = sut.flushOutput();
+
+    assertThat(actual).startsWith("Correct! ");
   }
 }
