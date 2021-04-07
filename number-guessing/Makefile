@@ -6,3 +6,7 @@ test:
 test-unit:
 	./gradlew test --tests '*${unit}' --info
 .PHOHY: test-unit
+
+run:
+	./gradlew run
+.PHOHY: run
