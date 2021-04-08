@@ -2,6 +2,12 @@ package com.example;
 
 abstract class Money {
   protected int amount;
+  protected String currency;
+
+  Money(int amount, String currency) {
+    this.amount = amount;
+    this.currency = currency;
+  }
 
   abstract Money times(int multiplier);
 
@@ -12,10 +18,14 @@ abstract class Money {
   }
 
   static Dollar dollar(int amount) {
-    return new Dollar(amount);
+    return new Dollar(amount, "USD");
   }
   
   static Franc franc(int amount) {
-    return new Franc(amount);
+    return new Franc(amount, "CHF");
+  }
+
+  String currency() {
+    return currency;
   }
 }
