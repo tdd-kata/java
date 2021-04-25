@@ -1,0 +1,27 @@
+# EditorConfig is awesome: https://EditorConfig.org
+# https://github.com/editorconfig/editorconfig/wiki/Projects-Using-EditorConfig
+
+# top-most EditorConfig file
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+indent_style = space
+max_line_length = 85
+
+[*.{java,js,ts,go,py,c,cpp,groovy,kt}]
+indent_size = 4
+tab_width = 4
+
+[*.{json,yaml,txt,md,xml,html,tsx}]
+indent_size = 2
+tab_width = 2
+
+[*.{json,yaml,md,xml,html}]
+max_line_length = off
+
+[Makefile]
+indent_style = tab
