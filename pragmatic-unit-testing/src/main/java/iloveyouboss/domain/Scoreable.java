@@ -1,6 +1,6 @@
-package iloveyouboss;
+package iloveyouboss.domain;
 
 @FunctionalInterface
 public interface Scoreable {
-	int getScore();
+    int getScore();
 }

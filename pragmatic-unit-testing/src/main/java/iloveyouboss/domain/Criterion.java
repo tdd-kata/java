@@ -1,4 +1,4 @@
-package iloveyouboss;
+package iloveyouboss.domain;
 
 public class Criterion implements Scoreable {
     private Weight weight;
@@ -11,8 +11,10 @@ public class Criterion implements Scoreable {
     }
 
     public Answer getAnswer() { return answer; }
+
     public Weight getWeight() { return weight; }
 
-    public void setScore(int score) { this.score = score; }
     public int getScore() { return score; }
+
+    public void setScore(int score) { this.score = score; }
 }
