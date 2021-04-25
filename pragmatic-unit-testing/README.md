@@ -3,8 +3,6 @@
 - [소스 코드 압축 파일](https://pragprog.com/titles/utj2/pragmatic-unit-testing-in-java-8-with-junit/) - Pragmatic
     - [깃헙 소스 코드](https://github.com/gilbutITbook/006814) - 길벗 출판사
 
-## Quickstart
-
 ```shell
 mkdir -p src/META-INF
 vi src/META-INF/persistence.xml
@@ -24,14 +22,19 @@ vi src/META-INF/persistence.xml
     <class>iloveyouboss.domain.PercentileQuestion</class>
 
     <properties>
-      <property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver"/>
-      <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/first"/>
-      <property name="javax.persistence.jdbc.user" value="jlangr"/>
-      <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect"/>
-      <!--   <property name="hibernate.hbm2ddl.auto" value="create" />   -->
+      <property name="hibernate.connection.driver_class" value="org.postgresql.Driver"/>
+      <property name="hibernate.connection.url" value="jdbc:postgresql://localhost:5432/first"/>
+      <property name="hibernate.connection.username" value="root"/>
+      <property name="hibernate.connection.password" value="testroot"/>
+      <!--            <property name="hibernate.archive.autodetect" value="class"/>-->
+      <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQL95Dialect"/>
+      <property name="hibernate.hbm2ddl.auto" value="create"/>
       <property name="hibernate.show_sql" value="false"/>
       <property name="hibernate.format_sql" value="true"/>
-      <property name="hibernate.transaction.flush_before_completion" value="true"/>
+      <!--            <property name="hibernate.transaction.flush_before_completion" value="true"/>-->
+
+      <property name="hibernate.connection.pool_size" value="1"></property>
+
       <property name="log4j.logging.level" value="ERROR"/>
     </properties>
   </persistence-unit>
