@@ -15,7 +15,7 @@
       - EJB: Enterprise JavaBeans (Jakarta Enterprise Beans)
       - JSF: JavaServer Faces (Jakarta Server Faces)
       - JAX-RS: Java API for RESTful Web Services (Jakarta RESTful Web Services)
-      - CDI: Contexts and Dependency Injection ()
+      - CDI: Contexts and Dependency Injection
 
 ## Test
 
