@@ -56,8 +56,12 @@ curl -L https://start.spring.io/starter.zip \
 -o starter.zip \
 -d dependencies=web,jdbc \
 -d packaging=jar \
+-d language=java \
 -d javaVersion=11 \
 -d bootVersion=2.4.4 \
+-d groupId=com.markruler \
+-d artifactId=apiserver \
+-d version=0.1.0 \
 -d type=gradle-project
 
 unzip starter.zip -d ./demo
