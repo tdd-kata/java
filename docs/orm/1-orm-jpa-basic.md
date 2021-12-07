@@ -48,6 +48,7 @@
 
 # 참조
 
+- [예제 코드](../../jpa-basic/README.md)
 - [자바 ORM 표준 JPA 프로그래밍 (기본편)](https://www.inflearn.com/course/ORM-JPA-Basic/dashboard) - 김영한
   - [동명의 책](https://www.aladin.co.kr/shop/wproduct.aspx?ISBN=9788960777330)
 - [Database Access (JPA)](https://terasolunaorg.github.io/guideline/5.0.2.RELEASE/en/index.html) - TERASOLUNA
