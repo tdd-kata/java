@@ -1,10 +1,6 @@
-# TDD with Java
+# Java
 
-## Quickstart
-
-### Java project
-
-- maven project
+## Maven project
 
 ```bash
 # https://mvnrepository.com/artifact/org.apache.maven.archetypes
@@ -25,7 +21,7 @@ mvn archetype:generate \
 gradle init
 ```
 
-### Spring Initializr
+## Spring Initializr
 
 - 아래 명령어를 실행하면 지정할 수 있는 옵션과 설명이 나옵니다.
 

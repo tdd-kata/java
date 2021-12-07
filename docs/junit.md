@@ -1,4 +1,4 @@
-# Test
+# JUnit 5
 
 ![junit5-architecture.png](images/junit5-architecture.png)
 
