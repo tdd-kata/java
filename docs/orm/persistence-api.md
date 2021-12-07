@@ -4,13 +4,13 @@
   - [JDBC: Java Database Connectivity](#jdbc-java-database-connectivity)
   - [DataSource](#datasource)
 
-![dataaccess-jpa.png](../images/dataaccess-jpa.png)
+![dataaccess-jpa.png](images/dataaccess-jpa.png)
 
 _출처: [TERASOLUNA Server Framework Guideline](https://terasolunaorg.github.io/guideline/5.1.1.RELEASE/en/ArchitectureInDetail/DataAccessJpa.html) - [GitHub](https://github.com/terasolunaorg/terasolunaorg.github.com)_
 
 ## JDBC: Java Database Connectivity
 
-![jdbc-db-interaction.jpg](../images/jdbc-db-interaction.jpg)
+![jdbc-db-interaction.jpg](images/jdbc-db-interaction.jpg)
 
 _출처: JDBC-database Interaction - [Java Enterprise in a Nutshell](https://flylib.com/books/en/2.177.1.75/1/)_
 
