@@ -8,7 +8,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 
-public class Main11EmbeddedValueType {
+public class MainEmbeddedValueType {
 
     // persistence.xml의 persistence-unit name
     public static final String PERSISTENT_UNIT_NAME = "markruler";

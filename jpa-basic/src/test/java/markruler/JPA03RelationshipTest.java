@@ -12,6 +12,8 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("연관관계 매핑")
@@ -68,6 +70,44 @@ class JPA03RelationshipTest {
             final Team findTeam = findMember.getTeam();
             assertThat(findTeam.getName()).isEqualTo(teamname);
             assertThat(findTeam.getMembers()).hasSize(1);
+
+            tx.commit();
+        } catch (Exception e) {
+            tx.rollback();
+            throw e;
+        }
+    }
+
+    @Test
+    @DisplayName("양방향 연관관계(Bidirectional Relationship) 매핑")
+    void sut_bidirectional_relationship_mapping() throws Exception {
+
+        final String username = "mark";
+        final String teamname = "back-end";
+
+        try {
+            final var team = new Team();
+            team.setName(teamname);
+            em.persist(team);
+
+            final var member = new MemberSequence();
+            member.setUsername(username);
+            member.setTeam(team);
+            em.persist(member);
+
+            em.flush();
+            em.clear();
+
+            MemberSequence findMember = em.find(MemberSequence.class, member.getId());
+
+            System.out.println(">>>>>>>>>>>>>>>>>>>>> Lazy Loading");
+            final Team findTeam = findMember.getTeam();
+            assertThat(findTeam.getName()).isEqualTo(teamname);
+
+            System.out.println(">>>>>>>>>>>>>>>>>>>>> `@OneToMany`는 기본이 Lazy Loading");
+            List<MemberSequence> members = findTeam.getMembers();
+            assertThat(members).hasSize(1);
+            assertThat(members.get(0).getUsername()).isEqualTo(username);
 
             tx.commit();
         } catch (Exception e) {

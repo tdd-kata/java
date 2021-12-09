@@ -8,7 +8,7 @@ import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 import java.util.List;
 
-public class Main13JPQL01 {
+public class MainJPQL {
 
     // persistence.xml의 persistence-unit name
     public static final String PERSISTENT_UNIT_NAME = "markruler";
