@@ -1,30 +1,28 @@
 package com.markruler.jpql.domain;
 
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.NamedQuery;
 
 @Entity
-public class Member {
+/*
+- 정적 쿼리 : 변경할 수 없다.
+- 애플리케이션 로딩 시점에 SQL 검증 - 컴파일 타임에 오류를 발견할 수 있다.
+- 애플리케이션 로딩 시점에 파싱해서 계속 캐시하고 있다.
+- Spring Data JPA : @Query("select m from MemberNamed m where m.username = :username")
+ */
+@NamedQuery(
+        name = "MemberNamed.findByUsername",
+        query = "select m from MemberNamed m where m.username = :username"
+)
+public class MemberNamed {
     @Id
     @GeneratedValue
     private Long id;
     private String username;
     private int age;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "TEAM_ID")
-    private Team team;
-
     private MemberType type;
-
-    public void changeTeam(Team team) {
-        this.team = team;
-        team.getMembers().add(this);
-    }
 
     public Long getId() {
         return id;
@@ -48,14 +46,6 @@ public class Member {
 
     public void setAge(int age) {
         this.age = age;
-    }
-
-    public Team getTeam() {
-        return team;
-    }
-
-    public void setTeam(Team team) {
-        this.team = team;
     }
 
     public MemberType getType() {

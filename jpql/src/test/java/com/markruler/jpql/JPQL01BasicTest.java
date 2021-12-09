@@ -456,8 +456,8 @@ class JPQL01BasicTest {
     }
 
     @Test
-    @DisplayName("Case - coalesce")
-    void sut_case_coalesce() throws Exception {
+    @DisplayName("COALESCE")
+    void sut_coalesce() throws Exception {
         final int memberSize = 10;
         final String memberName = "member";
         try {
@@ -496,8 +496,8 @@ class JPQL01BasicTest {
     }
 
     @Test
-    @DisplayName("Case - nullif")
-    void sut_case_nullif() throws Exception {
+    @DisplayName("NULLIF")
+    void sut_nullif() throws Exception {
         final int memberSize = 10;
         final String memberName = "관리자";
         try {

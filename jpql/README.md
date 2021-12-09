@@ -25,8 +25,7 @@ curl localhost:81
 ## 실행
 
 ```bash
-$ mvn clean install
-$ java -jar target/
+$ mvn clean test
 ```
 
 ## 예제 모델
