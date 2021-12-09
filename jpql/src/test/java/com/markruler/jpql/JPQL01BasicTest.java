@@ -1,11 +1,15 @@
 package com.markruler.jpql;
 
 import com.markruler.jpql.domain.Address;
+import com.markruler.jpql.domain.Book;
+import com.markruler.jpql.domain.Item;
 import com.markruler.jpql.domain.Member;
+import com.markruler.jpql.domain.MemberType;
 import com.markruler.jpql.domain.Team;
 import com.markruler.jpql.dto.MemberDTO;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -40,7 +44,7 @@ class JPQL01BasicTest {
     }
 
     @Test
-    @DisplayName("TupeQuery")
+    @DisplayName("TypeQuery")
     void sut_type_query() throws Exception {
         try {
             Member member1 = new Member();
@@ -244,6 +248,374 @@ class JPQL01BasicTest {
 
             assertThat(result).hasSize(maxResultCount);
             assertThat(result.get(0).getUsername()).isEqualTo(memberName + memberSize);
+
+            tx.commit();
+        } catch (Exception e) {
+            tx.rollback();
+            throw e;
+        }
+    }
+
+    @Test
+    @DisplayName("Join")
+    void sut_join() throws Exception {
+        final int memberSize = 1;
+        final String memberName = "member";
+        try {
+            Team team = new Team();
+            team.setName("teamA");
+            em.persist(team);
+
+            for (int i = 1; i <= memberSize; i++) {
+                Member member = new Member();
+                member.setUsername(memberName + i);
+                member.setAge(i);
+
+                member.changeTeam(team);
+
+                em.persist(member);
+            }
+
+            em.flush();
+            em.clear();
+
+            // Query
+            // String query = "select m from Member m inner join m.team t"; // inner join
+            String query = "select m from Member m left outer join m.team t on m.username = t.name"; // left outer join
+            // String query = "select m from Member m, Team t where m.username = t.name"; // theta join
+            // String query = "select m from Member m, Team t where m.team.name = t.name"; // theta join
+            List<Member> result = em
+                    .createQuery(query, Member.class)
+                    .getResultList();
+
+            System.out.println("result.size = " + result.size());
+
+            assertThat(result).hasSize(memberSize);
+            assertThat(result.get(0).getUsername()).isEqualTo(memberName + memberSize);
+
+            tx.commit();
+        } catch (Exception e) {
+            tx.rollback();
+            throw e;
+        }
+    }
+
+    @Test
+    @DisplayName("Subquery")
+    void sut_subquery() throws Exception {
+        final int memberSize = 1;
+        final String memberName = "member";
+        try {
+            Team team = new Team();
+            team.setName("teamA");
+            em.persist(team);
+
+            for (int i = 1; i <= memberSize; i++) {
+                Member member = new Member();
+                member.setUsername(memberName + i);
+                member.setAge(i);
+
+                member.changeTeam(team);
+
+                em.persist(member);
+            }
+
+            em.flush();
+            em.clear();
+
+            String query = "select (select avg(m1.age) from Member m1) as avgAge from Member m";
+            double result = em
+                    .createQuery(query, Double.class)
+                    .getSingleResult();
+
+            assertThat(result).isEqualTo(1d);
+
+            tx.commit();
+        } catch (Exception e) {
+            tx.rollback();
+            throw e;
+        }
+    }
+
+    @Test
+    @DisplayName("Type Expression")
+    void sut_type_expression() throws Exception {
+        final int memberSize = 100;
+        final String memberName = "member";
+        try {
+            Team team = new Team();
+            team.setName("teamA");
+            em.persist(team);
+
+            for (int i = 1; i <= memberSize; i++) {
+                Member member = new Member();
+                member.setUsername(memberName + i);
+                member.setAge(i);
+                member.setType(MemberType.ADMIN);
+
+                member.changeTeam(team);
+
+                em.persist(member);
+            }
+
+            em.flush();
+            em.clear();
+
+            String query = "select m.username, 'HELLO', true from Member m " +
+                    // "where m.type = com.markruler.jpql.domain.MemberType.ADMIN";
+                    "where m.type = :userType " +
+                    "and m.age between 0 and 10";
+
+            List<Object[]> result = em
+                    .createQuery(query)
+                    .setParameter("userType", MemberType.ADMIN)
+                    .getResultList();
+
+            assertThat(result).hasSize(10);
+            assertThat(result.get(0)[0]).isEqualTo(memberName + 1);
+            assertThat(result.get(0)[1]).isEqualTo("HELLO");
+            assertThat(result.get(0)[2]).isEqualTo(true);
+
+            tx.commit();
+        } catch (Exception e) {
+            tx.rollback();
+            throw e;
+        }
+    }
+
+    @Test
+    @DisplayName("Entity Type Expression")
+    void sut_entity_type_expression() throws Exception {
+        final String isbn = "9788960777330";
+        try {
+            Book book = new Book();
+            book.setIsbn(isbn);
+            em.persist(book);
+
+            em.flush();
+            em.clear();
+
+            String query = "select i from Item i where type(i) = Book ";
+
+            List<Item> result = em
+                    .createQuery(query, Item.class)
+                    .getResultList();
+
+            assertThat(result).hasSize(1);
+
+            tx.commit();
+        } catch (Exception e) {
+            tx.rollback();
+            throw e;
+        }
+    }
+
+    @Test
+    @DisplayName("Case")
+    void sut_case() throws Exception {
+        final int memberSize = 10;
+        final String memberName = "member";
+        try {
+            Team team = new Team();
+            team.setName("teamA");
+            em.persist(team);
+
+            for (int i = 1; i <= memberSize; i++) {
+                Member member = new Member();
+                member.setUsername(memberName + i);
+                member.setAge(i);
+                member.setType(MemberType.ADMIN);
+
+                member.changeTeam(team);
+
+                em.persist(member);
+            }
+
+            em.flush();
+            em.clear();
+
+            String query = "select " +
+                    "case when m.age <= 10 then '학생요금' " +
+                    "     when m.age >= 60 then '경로요금' " +
+                    "     else '일반요금' " +
+                    "end " +
+                    "from Member m";
+
+            List<String> result = em
+                    .createQuery(query, String.class)
+                    .getResultList();
+
+            assertThat(result).hasSize(10);
+            assertThat(result.get(0)).isEqualTo("학생요금");
+
+            tx.commit();
+        } catch (Exception e) {
+            tx.rollback();
+            throw e;
+        }
+    }
+
+    @Test
+    @DisplayName("Case - coalesce")
+    void sut_case_coalesce() throws Exception {
+        final int memberSize = 10;
+        final String memberName = "member";
+        try {
+            Team team = new Team();
+            team.setName("teamA");
+            em.persist(team);
+
+            for (int i = 1; i <= memberSize; i++) {
+                Member member = new Member();
+                // member.setUsername(memberName + i);
+                member.setAge(i);
+                member.setType(MemberType.ADMIN);
+
+                member.changeTeam(team);
+
+                em.persist(member);
+            }
+
+            em.flush();
+            em.clear();
+
+            // COALESCE : 하나씩 조회해서 null이 아니면 반환
+            String query = "select coalesce(m.username, '이름 없는 회원') from Member m";
+            List<String> result = em
+                    .createQuery(query, String.class)
+                    .getResultList();
+
+            assertThat(result).hasSize(10);
+            assertThat(result.get(0)).isEqualTo("이름 없는 회원");
+
+            tx.commit();
+        } catch (Exception e) {
+            tx.rollback();
+            throw e;
+        }
+    }
+
+    @Test
+    @DisplayName("Case - nullif")
+    void sut_case_nullif() throws Exception {
+        final int memberSize = 10;
+        final String memberName = "관리자";
+        try {
+            Team team = new Team();
+            team.setName("teamA");
+            em.persist(team);
+
+            for (int i = 1; i <= memberSize; i++) {
+                Member member = new Member();
+                member.setUsername(memberName);
+                member.setAge(i);
+                member.setType(MemberType.ADMIN);
+
+                member.changeTeam(team);
+
+                em.persist(member);
+            }
+
+            em.flush();
+            em.clear();
+
+            // NULLIF : 두 값이 같으면 null 반환, 다르면 첫번째 값 반환
+            String query = "select nullif(m.username, '관리자') from Member m";
+            List<String> result = em
+                    .createQuery(query, String.class)
+                    .getResultList();
+
+            assertThat(result).hasSize(10);
+            assertThat(result.get(0)).isNull();
+
+            tx.commit();
+        } catch (Exception e) {
+            tx.rollback();
+            throw e;
+        }
+    }
+
+    @Test
+    @DisplayName("Functions")
+    void sut_functions() throws Exception {
+        final int memberSize = 10;
+        final String memberName = "member";
+        try {
+            Team team = new Team();
+            team.setName("teamA");
+            em.persist(team);
+
+            for (int i = 1; i <= memberSize; i++) {
+                Member member = new Member();
+                member.setUsername(memberName + i);
+                member.setAge(i);
+                member.setType(MemberType.ADMIN);
+
+                member.changeTeam(team);
+
+                em.persist(member);
+            }
+
+            em.flush();
+            em.clear();
+
+            // String query1 = "select concat('a', 'b') from Member m";
+            String query1 = "select substring(m.username, 2, 3) from Member m";
+            List<String> result1 = em
+                    .createQuery(query1, String.class)
+                    .getResultList();
+
+            // assertThat(result1.get(0)).isEqualTo("ab"); // concat('a', 'b')
+            assertThat(result1.get(0)).isEqualTo("emb"); // substring(m.username, 2, 3)
+
+            String query2 = "select locate('de', 'abcdefg') from Member m";
+            List<Integer> result2 = em
+                    .createQuery(query2, Integer.class)
+                    .getResultList();
+
+            assertThat(result2).hasSize(10);
+            assertThat(result2.get(0)).isEqualTo(4); // locate('de', 'abcdefg')
+
+            tx.commit();
+        } catch (Exception e) {
+            tx.rollback();
+            throw e;
+        }
+    }
+
+    @Disabled
+    @Test
+    @DisplayName("Custom Function")
+    void sut_custom_function() throws Exception {
+        final int memberSize = 10;
+        final String memberName = "member";
+        try {
+            Team team = new Team();
+            team.setName("teamA");
+            em.persist(team);
+
+            for (int i = 1; i <= memberSize; i++) {
+                Member member = new Member();
+                member.setUsername(memberName + i);
+                member.setAge(i);
+                member.setType(MemberType.ADMIN);
+
+                member.changeTeam(team);
+
+                em.persist(member);
+            }
+
+            em.flush();
+            em.clear();
+
+            // persistence.xml
+            // <property name="hibernate.dialect" value="com.markruler.jpql.dialect.MyH2Dialect"/>
+            String query = "select function('group_concat', m.username) from Member m";
+            String result = em
+                    .createQuery(query, String.class)
+                    .getSingleResult();
+
+            assertThat(result).isEqualTo("member1,member2,member3,member4,member5,member6,member7,member8,member9,member10"); // substring(m.username, 2, 3)
 
             tx.commit();
         } catch (Exception e) {
