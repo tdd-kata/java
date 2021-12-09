@@ -7,12 +7,12 @@
 ```bash
 # H2 Database
 sudo docker run -d \
--p 1521:1521 \
--p 81:81 \
--v /home/data/h2-data:/opt/h2-data \
--e H2_OPTIONS="-ifNotExists" \
---name=local-h2 \
-oscarfonts/h2
+  -p 1521:1521 \
+  -p 81:81 \
+  -v /home/data/h2-data:/opt/h2-data \
+  -e H2_OPTIONS="-ifNotExists" \
+  --name=local-h2 \
+  oscarfonts/h2
 
 curl localhost:81
 ```
@@ -24,4 +24,7 @@ curl localhost:81
 
 ## 실행
 
-IDE를 사용해서 실행한다.
+```bash
+mvn clean test
+# 혹은 IDE 환경에서 실행한다.
+```
