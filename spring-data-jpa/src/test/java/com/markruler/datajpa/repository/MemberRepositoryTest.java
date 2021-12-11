@@ -366,6 +366,7 @@ class MemberRepositoryTest {
     @Test
     @DisplayName("Query Hint를 사용해서 read only 엔터티 객체를 조회한다")
     void query_hint() {
+        // given
         Member member1 = memberRepository.save(new Member("member1", 10));
         em.flush();
         em.clear();
@@ -383,5 +384,32 @@ class MemberRepositoryTest {
         // then
         List<Member> readonlyMembers = memberRepository.findByUsername(member1.getUsername());
         assertThat(readonlyMembers.get(0).getUsername()).isEqualTo("member2");
+    }
+
+    @Test
+    @DisplayName("Pessimistic Lock")
+    void lock() {
+        // given
+        Member member1 = new Member("member1", 10);
+        memberRepository.save(member1);
+        em.flush();
+        em.clear();
+
+        // when
+        /*
+            select
+                member0_.member_id as member_i1_0_,
+                member0_.age as age2_0_,
+                member0_.team_id as team_id4_0_,
+                member0_.username as username3_0_
+            from
+                member member0_
+            where
+                member0_.username=? for update
+         */
+        List<Member> members = memberRepository.findLockByUsername(member1.getUsername());
+
+        // then
+        assertThat(members.get(0).getUsername()).isEqualTo(member1.getUsername());
     }
 }
