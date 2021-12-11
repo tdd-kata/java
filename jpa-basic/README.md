@@ -12,7 +12,7 @@ sudo docker run -d \
   -v /home/data/h2-data:/opt/h2-data \
   -e H2_OPTIONS="-ifNotExists" \
   --name=local-h2 \
-  oscarfonts/h2
+  markruler/h2:1.4.200
 
 curl localhost:81
 ```

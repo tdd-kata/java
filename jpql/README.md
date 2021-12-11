@@ -7,12 +7,12 @@
 ```bash
 # H2 Database
 sudo docker run -d \
--p 1521:1521 \
--p 81:81 \
--v /home/data/h2-data:/opt/h2-data \
--e H2_OPTIONS="-ifNotExists" \
---name=local-h2 \
-oscarfonts/h2
+  -p 1521:1521 \
+  -p 81:81 \
+  -v /home/data/h2-data:/opt/h2-data \
+  -e H2_OPTIONS="-ifNotExists" \
+  --name=local-h2 \
+  markruler/h2:1.4.200
 
 curl localhost:81
 ```
