@@ -8,9 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
 
 import javax.transaction.Transactional;
-
 import java.util.List;
-import java.util.NoSuchElementException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -24,7 +22,7 @@ class MemberRepositoryTest {
 
     @Test
     @DisplayName("Repository 프록시 객체")
-    void testRepository() {
+    void test_repository() {
         final Class<MemberRepository> originalClass = MemberRepository.class;
         final Class<? extends MemberRepository> proxyClass = memberRepository.getClass();
         final String proxyName = "com.sun.proxy.$Proxy";
@@ -38,7 +36,7 @@ class MemberRepositoryTest {
 
     @Test
     @DisplayName("MemberRepository")
-    void testMember() {
+    void test_member() {
         Member member = new Member("memberA");
         Member savedMember = memberRepository.save(member);
 
@@ -51,7 +49,7 @@ class MemberRepositoryTest {
 
     @Test
     @DisplayName("기본 CRD")
-    void basicCRD() {
+    void basic_create_read_delete() {
         Member member1 = new Member("member1");
         Member member2 = new Member("member2");
         memberRepository.save(member1);
@@ -78,4 +76,18 @@ class MemberRepositoryTest {
         // Update는 어떻게 테스트하지
     }
 
+    @Test
+    @DisplayName("org.springframework.data.repository.Repository를 구현한 객체는 메서드명으로 쿼리를 생성한다")
+    void query_creation_by_method_name() {
+        Member member1 = new Member("member1", 10);
+        Member member2 = new Member("member2", 20);
+        memberRepository.save(member1);
+        memberRepository.save(member2);
+
+        // https://docs.spring.io/spring-data/jpa/docs/current/reference/html/#jpa.query-methods.query-creation
+        List<Member> members = memberRepository.findByUsernameAndAgeGreaterThan("member2", 15);
+
+        assertThat(members.get(0).getUsername()).isEqualTo("member2");
+        assertThat(members.get(0).getAge()).isEqualTo(20);
+    }
 }

@@ -87,4 +87,18 @@ class MemberJpaRepositoryTest {
         // Update는 어떻게 테스트하지
     }
 
+    @Test
+    @DisplayName("JPA를 그대로 사용한다면 쿼리를 직접 작성해야 한다")
+    void not_query_creation() {
+        Member member1 = new Member("member1", 10);
+        Member member2 = new Member("member2", 20);
+        memberJpaRepository.save(member1);
+        memberJpaRepository.save(member2);
+
+        List<Member> members = memberJpaRepository.findByUsernameAndAgeGreaterThan("member2", 15);
+
+        assertThat(members.get(0).getUsername()).isEqualTo("member2");
+        assertThat(members.get(0).getAge()).isEqualTo(20);
+    }
+
 }
