@@ -10,7 +10,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.test.annotation.Rollback;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -22,7 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @Transactional
-@Rollback(false)
+@org.springframework.test.annotation.Rollback(false) // 학습할 때만 사용
 @DisplayName("Spring Data JPA")
 class MemberRepositoryTest {
 
@@ -411,5 +410,27 @@ class MemberRepositoryTest {
 
         // then
         assertThat(members.get(0).getUsername()).isEqualTo(member1.getUsername());
+    }
+
+    @Test
+    @DisplayName("사용자 정의 Repository 인터페이스의 메서드를 실행할 수 있다")
+    void callCustom() {
+        // given
+        Member member1 = new Member("member1", 10);
+        memberRepository.save(member1);
+        em.flush();
+        em.clear();
+
+        // when
+        /*
+            - 실무에서는 주로 QueryDSL이나 SpringJdbcTemplate을 함께 사용할 때 사용자 정의 리포지터리 기능을 사용한다.
+            - Repository 인터페이스가 아닌 클래스를 만들고 @Repository 어노테이션과 함께 빈으로 사용해서 직접 구현해도 된다.
+                - 이 경우 Spring Data JPA와는 관계없이 별도로 동작한다.
+         */
+        List<Member> customMember = memberRepository.findMemberCustom();
+
+        // then
+        assertThat(customMember.get(0).getUsername()).isEqualTo("member1");
+        assertThat(customMember.get(0).getAge()).isEqualTo(10);
     }
 }

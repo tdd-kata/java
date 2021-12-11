@@ -18,11 +18,15 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * Spring Data JPA에서 제공해주는 인터페이스
+ * Spring Data JPA에서 제공해주는 인터페이스.
+ * Custom Repository Interface(MemberRepositoryCustom)를 작성해서 상속받으면
+ * 해당 인터페이스를 구현한 클래스의 메서드(MemberRepositoryCustom)를 사용할 수 있다.
  *
  * @see org.springframework.data.repository.Repository
+ * @see MemberRepositoryCustom
+ * @see MemberRepositoryImpl
  */
-public interface MemberRepository extends JpaRepository<Member, Long> {
+public interface MemberRepository extends JpaRepository<Member, Long>, MemberRepositoryCustom {
 
     // Query Creation
     // https://docs.spring.io/spring-data/jpa/docs/current/reference/html/#jpa.query-methods.query-creation
