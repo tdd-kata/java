@@ -15,6 +15,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest
 @Transactional
 @Rollback(false)
+@DisplayName("Spring Data JPA")
 class MemberRepositoryTest {
 
     @Autowired
@@ -86,6 +87,20 @@ class MemberRepositoryTest {
 
         // https://docs.spring.io/spring-data/jpa/docs/current/reference/html/#jpa.query-methods.query-creation
         List<Member> members = memberRepository.findByUsernameAndAgeGreaterThan("member2", 15);
+
+        assertThat(members.get(0).getUsername()).isEqualTo("member2");
+        assertThat(members.get(0).getAge()).isEqualTo(20);
+    }
+
+    @Test
+    @DisplayName("미리 작성한 NamedQuery로 쿼리를 실행할 수 있다")
+    void named_query() {
+        Member member1 = new Member("member1", 10);
+        Member member2 = new Member("member2", 20);
+        memberRepository.save(member1);
+        memberRepository.save(member2);
+
+        List<Member> members = memberRepository.findByUsername("member2");
 
         assertThat(members.get(0).getUsername()).isEqualTo("member2");
         assertThat(members.get(0).getAge()).isEqualTo(20);

@@ -13,6 +13,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQuery;
 
 @Entity
 @Getter
@@ -21,6 +22,10 @@ import javax.persistence.ManyToOne;
 // @ToString(of = {"id", "username", "age"})
 // @ToString(exclude = "team")
 @ToString
+@NamedQuery(
+        name = "Member.findByUsername",
+        query="select m from Member m where m.username = :username"
+)
 public class Member {
     @Id
     @GeneratedValue

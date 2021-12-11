@@ -25,7 +25,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 */
 @SpringBootTest
 @Rollback(false) // 실무에선 DB에 데이터가 남기 때문에 사용하지 않는다.
-@DisplayName("Spring Data JPA Practices")
+@DisplayName("Basic JPA")
 class MemberJpaRepositoryTest {
 
     @Autowired
@@ -96,6 +96,20 @@ class MemberJpaRepositoryTest {
         memberJpaRepository.save(member2);
 
         List<Member> members = memberJpaRepository.findByUsernameAndAgeGreaterThan("member2", 15);
+
+        assertThat(members.get(0).getUsername()).isEqualTo("member2");
+        assertThat(members.get(0).getAge()).isEqualTo(20);
+    }
+
+    @Test
+    @DisplayName("미리 작성한 NamedQuery로 쿼리를 실행할 수 있다")
+    void named_query() {
+        Member member1 = new Member("member1", 10);
+        Member member2 = new Member("member2", 20);
+        memberJpaRepository.save(member1);
+        memberJpaRepository.save(member2);
+
+        List<Member> members = memberJpaRepository.findByUsername("member2");
 
         assertThat(members.get(0).getUsername()).isEqualTo("member2");
         assertThat(members.get(0).getAge()).isEqualTo(20);
