@@ -94,7 +94,6 @@ class MemberRepositoryTest {
         memberRepository.save(member1);
         memberRepository.save(member2);
 
-        // https://docs.spring.io/spring-data/jpa/docs/current/reference/html/#jpa.query-methods.query-creation
         List<Member> members = memberRepository.findByUsernameAndAgeGreaterThan("member2", 15);
 
         assertThat(members.get(0).getUsername()).isEqualTo(member2.getUsername());
@@ -236,5 +235,26 @@ class MemberRepositoryTest {
         assertThat(pageMember.isFirst()).isTrue(); // !hasPrevious()
         assertThat(pageMember.hasPrevious()).isFalse(); // getNumber() > 0
         assertThat(pageMember.hasNext()).isTrue(); // getNumber() + 1 < getTotalPages()
+    }
+
+    @Test
+    @DisplayName("한번에 여러 개의 엔터티를 수정한다")
+    void bulkUpdate() {
+        // given
+        memberRepository.save(new Member("member1", 10));
+        memberRepository.save(new Member("member2", 20));
+        memberRepository.save(new Member("member3", 30));
+        memberRepository.save(new Member("member4", 40));
+        memberRepository.save(new Member("member5", 50));
+
+        // when
+        int resultCount = memberRepository.bulkAgePlus(20);
+
+        // then
+        assertThat(resultCount).isEqualTo(4);
+
+        List<Member> members = memberRepository.findByUsername("member5");
+        Member member5 = members.get(0);
+        assertThat(member5.getAge()).isEqualTo(51);
     }
 }

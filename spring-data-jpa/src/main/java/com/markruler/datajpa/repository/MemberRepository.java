@@ -5,6 +5,7 @@ import com.markruler.datajpa.entity.Member;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -18,8 +19,11 @@ import java.util.List;
  */
 public interface MemberRepository extends JpaRepository<Member, Long> {
 
+    // Query Creation
+    // https://docs.spring.io/spring-data/jpa/docs/current/reference/html/#jpa.query-methods.query-creation
     List<Member> findByUsernameAndAgeGreaterThan(String username, int age);
 
+    // Named Query
     /*
         어노테이션을 작성하지 않아도
         Member 클래스의 findByUsername이라는 Named Query를 찾는다.
@@ -36,12 +40,23 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
             @Param("age") int age
     );
 
+    // various return types - DTO, VO, etc.
     // https://docs.spring.io/spring-data/jpa/docs/current/reference/html/#repository-query-return-types
     @Query("select new com.markruler.datajpa.dto.MemberDto(m.id, m.username, t.name)" +
             " from Member m join m.team t")
     List<MemberDto> findMemberDto();
 
+    // Paging
     @Query(value = "select m from Member m left join m.team t",
             countQuery = "select count(m) from Member m")
     Page<Member> findByAge(int age, Pageable pageable);
+
+    // Bulk
+    // https://docs.spring.io/spring-data/jpa/docs/current/reference/html/#jpa.modifying-queries
+    // 기본적으로 벌크 연산은 영속성 컨텍스트를 거치지 않고 바로 DB에 저장한다.
+    // 영속성 컨텍스트를 clear 하지 않으면 같은 엔터티를 다시 조회할 때 변경되지 않은 1차 캐시가 조회된다.
+    // 그리고 혹시 flush 되지 않은 변경 사항이 있을 수 있으니 flush 한다.
+    @Modifying(flushAutomatically = true, clearAutomatically = true)
+    @Query("update Member m set m.age = m.age + 1 where m.age >= :age")
+    int bulkAgePlus(@Param("age") int age);
 }
