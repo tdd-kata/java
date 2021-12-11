@@ -362,4 +362,26 @@ class MemberRepositoryTest {
          */
         assertThat(members.get(0).getTeam().getName()).isEqualTo("teamA");
     }
+
+    @Test
+    @DisplayName("Query Hint를 사용해서 read only 엔터티 객체를 조회한다")
+    void query_hint() {
+        Member member1 = memberRepository.save(new Member("member1", 10));
+        em.flush();
+        em.clear();
+
+        // when
+        Member findMember = memberRepository.findReadOnlyByUsername(member1.getUsername());
+        // 영속성 컨텍스트에서는 member2로 변경되지만 Update SQL이 실행되지 않는다. 즉, DB에 반영되지 않는다.
+        // Dirty Checking은 성능상 이점이 크지 않기 때문에
+        // 실무에서는 성능이 정말 중요한 로직에서 '성능 테스트'를 실시해보고 결정한다.
+        // 모든 메서드에 @QueryHint나 readOnly 속성을 부여하는 건 유지보수 코드를 늘리는 일이 될 수도 있다.
+        findMember.setUsername("member2");
+
+        em.flush();
+
+        // then
+        List<Member> readonlyMembers = memberRepository.findByUsername(member1.getUsername());
+        assertThat(readonlyMembers.get(0).getUsername()).isEqualTo("member2");
+    }
 }
