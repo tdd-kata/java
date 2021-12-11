@@ -7,6 +7,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.annotation.Rollback;
 
 import javax.transaction.Transactional;
@@ -166,5 +169,72 @@ class MemberRepositoryTest {
         List<MemberDto> members = memberRepository.findMemberDto();
 
         assertThat(members.get(0).getUsername()).isEqualTo(member.getUsername());
+    }
+
+    @Test
+    @DisplayName("query creation을 사용해 Spring Data JPA로 페이징 기능을 활용할 수 있다")
+    void paging() {
+
+        // given
+        final int age = 10;
+        memberRepository.save(new Member("member1", age));
+        memberRepository.save(new Member("member2", age));
+        memberRepository.save(new Member("member3", age));
+        memberRepository.save(new Member("member4", age));
+        memberRepository.save(new Member("member5", age));
+
+        final int page = 0; // offset이 들어가지 않고 countQuery를 실행한다.
+        // final int page = 1; // offset이 포함되며 countQuery를 별도로 실행하지 않는다.
+        final int size = 3;
+        final Sort sort = Sort.by("username").descending();
+        final PageRequest pageRequest = PageRequest.of(page, size, sort);
+
+        // when
+        /*
+            select
+                member0_.member_id as member_i1_0_,
+                member0_.age as age2_0_,
+                member0_.team_id as team_id4_0_,
+                member0_.username as username3_0_
+            from
+                member member0_
+            where
+                member0_.age=?
+            order by
+                member0_.username desc limit ?
+         */
+        // countQuery를 별도로 선언하지 않으며 아래처럼 count 쿼리에도 join이 들어간다.
+        /*
+            select
+                count(member0_.member_id) as col_0_0_
+            from
+                member member0_
+            left outer join
+                team team1_
+                    on member0_.team_id=team1_.team_id
+         */
+        // countQuery 선언 시
+        /*
+            select
+                count(member0_.member_id) as col_0_0_
+            from
+                member member0_
+         */
+        Page<Member> pageMember = memberRepository.findByAge(age, pageRequest);
+
+        // then
+        List<Member> contentMember = pageMember.getContent();
+
+        assertThat(pageMember).hasSize(3);
+        assertThat(pageMember.getSize()).isEqualTo(3);
+        assertThat(contentMember).hasSize(3);
+        assertThat(contentMember.size()).isEqualTo(3);
+        assertThat(pageMember.getTotalPages()).isEqualTo(2);
+        assertThat(pageMember.getTotalElements()).isEqualTo(5);
+        assertThat(pageMember.getNumber()).isZero();
+        assertThat(pageMember.getTotalPages()).isEqualTo(2);
+        assertThat(pageMember.isFirst()).isTrue(); // !hasPrevious()
+        assertThat(pageMember.hasPrevious()).isFalse(); // getNumber() > 0
+        assertThat(pageMember.hasNext()).isTrue(); // getNumber() + 1 < getTotalPages()
     }
 }
