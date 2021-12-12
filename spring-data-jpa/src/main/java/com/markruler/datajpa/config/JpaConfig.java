@@ -21,6 +21,7 @@ public class JpaConfig {
 
     @Bean
     public AuditorAware<String> auditorProvider() {
+        // @CreatedBy, @LastModifiedBy 주체
         // 아래는 예시로 UUID 랜덤값을 넘기는 것이고
         // 실무에서는 1. Spring Security Context에서 Principal의 정보를 가져오거나
         // 2. HttpSession에서 가져오는 등 현재 로그인 세션의 정보를 가져올 수 있다.
