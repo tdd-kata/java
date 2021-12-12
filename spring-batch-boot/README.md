@@ -1,5 +1,9 @@
 # Spring Batch with Spring Boot
 
+## Scheme
+
+- [scripts](https://github.com/spring-projects/spring-batch/tree/main/spring-batch-core/src/main/resources/org/springframework/batch/core)
+
 ## Maven
 
 ```bash
