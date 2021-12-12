@@ -60,7 +60,7 @@ public class JpaBatchConfig {
         CustomerByCityQueryProvider queryProvider = new CustomerByCityQueryProvider();
 
         return new JpaPagingItemReaderBuilder<Customer>()
-                .name("customerItemReader")
+                .name("jpaPagingItemReader")
                 .entityManagerFactory(entityManagerFactory)
                 .queryProvider(queryProvider)
                 .parameterValues(Collections.singletonMap("city", city))
@@ -73,7 +73,7 @@ public class JpaBatchConfig {
     }
 
     @Bean
-    public Step copyFileStep() {
+    public Step jpaReadStep() {
         return this.stepBuilderFactory.get("copyFileStep")
                 .<Customer, Customer>chunk(10)
                 .reader(customerItemReader(null, null))
@@ -92,7 +92,7 @@ public class JpaBatchConfig {
     @Bean
     public Job job() {
         return this.jobBuilderFactory.get("job")
-                .start(copyFileStep())
+                .start(jpaReadStep())
                 .build();
     }
 
