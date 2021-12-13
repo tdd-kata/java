@@ -5,7 +5,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.Rollback;
 
 import javax.transaction.Transactional;
 import java.util.List;
@@ -23,7 +22,7 @@ import static org.assertj.core.api.Assertions.assertThat;
     - cannot reliably process 'persist' call; nested exception is javax.persistence.TransactionRequiredException:
 */
 @SpringBootTest
-@Rollback(false) // 실무에선 DB에 데이터가 남기 때문에 사용하지 않는다.
+// @org.springframework.test.annotation.Rollback(false) // 실무에선 DB에 데이터가 남기 때문에 사용하지 않는다.
 @DisplayName("Basic JPA")
 class MemberJpaRepositoryTest {
 
