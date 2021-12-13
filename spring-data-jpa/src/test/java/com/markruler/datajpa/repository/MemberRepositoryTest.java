@@ -1,9 +1,13 @@
 package com.markruler.datajpa.repository;
 
 import com.markruler.datajpa.dto.MemberDto;
+import com.markruler.datajpa.dto.NestedClosedProjection;
+import com.markruler.datajpa.dto.UsernameOnly;
+import com.markruler.datajpa.dto.UsernameOnlyDto;
 import com.markruler.datajpa.entity.Member;
 import com.markruler.datajpa.entity.Team;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -484,5 +488,82 @@ class MemberRepositoryTest {
         assertThat(members).hasSize(1);
         assertThat(members.get(0).getUsername()).isEqualTo("m1");
         assertThat(members.get(0).getTeam().getName()).isEqualTo("teamA");
+    }
+
+    @Nested
+    @DisplayName("Projection")
+    class Describe_projection {
+
+        @Test
+        @DisplayName("Open Projection")
+        void open_projection() {
+            // https://docs.spring.io/spring-data/r2dbc/docs/current/reference/html/#projections.interfaces.open
+
+            // given
+            Team teamA = new Team("teamA");
+            em.persist(teamA);
+
+            Member m1 = new Member("m1", 0, teamA);
+            Member m2 = new Member("m2", 0, teamA);
+            em.persist(m1);
+            em.persist(m2);
+
+            // when
+            List<UsernameOnly> members = memberRepository.findProjectionsByUsername("m1");
+
+            // then
+            assertThat(members).hasSize(1);
+            assertThat(members.get(0).getUsername()).isEqualTo("m1 0"); // open projection
+
+            /**
+             * 디버그 모드로 들어가면 org.springframework.aop.framework.JdkDynamicAopProxy > ProxyFactory > DefaultAopProxyFactory
+             */
+            System.out.println("Projection을 위한 Interface는 프록시 객체가 생성된다 >>>>>> " + members.get(0).getClass());
+        }
+
+        @Test
+        @DisplayName("Dynamic Projection")
+        void dynamic_projection_with_class() {
+            // given
+            Team teamA = new Team("teamA");
+            em.persist(teamA);
+
+            Member m1 = new Member("m1", 0, teamA);
+            Member m2 = new Member("m2", 0, teamA);
+            em.persist(m1);
+            em.persist(m2);
+
+            // when
+            // Class based Projection
+            // https://docs.spring.io/spring-data/r2dbc/docs/current/reference/html/#projections.dtos
+            List<UsernameOnlyDto> members = memberRepository.findProjectionsDtoByUsername("m1", UsernameOnlyDto.class);
+
+            // then
+            assertThat(members).hasSize(1);
+            assertThat(members.get(0).getUsername()).isEqualTo("m1");
+            System.out.println("Projection을 위한 Class는 프록시 객체가 없다 >>>>>> " + members.get(0).getClass());
+        }
+
+        @Test
+        @DisplayName("Nested Closed Projection")
+        void nested_closed_projection() {
+            // given
+            Team teamA = new Team("teamA");
+            em.persist(teamA);
+
+            Member m1 = new Member("m1", 0, teamA);
+            Member m2 = new Member("m2", 0, teamA);
+            em.persist(m1);
+            em.persist(m2);
+
+            // when
+            // https://docs.spring.io/spring-data/r2dbc/docs/current/reference/html/#projections.interfaces
+            List<NestedClosedProjection> members = memberRepository.findProjectionsDtoByUsername("m1", NestedClosedProjection.class);
+
+            // then
+            assertThat(members).hasSize(1);
+            assertThat(members.get(0).getUsername()).isEqualTo("m1");
+            System.out.println("Projection을 위한 Interface는 프록시 객체가 생성된다 >>>>>> " + members.get(0).getClass());
+        }
     }
 }

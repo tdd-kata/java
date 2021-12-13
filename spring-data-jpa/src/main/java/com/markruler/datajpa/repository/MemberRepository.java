@@ -1,6 +1,8 @@
 package com.markruler.datajpa.repository;
 
 import com.markruler.datajpa.dto.MemberDto;
+import com.markruler.datajpa.dto.UsernameOnly;
+import com.markruler.datajpa.dto.UsernameOnlyDto;
 import com.markruler.datajpa.entity.Member;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -93,4 +95,12 @@ public interface MemberRepository extends JpaRepository<Member, Long>, MemberRep
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     List<Member> findLockByUsername(String username);
 
+    // find...ByUsername
+    List<UsernameOnly> findProjectionsByUsername(@Param("username") String username);
+
+    // Dynamic Projection
+    // https://docs.spring.io/spring-data/jpa/docs/current/reference/html/#projection.dynamic
+    // https://thorben-janssen.com/spring-data-jpa-query-projections/
+    // find...ByUsername
+    <T> List<T> findProjectionsDtoByUsername(@Param("username") String username, Class<T> type);
 }
