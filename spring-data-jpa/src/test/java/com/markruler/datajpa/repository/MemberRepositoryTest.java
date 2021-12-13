@@ -10,6 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -21,7 +22,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @Transactional
-@org.springframework.test.annotation.Rollback(false) // 학습할 때만 사용
+// @org.springframework.test.annotation.Rollback(false) // 학습할 때만 사용
 @DisplayName("Spring Data JPA")
 class MemberRepositoryTest {
 
@@ -432,5 +433,28 @@ class MemberRepositoryTest {
         // then
         assertThat(customMember.get(0).getUsername()).isEqualTo("member1");
         assertThat(customMember.get(0).getAge()).isEqualTo(10);
+    }
+
+    @Test
+    @DisplayName("JPA Criteria를 사용해서 DDD의 SPECIFICATION을 구현할 수 있다")
+    void specification() {
+        // given
+        Team teamA = new Team("teamA");
+        em.persist(teamA);
+
+        Member m1 = new Member("m1", 0, teamA);
+        Member m2 = new Member("m2", 0, teamA);
+        em.persist(m1);
+        em.persist(m2);
+        Specification<Member> spec = MemberSpec
+                .username("m1")
+                .and(MemberSpec.teamName("teamA"));
+
+        List<Member> members = memberRepository.findAll(spec);
+
+        // then
+        assertThat(members).hasSize(1);
+        assertThat(members.get(0).getUsername()).isEqualTo("m1");
+        assertThat(members.get(0).getTeam().getName()).isEqualTo("teamA");
     }
 }
