@@ -7,6 +7,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -451,6 +453,32 @@ class MemberRepositoryTest {
                 .and(MemberSpec.teamName("teamA"));
 
         List<Member> members = memberRepository.findAll(spec);
+
+        // then
+        assertThat(members).hasSize(1);
+        assertThat(members.get(0).getUsername()).isEqualTo("m1");
+        assertThat(members.get(0).getTeam().getName()).isEqualTo("teamA");
+    }
+
+    @Test
+    @DisplayName("Example을 사용해서 사용자를 찾을 수 있다")
+    void query_by_example() {
+        // given
+        Team teamA = new Team("teamA");
+        em.persist(teamA);
+
+        Member m1 = new Member("m1", 0, teamA);
+        Member m2 = new Member("m2", 0, teamA);
+        em.persist(m1);
+        em.persist(m2);
+
+        // when
+        Member member = new Member("m1");
+        member.setTeam(teamA);
+
+        ExampleMatcher ignoreAge = ExampleMatcher.matching().withIgnorePaths("age");
+        Example<Member> example = Example.of(member, ignoreAge);
+        List<Member> members = memberRepository.findAll(example);
 
         // then
         assertThat(members).hasSize(1);
