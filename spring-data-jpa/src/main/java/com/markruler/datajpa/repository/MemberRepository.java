@@ -1,8 +1,8 @@
 package com.markruler.datajpa.repository;
 
 import com.markruler.datajpa.dto.MemberDto;
+import com.markruler.datajpa.dto.MemberProjection;
 import com.markruler.datajpa.dto.UsernameOnly;
-import com.markruler.datajpa.dto.UsernameOnlyDto;
 import com.markruler.datajpa.entity.Member;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -103,4 +103,13 @@ public interface MemberRepository extends JpaRepository<Member, Long>, MemberRep
     // https://thorben-janssen.com/spring-data-jpa-query-projections/
     // find...ByUsername
     <T> List<T> findProjectionsDtoByUsername(@Param("username") String username, Class<T> type);
+
+    @Query(value = "select * from member where username = ?", nativeQuery = true)
+    Member findByNativeQuery(String username);
+
+    @Query(value = "select m.member_id as id, m.username, t.name as teamName " +
+            "from member m left join team t",
+            countQuery = "select count(*) from member",
+            nativeQuery = true)
+    Page<MemberProjection> findByNativeProjection(Pageable pageable);
 }

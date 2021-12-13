@@ -1,6 +1,7 @@
 package com.markruler.datajpa.repository;
 
 import com.markruler.datajpa.dto.MemberDto;
+import com.markruler.datajpa.dto.MemberProjection;
 import com.markruler.datajpa.dto.NestedClosedProjection;
 import com.markruler.datajpa.dto.UsernameOnly;
 import com.markruler.datajpa.dto.UsernameOnlyDto;
@@ -565,5 +566,55 @@ class MemberRepositoryTest {
             assertThat(members.get(0).getUsername()).isEqualTo("m1");
             System.out.println("Projection을 위한 Interface는 프록시 객체가 생성된다 >>>>>> " + members.get(0).getClass());
         }
+    }
+
+    /*
+     * (non-Javadoc)
+     * <a href="https://docs.spring.io/spring-data/jpa/docs/current/reference/html/#jpa.query-methods.at-query.native">Spring Docs</a>
+     */
+    @Test
+    @DisplayName("Native Query로 사용자를 찾는다")
+    void native_query() {
+        // given
+        Team teamA = new Team("teamA");
+        em.persist(teamA);
+
+        Member m1 = new Member("m1", 0, teamA);
+        Member m2 = new Member("m2", 0, teamA);
+        em.persist(m1);
+        em.persist(m2);
+
+        // when
+        Member findMember = memberRepository.findByNativeQuery("m1");
+
+        // then
+        assertThat(findMember).isNotNull();
+        assertThat(findMember.getUsername()).isEqualTo("m1");
+    }
+
+    /*
+     * (non-Javadoc)
+     * <a href="https://docs.spring.io/spring-data/jpa/docs/current/reference/html/#jpa.query-methods.at-query.native">Spring Docs</a>
+     */
+    @Test
+    @DisplayName("Native Query에 Projection을 활용해서 사용자를 찾는다")
+    void native_query_with_projection() {
+        // given
+        Team teamA = new Team("teamA");
+        em.persist(teamA);
+
+        Member m1 = new Member("m1", 0, teamA);
+        Member m2 = new Member("m2", 0, teamA);
+        em.persist(m1);
+        em.persist(m2);
+
+        // when
+        PageRequest page = PageRequest.of(0, 10);
+        Page<MemberProjection> memberProjections = memberRepository.findByNativeProjection(page);
+        List<MemberProjection> contents = memberProjections.getContent();
+
+        // then
+        assertThat(contents).isNotNull();
+        assertThat(contents.get(0).getUsername()).isEqualTo("m1");
     }
 }
