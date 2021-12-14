@@ -24,9 +24,11 @@ import javax.persistence.NamedQuery;
 @ToString
 @NamedQuery(
         name = "Member.findByUsername",
-        query="select m from Member m where m.username = :username"
+        query = "select m from Member m where m.username = :username"
 )
-public class Member {
+// @NamedEntityGraph(name = "Member.all", attributeNodes = @NamedAttributeNode("team"))
+// public class Member extends JpaAuditEntity {
+public class Member extends AuditEntity {
     @Id
     @GeneratedValue
     @Column(name = "member_id")

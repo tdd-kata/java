@@ -5,10 +5,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.Rollback;
 
 import javax.transaction.Transactional;
-
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -24,7 +22,7 @@ import static org.assertj.core.api.Assertions.assertThat;
     - cannot reliably process 'persist' call; nested exception is javax.persistence.TransactionRequiredException:
 */
 @SpringBootTest
-@Rollback(false) // 실무에선 DB에 데이터가 남기 때문에 사용하지 않는다.
+// @org.springframework.test.annotation.Rollback(false) // 실무에선 DB에 데이터가 남기 때문에 사용하지 않는다.
 @DisplayName("Basic JPA")
 class MemberJpaRepositoryTest {
 
@@ -32,7 +30,7 @@ class MemberJpaRepositoryTest {
     MemberJpaRepository memberJpaRepository;
 
     @Test
-    @DisplayName("Repository 프록시 객체")
+    @DisplayName("Repository 프록시 객체가 생성된다")
     void testRepository() {
         final Class<MemberJpaRepository> originalClass = MemberJpaRepository.class;
         final Class<? extends MemberJpaRepository> proxyClass = memberJpaRepository.getClass();
@@ -46,7 +44,7 @@ class MemberJpaRepositoryTest {
     }
 
     @Test
-    @DisplayName("MemberJpaRepository")
+    @DisplayName("Member를 저장하고 조회할 수 있다")
     void testMember() {
         Member member = new Member("memberA");
         Member savedMember = memberJpaRepository.save(member);
@@ -59,7 +57,7 @@ class MemberJpaRepositoryTest {
     }
 
     @Test
-    @DisplayName("기본 CRD")
+    @DisplayName("기본 CRD 쿼리를 생성할 수 있다")
     void basicCRD() {
         Member member1 = new Member("member1");
         Member member2 = new Member("member2");
@@ -84,7 +82,7 @@ class MemberJpaRepositoryTest {
         long count = memberJpaRepository.count();
         assertThat(count).isZero();
 
-        // Update는 어떻게 테스트하지
+        // Update는 어떻게 테스트하지?
     }
 
     @Test
@@ -97,8 +95,8 @@ class MemberJpaRepositoryTest {
 
         List<Member> members = memberJpaRepository.findByUsernameAndAgeGreaterThan("member2", 15);
 
-        assertThat(members.get(0).getUsername()).isEqualTo("member2");
-        assertThat(members.get(0).getAge()).isEqualTo(20);
+        assertThat(members.get(0).getUsername()).isEqualTo(member2.getUsername());
+        assertThat(members.get(0).getAge()).isEqualTo(member2.getAge());
     }
 
     @Test
@@ -111,8 +109,69 @@ class MemberJpaRepositoryTest {
 
         List<Member> members = memberJpaRepository.findByUsername("member2");
 
-        assertThat(members.get(0).getUsername()).isEqualTo("member2");
-        assertThat(members.get(0).getAge()).isEqualTo(20);
+        assertThat(members.get(0).getUsername()).isEqualTo(member2.getUsername());
+        assertThat(members.get(0).getAge()).isEqualTo(member2.getAge());
     }
 
+    @Test
+    @DisplayName("offset과 limit을 사용해 순수 JPA로 페이징 기능을 활용할 수 있다")
+    void paging() {
+
+        // given
+        final int age = 10;
+        final int offset = 1;
+        final int limit = 3;
+
+        memberJpaRepository.save(new Member("member1", age));
+        memberJpaRepository.save(new Member("member2", age));
+        memberJpaRepository.save(new Member("member3", age));
+        memberJpaRepository.save(new Member("member4", age));
+        memberJpaRepository.save(new Member("member5", age));
+
+        // when
+        /*
+            select
+                member0_.member_id as member_i1_0_,
+                member0_.age as age2_0_,
+                member0_.team_id as team_id4_0_,
+                member0_.username as username3_0_
+            from
+                member member0_
+            where
+                member0_.age=?
+            order by
+                member0_.username desc limit ? offset ?
+         */
+        List<Member> members = memberJpaRepository.findByPage(age, offset, limit);
+        /*
+            select
+                count(member0_.member_id) as col_0_0_
+            from
+                member member0_
+            where
+                member0_.age=?
+         */
+        long totalCount = memberJpaRepository.totalCount(age);
+
+        // then
+        assertThat(members).hasSize(3);
+        assertThat(totalCount).isEqualTo(5);
+    }
+
+    @Test
+    @DisplayName("한번에 여러 개의 엔터티를 수정한다")
+    void bulkUpdate() {
+        // given
+        memberJpaRepository.save(new Member("member1", 10));
+        memberJpaRepository.save(new Member("member2", 20));
+        memberJpaRepository.save(new Member("member3", 30));
+        memberJpaRepository.save(new Member("member4", 40));
+        memberJpaRepository.save(new Member("member5", 50));
+
+        // when
+        int resultCount = memberJpaRepository.bulkAgePlus(20);
+
+        // then
+        assertThat(resultCount).isEqualTo(4);
+    }
 }

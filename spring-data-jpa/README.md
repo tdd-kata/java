@@ -19,5 +19,6 @@ curl localhost:81
 | 메모리 DB | jdbc:h2:mem:testdb                   |
 
 ```bash
-./gradlew bootRun --info
+# Gradle 6.8.3
+gradle clean test
 ```

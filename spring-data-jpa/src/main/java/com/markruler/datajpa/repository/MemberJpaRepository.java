@@ -14,12 +14,12 @@ public class MemberJpaRepository {
     @PersistenceContext
     private EntityManager em;
 
-    public Member save(Member member) {
+    public Member save(final Member member) {
         em.persist(member);
         return member;
     }
 
-    public void delete(Member member) {
+    public void delete(final Member member) {
         em.remove(member);
     }
 
@@ -29,7 +29,7 @@ public class MemberJpaRepository {
                 .getResultList();
     }
 
-    public Optional<Member> findById(Long id) {
+    public Optional<Member> findById(final Long id) {
         Member member = em.find(Member.class, id);
         return Optional.ofNullable(member);
     }
@@ -40,7 +40,7 @@ public class MemberJpaRepository {
                 .getSingleResult();
     }
 
-    public Member find(Long id) {
+    public Member find(final Long id) {
         return em.find(Member.class, id);
     }
 
@@ -52,10 +52,33 @@ public class MemberJpaRepository {
                 .getResultList();
     }
 
-    public List<Member> findByUsername(String username) {
+    public List<Member> findByUsername(final String username) {
         return em
                 .createNamedQuery("Member.findByUsername", Member.class)
                 .setParameter("username", username)
                 .getResultList();
+    }
+
+    public List<Member> findByPage(final int age, final int offset, final int limit) {
+        return em
+                .createQuery("select m from Member m where m.age = :age order by m.username desc")
+                .setParameter("age", age)
+                .setFirstResult(offset)
+                .setMaxResults(limit)
+                .getResultList();
+    }
+
+    public long totalCount(final int age) {
+        return em
+                .createQuery("select count(m) from Member m where m.age = :age", Long.class)
+                .setParameter("age", age)
+                .getSingleResult();
+    }
+
+    public int bulkAgePlus(int age) {
+        return em
+                .createQuery("update Member m set m.age = m.age + 1 where m.age >= :age")
+                .setParameter("age", age)
+                .executeUpdate();
     }
 }

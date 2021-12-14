@@ -1,5 +1,6 @@
 package com.markruler.datajpa.dto;
 
+import com.markruler.datajpa.entity.Member;
 import lombok.Getter;
 
 @Getter
@@ -12,5 +13,10 @@ public class MemberDto {
         this.id = id;
         this.username = username;
         this.teamName = teamName;
+    }
+
+    public MemberDto(Member member) {
+        this.id = member.getId();
+        this.username = member.getUsername();
     }
 }
