@@ -201,4 +201,41 @@ class MemberTest {
             assertThat(count).isEqualTo(4);
         }
     }
+
+    @Nested
+    @DisplayName("orderBy 메서드는")
+    class Describe_orderBy {
+
+        final String member5Username = "member5";
+        final String member6Username = "member6";
+
+        @BeforeEach
+        void setUpAdditionalMember() {
+            em.persist(new Member(null, 90));
+            em.persist(new Member(member5Username, 100));
+            em.persist(new Member(member6Username, 120));
+        }
+
+        @Test
+        @DisplayName("내림차순, 오름차순으로 조합해서 정렬할 수 있다")
+        void sut_sort() {
+            List<Member> fetchResult = queryFactory
+                    .selectFrom(member)
+                    .where(member.age.gt(80))
+                    /*
+                        순서대로 우선순위
+                        order by
+                            member0_.age desc,
+                            member0_.username asc nulls last
+                     */
+                    .orderBy(member.age.desc(), member.username.asc().nullsLast())
+                    .fetch();
+
+            Member firstMember = fetchResult.get(0);
+            Member secondMember = fetchResult.get(1);
+
+            assertThat(firstMember.getUsername()).isEqualTo(member6Username);
+            assertThat(secondMember.getUsername()).isEqualTo(member5Username);
+        }
+    }
 }
