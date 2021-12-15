@@ -33,14 +33,18 @@ public class Member {
     @JoinColumn(name = "team_id")
     private Team team;
 
-    public Member(String username, int age) {
+    public Member(String username) {
         this.username = username;
+    }
+
+    public Member(String username, int age) {
+        this(username);
         this.age = age;
     }
 
     public Member(String username, int age, Team team) {
-        this.username = username;
-        this.age = age;
+        this(username, age);
+
         if (team != null) {
             changeTeam(team);
         }
