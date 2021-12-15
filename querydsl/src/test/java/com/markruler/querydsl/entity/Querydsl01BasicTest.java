@@ -14,6 +14,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.PersistenceUnit;
+import javax.persistence.PersistenceUnitUtil;
 import java.util.List;
 
 import static com.markruler.querydsl.entity.QMember.member;
@@ -25,7 +28,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Transactional
 // @org.springframework.test.annotation.Rollback
 // @org.springframework.test.annotation.Commit
-class MemberTest {
+class Querydsl01BasicTest {
 
     @Autowired
     EntityManager em;
@@ -347,6 +350,210 @@ class MemberTest {
         assertThat(teamA.get(member.age.avg())).isEqualTo(15); // (10 + 20) / 2
         assertThat(teamB.get(team.name)).isEqualTo("teamB");
         assertThat(teamB.get(member.age.avg())).isEqualTo(35); // (30 + 40) / 2
-
     }
+
+    @Nested
+    @DisplayName("JOIN")
+    class Describe_join {
+
+        @Test
+        @DisplayName("연관관계가 있는 필드로 조인할 수 있다")
+        void sut_join() {
+            // when
+            List<Member> teamA = queryFactory
+                    .selectFrom(member)
+                    // .join(member.team, team)
+                    .innerJoin(member.team, team)
+                    .where(team.name.eq("teamA"))
+                    .fetch();
+
+        /*
+            select
+                member0_.member_id as member_i1_1_,
+                member0_.age as age2_1_,
+                member0_.team_id as team_id4_1_,
+                member0_.username as username3_1_
+            from
+                member member0_
+            inner join
+                team team1_
+                    on member0_.team_id=team1_.id
+            where
+                team1_.name=?
+         */
+            // then
+            assertThat(teamA)
+                    .extracting("username")
+                    .containsExactly("member1", "member2");
+        }
+
+        @Test
+        @DisplayName("연관관계가 없는 필드로 조인할 수 있다")
+        void sut_theta_join() {
+            em.persist(new Member("teamA"));
+            em.persist(new Member("teamB"));
+            em.persist(new Member("teamC"));
+
+            List<Member> fetchResult = queryFactory
+                    .select(member)
+                    .from(member, team)
+                    .where(member.username.eq(team.name))
+                    .fetch();
+
+            assertThat(fetchResult)
+                    .extracting("username")
+                    .containsExactly("teamA", "teamB");
+        }
+
+        @Test
+        @DisplayName("on 절")
+        void sut_join_on_filtering() {
+            // when
+            List<Tuple> fetchTuple = queryFactory
+                    .select(member, team)
+                    .from(member)
+                    .leftJoin(member.team, team)
+                    .on(team.name.eq("teamA"))
+                    .fetch();
+
+            // then
+            // for (Tuple tuple : fetchTuple) {
+            //     System.out.println(tuple);
+            // }
+            Member firstMember = fetchTuple.get(0).get(QMember.member);
+            Team firstTeam = fetchTuple.get(0).get(QTeam.team);
+
+            assertThat(firstMember).isNotNull();
+            assertThat(firstMember.getUsername()).isEqualTo("member1");
+            assertThat(firstTeam).isNotNull();
+            assertThat(firstTeam.getName()).isEqualTo("teamA");
+        }
+
+        @Test
+        @DisplayName("연관관계가 없는 엔터티 간의 Outer Join - on join")
+        void sut_join_on_no_relation() {
+            em.persist(new Member("teamA"));
+            em.persist(new Member("teamB"));
+            em.persist(new Member("teamC"));
+
+            // when
+            List<Tuple> fetchTuple = queryFactory
+                    .select(member, team)
+                    .from(member)
+                    // 일반 조인 => leftJoin(member.team, team)
+                    .leftJoin(team).on(member.username.eq(team.name))
+                    .fetch();
+
+        /*
+            select
+                member0_.member_id as member_i1_1_0_,
+                team1_.id as id1_2_1_,
+                member0_.age as age2_1_0_,
+                member0_.team_id as team_id4_1_0_,
+                member0_.username as username3_1_0_,
+                team1_.name as name2_2_1_
+            from
+                member member0_
+            left outer join
+                team team1_
+                    on (
+                        member0_.username=team1_.name
+                    )
+         */
+
+            // then
+            // for (Tuple tuple : fetchTuple) {
+            //     System.out.println(tuple);
+            // }
+            Member firstMember = fetchTuple.get(0).get(QMember.member);
+            Team firstTeam = fetchTuple.get(0).get(QTeam.team);
+
+            assertThat(firstMember).isNotNull();
+            assertThat(firstMember.getUsername()).isEqualTo("member1");
+            assertThat(firstTeam).isNull();
+        }
+
+        @PersistenceUnit
+        EntityManagerFactory emf;
+
+        @Test
+        @DisplayName("fetch join이 아닐 때")
+        void sut_not_fetch_join() {
+            em.flush();
+            em.close();
+
+            final PersistenceUnitUtil persistenceUnitUtil = emf.getPersistenceUnitUtil();
+
+            final String memberName = "member1";
+            Member findMember = queryFactory
+                    .selectFrom(member)
+                    .where(member.username.eq(memberName))
+                    .fetchOne();
+
+        /*
+            select
+                member0_.member_id as member_i1_1_,
+                member0_.age as age2_1_,
+                member0_.team_id as team_id4_1_,
+                member0_.username as username3_1_
+            from
+                member member0_
+            where
+                member0_.username=?
+         */
+
+            assertThat(persistenceUnitUtil.isLoaded(findMember)).isTrue();
+            assertThat(persistenceUnitUtil.isLoaded(findMember.getTeam())).as("fetch join 미적용").isFalse();
+
+            assertThat(findMember).isNotNull();
+            assertThat(findMember.getUsername()).isEqualTo(memberName);
+
+        /*
+            select
+                team0_.id as id1_2_0_,
+                team0_.name as name2_2_0_
+            from
+                team team0_
+            where
+                team0_.id=?
+         */
+            assertThat(findMember.getTeam().getName()).isEqualTo("teamA");
+        }
+
+        @Test
+        @DisplayName("fetch join일 때")
+        void sut_fetch_join() {
+            em.flush();
+            em.clear();
+
+            final PersistenceUnitUtil persistenceUnitUtil = emf.getPersistenceUnitUtil();
+
+            Member findMember = queryFactory
+                    .selectFrom(member)
+                    .join(member.team, team).fetchJoin() // FETCH JOIN
+                    .where(member.username.eq("member1"))
+                    .fetchOne();
+
+        /*
+            select
+                member0_.member_id as member_i1_1_0_,
+                team1_.id as id1_2_1_,
+                member0_.age as age2_1_0_,
+                member0_.team_id as team_id4_1_0_,
+                member0_.username as username3_1_0_,
+                team1_.name as name2_2_1_
+            from
+                member member0_
+            inner join
+                team team1_
+                    on member0_.team_id=team1_.id
+            where
+                member0_.username=?
+         */
+
+            assertThat(persistenceUnitUtil.isLoaded(findMember)).isTrue();
+            assertThat(persistenceUnitUtil.isLoaded(findMember.getTeam())).as("fetch join 적용").isTrue();
+        }
+    }
+
 }
