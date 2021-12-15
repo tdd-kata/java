@@ -1,5 +1,7 @@
 package com.markruler.querydsl.entity;
 
+import com.querydsl.core.QueryResults;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -126,6 +128,77 @@ class MemberTest {
 
             assertThat(findMember).isNotNull();
             assertThat(findMember.getUsername()).isEqualTo("member1");
+        }
+    }
+
+    @Nested
+    @DisplayName("결과를 조회하는 방법")
+    class Describe_results {
+
+        @Test
+        @DisplayName("fetch()")
+        void sut_result_fetch() {
+
+            List<Member> fetch = queryFactory
+                    .selectFrom(member)
+                    .fetch();
+
+            assertThat(fetch).hasSize(4);
+        }
+
+        @Test
+        @DisplayName("fetchAll()")
+        void sut_result_jpa_query() {
+
+            JPAQuery<Member> memberJPAQuery = queryFactory
+                    .selectFrom(member)
+                    .fetchAll();
+
+            assertThat(memberJPAQuery.stream().limit(1)).hasSize(1);
+            assertThat(memberJPAQuery.stream().allMatch(member -> member.getUsername().contains("member"))).isTrue();
+            assertThat(memberJPAQuery.fetch()).hasSize(4);
+        }
+
+        @Test
+        @DisplayName("Deprecated fetchResults()")
+        void sut_result_fetchResults() {
+
+            QueryResults<Member> results = queryFactory
+                    .selectFrom(member)
+                    .fetchResults();
+
+            /*
+                select
+                    count(member0_.member_id) as col_0_0_
+                from
+                    member member0_
+             */
+            long total = results.getTotal();
+            /*
+                select
+                    member0_.member_id as member_i1_1_,
+                    member0_.age as age2_1_,
+                    member0_.team_id as team_id4_1_,
+                    member0_.username as username3_1_
+                from
+                    member member0_
+             */
+            List<Member> content = results.getResults();
+
+            assertThat(total).isEqualTo(4);
+            assertThat(content).hasSize(4);
+            assertThat(content.get(0).getUsername()).isEqualTo("member1");
+        }
+
+        @Test
+        @DisplayName("Deprecated fetchCount()")
+        void sut_result_fetchCount() {
+
+            long count = queryFactory
+                    .selectFrom(member)
+                    .fetchCount();
+
+            assertThat(count).isEqualTo(4);
         }
     }
 }
