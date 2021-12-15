@@ -18,6 +18,7 @@ import java.util.List;
 import static com.markruler.querydsl.entity.QMember.member;
 import static org.assertj.core.api.Assertions.assertThat;
 
+@DisplayName("Querydsl 기본 문법")
 @SpringBootTest
 @Transactional
 // @org.springframework.test.annotation.Rollback
@@ -237,5 +238,72 @@ class MemberTest {
             assertThat(firstMember.getUsername()).isEqualTo(member6Username);
             assertThat(secondMember.getUsername()).isEqualTo(member5Username);
         }
+    }
+
+    @Nested
+    @DisplayName("페이징")
+    class Describe_paging {
+
+        @Test
+        @DisplayName("fetch()로 결과를 조회할 수 있다")
+        void fetch() {
+        /*
+            select
+                member0_.member_id as member_i1_1_,
+                member0_.age as age2_1_,
+                member0_.team_id as team_id4_1_,
+                member0_.username as username3_1_
+            from
+                member member0_
+            order by
+                member0_.username desc limit ? offset ?
+         */
+            List<Member> fetchResult = queryFactory
+                    .selectFrom(member)
+                    .orderBy(member.username.desc())
+                    .offset(1)
+                    .limit(2)
+                    .fetch();
+
+            assertThat(fetchResult).hasSize(2);
+        }
+
+        @Test
+        @DisplayName("QueryResults로 결과를 조회할 수 있다")
+        void queryResults() {
+
+            QueryResults<Member> queryResults = queryFactory
+                    .selectFrom(member)
+                    .orderBy(member.username.desc())
+                    .offset(1)
+                    .limit(2)
+                    .fetchResults();
+
+        /*
+            getTotal()에서 2개의 쿼리가 실행된다.
+
+            [1]
+            select
+                count(member0_.member_id) as col_0_0_
+            from
+                member member0_
+
+            [2]
+            select
+                member0_.member_id as member_i1_1_,
+                member0_.age as age2_1_,
+                member0_.team_id as team_id4_1_,
+                member0_.username as username3_1_
+            from
+                member member0_
+            order by
+                member0_.username desc limit ? offset ?
+         */
+            assertThat(queryResults.getTotal()).isEqualTo(4);
+            assertThat(queryResults.getLimit()).isEqualTo(2);
+            assertThat(queryResults.getOffset()).isEqualTo(1);
+            assertThat(queryResults.getResults().size()).isEqualTo(2);
+        }
+
     }
 }
