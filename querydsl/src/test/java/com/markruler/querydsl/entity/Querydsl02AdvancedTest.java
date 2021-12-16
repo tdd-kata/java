@@ -8,6 +8,7 @@ import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.junit.jupiter.api.AfterEach;
@@ -427,6 +428,58 @@ class Querydsl02AdvancedTest {
             assertThat(fetchMembers.get(1).getUsername()).isEqualTo("비회원");
             assertThat(fetchMembers.get(2).getUsername()).isEqualTo("member3");
             assertThat(fetchMembers.get(3).getUsername()).isEqualTo("member4");
+        }
+
+    }
+
+    @Nested
+    @DisplayName("SQL Functions")
+    class Describe_sql_functions {
+
+        @Test
+        @DisplayName("replace")
+        void sut_replace() {
+            List<String> fetchUsernames = queryFactory
+                    .select(Expressions.stringTemplate(
+                            "function('replace', {0}, {1}, {2})",
+                            member.username, "member", "M"))
+                    .from(member)
+                    .fetch();
+
+            assertThat(fetchUsernames).hasSize(4);
+            assertThat(fetchUsernames)
+                    .filteredOn(username -> username.equals("M1"))
+                    .hasSize(1);
+            assertThat(fetchUsernames).element(1).isEqualTo("M2");
+            assertThat(fetchUsernames).element(2).isEqualTo("M3");
+            assertThat(fetchUsernames).element(3).isEqualTo("M4");
+        }
+
+
+        @Test
+        @DisplayName("lower")
+        void sut_lower() {
+        /*
+            select member1.username
+            from Member member1
+            where member1.username = function('lower', member1.username)
+         */
+            List<String> fetchUsernames = queryFactory
+                    .select(member.username)
+                    .from(member)
+                    // 간단한 ANSI function 들은 이미 Querydsl에 구현되어 있다.
+                    // .where(member.username.eq(member.username.lower()))
+                    .where(member.username.eq(
+                            Expressions.stringTemplate(
+                                    "function('lower', {0})",
+                                    member.username)))
+                    .fetch();
+
+            assertThat(fetchUsernames).hasSize(4);
+            assertThat(fetchUsernames).element(0).isEqualTo("member1");
+            assertThat(fetchUsernames).element(1).isEqualTo("member2");
+            assertThat(fetchUsernames).element(2).isEqualTo("member3");
+            assertThat(fetchUsernames).element(3).isEqualTo("member4");
         }
 
     }
