@@ -18,16 +18,15 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-
 @SpringBootTest
 @Transactional
-class MemberJpaRepositoryTest {
+class MemberRepositoryTest {
 
     @Autowired
     EntityManager em;
 
     @Autowired
-    MemberJpaRepository memberJpaRepository;
+    MemberRepository memberRepository;
 
     @BeforeEach
     void setUp() {
@@ -40,10 +39,10 @@ class MemberJpaRepositoryTest {
         Member member2 = new Member("member2", 20, teamA);
         Member member3 = new Member("member3", 30, teamB);
         Member member4 = new Member("member4", 40, teamB);
-        memberJpaRepository.save(member1);
-        memberJpaRepository.save(member2);
-        memberJpaRepository.save(member3);
-        memberJpaRepository.save(member4);
+        memberRepository.save(member1);
+        memberRepository.save(member2);
+        memberRepository.save(member3);
+        memberRepository.save(member4);
 
         // em.flush();
         // em.clear();
@@ -55,63 +54,29 @@ class MemberJpaRepositoryTest {
     }
 
     @Nested
-    @DisplayName("순수 JPA Repository")
+    @DisplayName("Spring Data JPA Repository")
     class Describe_jpa_repository {
 
         @Test
         @DisplayName("JPQL로 엔터티를 관리할 수 있다")
         void sut_jpql() {
             Member member = new Member("test", 99);
-            memberJpaRepository.save(member);
+            memberRepository.save(member);
 
-            Member findMember = memberJpaRepository.findById(member.getId()).get();
+            Member findMember = memberRepository.findById(member.getId()).get();
             assertThat(findMember).isEqualTo(member);
 
-            List<Member> members1 = memberJpaRepository.findAll();
+            List<Member> members1 = memberRepository.findAll();
             assertThat(members1).contains(member);
 
-            List<Member> members2 = memberJpaRepository.findByUsername(member.getUsername());
+            List<Member> members2 = memberRepository.findByUsername(member.getUsername());
             assertThat(members2).contains(member);
         }
-
-        @Test
-        @DisplayName("Querydsl로 엔터티를 관리할 수 있다")
-        void sut_querydsl() {
-            Member member = new Member("test", 99);
-            memberJpaRepository.save(member);
-
-            Member findMember = memberJpaRepository.findById(member.getId()).get();
-            assertThat(findMember).isEqualTo(member);
-
-            List<Member> members1 = memberJpaRepository.findAll_Querydsl();
-            // assertThat(members1).containsExactly(member);
-            assertThat(members1).contains(member);
-
-            List<Member> members2 = memberJpaRepository.findByUsername_Querydsl(member.getUsername());
-            // assertThat(members2).containsExactly(member);
-            assertThat(members2).contains(member);
-        }
-
     }
 
     @Nested
     @DisplayName("동적 쿼리를 생성할 수 있다")
     class Describe_complex_expressions {
-
-        @Test
-        @DisplayName("BooleanBuilder")
-        void sut_complex_expressions_boolean_builder() {
-            MemberSearchCondition condition = new MemberSearchCondition();
-            condition.setAgeGoe(35);
-            condition.setAgeLoe(40);
-            condition.setTeamName("teamB");
-
-            List<MemberTeamDto> members = memberJpaRepository.searchByBuilder(condition);
-
-            assertThat(members)
-                    .extracting("username")
-                    .containsExactly("member4");
-        }
 
         @Test
         @DisplayName("여러 개의 WHERE절 파라미터")
@@ -122,11 +87,12 @@ class MemberJpaRepositoryTest {
             condition.setAgeLoe(40);
             condition.setTeamName("teamB");
 
-            List<MemberTeamDto> members = memberJpaRepository.search(condition);
+            List<MemberTeamDto> members = memberRepository.search(condition);
 
             assertThat(members)
                     .extracting("username")
                     .containsExactly("member4");
         }
     }
+
 }
