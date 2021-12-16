@@ -5,12 +5,9 @@ import com.markruler.querydsl.dto.MemberProjectionDto;
 import com.markruler.querydsl.dto.QMemberProjectionDto;
 import com.markruler.querydsl.dto.UserDto;
 import com.querydsl.core.BooleanBuilder;
-import com.querydsl.core.Tuple;
-import com.querydsl.core.types.Expression;
 import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.Projections;
-import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.junit.jupiter.api.AfterEach;
@@ -23,9 +20,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
-
 import java.util.List;
-import java.util.Optional;
 
 import static com.markruler.querydsl.entity.QMember.member;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -66,8 +61,8 @@ class Querydsl02AdvancedTest {
         em.persist(member3);
         em.persist(member4);
 
-        em.flush();
-        em.clear();
+        // em.flush();
+        // em.clear();
     }
 
     @AfterEach
@@ -353,6 +348,87 @@ class Querydsl02AdvancedTest {
                 assertThat(members).hasSize(1);
             }
         }
+    }
+
+    @Nested
+    @DisplayName("Bulk Operation은 영속성 컨텍스트를 거치지 않는다")
+    class Describe_bulk_operation {
+
+        @Test
+        @DisplayName("영속성 컨텍스트를 비우지 않으면 캐시된 엔터티를 조회한다")
+        void sut_find_entity_first_level_cache() {
+
+            // member1 = 10 -> DB : member1
+            // member2 = 20 -> DB : member2
+            // member3 = 30 -> DB : member3
+            // member4 = 40 -> DB : member4
+
+            long count = queryFactory
+                    .update(member)
+                    .set(member.username, "비회원")
+                    .where(member.age.lt(28))
+                    .execute();
+
+            assertThat(count).isEqualTo(2);
+
+            // member1 = 10 -> DB : 비회원
+            // member2 = 20 -> DB : 비회원
+            // member3 = 30 -> DB : member3
+            // member4 = 40 -> DB : member4
+
+            // 벌크 연산은 영속성 컨텍스트를 거치지 않고 바로 DB에 반영된다.
+            // JPA를 통해 엔터티를 검색할 경우 영속성 컨텍스트에 캐시가 있다면
+            // 캐싱 데이터를 가져오기 때문에 정보에 차이가 발생할 수 있다.
+
+            List<Member> fetchMembers = queryFactory
+                    .selectFrom(member)
+                    .fetch();
+
+            assertThat(fetchMembers).hasSize(4);
+            assertThat(fetchMembers.get(0).getUsername()).isEqualTo("member1");
+            assertThat(fetchMembers.get(1).getUsername()).isEqualTo("member2");
+            assertThat(fetchMembers.get(2).getUsername()).isEqualTo("member3");
+            assertThat(fetchMembers.get(3).getUsername()).isEqualTo("member4");
+        }
+
+        @Test
+        @DisplayName("영속성 컨텍스트를 비우면 DB에 저장된 데이터 조회한다")
+        void sut_find_entity_database() {
+
+            // member1 = 10 -> DB : member1
+            // member2 = 20 -> DB : member2
+            // member3 = 30 -> DB : member3
+            // member4 = 40 -> DB : member4
+
+            long count = queryFactory
+                    .update(member)
+                    .set(member.username, "비회원")
+                    .where(member.age.lt(28))
+                    .execute();
+
+            assertThat(count).isEqualTo(2);
+
+            // member1 = 10 -> DB : 비회원
+            // member2 = 20 -> DB : 비회원
+            // member3 = 30 -> DB : member3
+            // member4 = 40 -> DB : member4
+
+            // 영속성 컨텍스트를 비우면 캐싱 데이터가 없기 때문에
+            // 데이터베이스에서 다시 조회한다.
+            em.flush();
+            em.clear();
+
+            List<Member> fetchMembers = queryFactory
+                    .selectFrom(member)
+                    .fetch();
+
+            assertThat(fetchMembers).hasSize(4);
+            assertThat(fetchMembers.get(0).getUsername()).isEqualTo("비회원");
+            assertThat(fetchMembers.get(1).getUsername()).isEqualTo("비회원");
+            assertThat(fetchMembers.get(2).getUsername()).isEqualTo("member3");
+            assertThat(fetchMembers.get(3).getUsername()).isEqualTo("member4");
+        }
+
     }
 
 }
