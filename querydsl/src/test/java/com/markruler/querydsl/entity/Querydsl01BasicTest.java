@@ -2,6 +2,7 @@ package com.markruler.querydsl.entity;
 
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.Tuple;
+import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.junit.jupiter.api.AfterEach;
@@ -651,6 +652,56 @@ class Querydsl01BasicTest {
             // 2. 애플리케이션에서 쿼리를 2번 분리해서 실행한다.
             // 3. Native Query를 사용한다.
         }
+    }
+
+    @Nested
+    @DisplayName("CASE 문을 생성할 수 있다")
+    class Describe_case {
+
+        @Test
+        @DisplayName("단순하게")
+        void sut_simple_case() {
+            final String result1 = "열살";
+            final String result2 = "스무살";
+            final String result3 = "기타";
+
+            List<String> fetchAge = queryFactory
+                    .select(member.age
+                            .when(10).then(result1)
+                            .when(20).then(result2)
+                            .otherwise(result3))
+                    .from(member)
+                    .fetch();
+
+            assertThat(fetchAge).hasSize(4);
+            assertThat(fetchAge.get(0)).isEqualTo(result1);
+            assertThat(fetchAge.get(1)).isEqualTo(result2);
+            assertThat(fetchAge.get(2)).isEqualTo(result3);
+            assertThat(fetchAge.get(3)).isEqualTo(result3);
+        }
+
+        @Test
+        @DisplayName("CaseBuilder를 사용해서 복잡하게")
+        void sut_complex_case() {
+            final String result1 = "0~20살";
+            final String result2 = "21~30살";
+            final String result3 = "기타";
+
+            List<String> fetchAge = queryFactory
+                    .select(new CaseBuilder()
+                            .when(member.age.between(0, 20)).then(result1)
+                            .when(member.age.between(21, 30)).then(result2)
+                            .otherwise(result3))
+                    .from(member)
+                    .fetch();
+
+            assertThat(fetchAge).hasSize(4);
+            assertThat(fetchAge.get(0)).isEqualTo(result1);
+            assertThat(fetchAge.get(1)).isEqualTo(result1);
+            assertThat(fetchAge.get(2)).isEqualTo(result2);
+            assertThat(fetchAge.get(3)).isEqualTo(result3);
+        }
+
     }
 
 }
