@@ -3,6 +3,7 @@ package com.markruler.querydsl.entity;
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.dsl.CaseBuilder;
+import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.junit.jupiter.api.AfterEach;
@@ -702,6 +703,34 @@ class Querydsl01BasicTest {
             assertThat(fetchAge.get(3)).isEqualTo(result3);
         }
 
+    }
+
+    @Test
+    @DisplayName("임의의 상수를 출력할 수 있다")
+    void constant() {
+        List<Tuple> fetchResult = queryFactory
+                .select(member.username, Expressions.constant("A"))
+                .from(member)
+                .fetch();
+
+        for (Tuple tuple : fetchResult) {
+            System.out.println(tuple);
+        }
+    }
+
+
+    @Test
+    @DisplayName("문자를 더해서 출력할 수 있다")
+    void concat() {
+        String result = queryFactory
+                // 문자가 아닌 다른 타입들은 stringValue()로 문자로 변환할 수 있다.
+                // 이 방법은 ENUM을 처리할 때도 자주 사용한다.
+                .select(member.username.concat("_").concat(member.age.stringValue()))
+                .from(member)
+                .where(member.username.eq("member1"))
+                .fetchOne();
+
+        assertThat(result).isEqualTo("member1_10");
     }
 
 }
