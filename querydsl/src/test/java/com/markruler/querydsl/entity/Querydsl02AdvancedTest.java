@@ -4,6 +4,7 @@ import com.markruler.querydsl.dto.MemberDto;
 import com.markruler.querydsl.dto.MemberProjectionDto;
 import com.markruler.querydsl.dto.QMemberProjectionDto;
 import com.markruler.querydsl.dto.UserDto;
+import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Expression;
 import com.querydsl.core.types.ExpressionUtils;
@@ -216,6 +217,60 @@ class Querydsl02AdvancedTest {
             assertThat(fetchMember.get(0).getAge()).isEqualTo(10);
         }
 
+    }
+
+    @Nested
+    @DisplayName("동적 쿼리 생성 시 BooleanBuilder를 사용할 경우")
+    class Describe_dynamic_expressions_using_BooleanBuilder {
+
+        private List<Member> searchMember(String usernameCondition, Integer ageCondition) {
+
+            // 동적 쿼리 생성
+            BooleanBuilder builder = new BooleanBuilder();
+
+            if (usernameCondition != null) {
+                builder.and(member.username.eq(usernameCondition));
+            }
+
+            if (ageCondition != null) {
+                builder.and(member.age.eq(ageCondition));
+            }
+
+            return queryFactory
+                    .selectFrom(member)
+                    .where(builder)
+                    .fetch();
+        }
+
+        @Nested
+        @DisplayName("매개 변수가 모두 null이 아니라면")
+        class Context_with_parameters {
+
+            @Test
+            @DisplayName("모든 조건을 검사한다")
+            void sut_query_should_create_where_username_age() {
+                final String usernameParam = "member1";
+                final Integer ageParam = 10;
+
+                List<Member> members = searchMember(usernameParam, ageParam);
+                assertThat(members).hasSize(1);
+            }
+        }
+
+        @Nested
+        @DisplayName("매개 변수 값이 null이라면")
+        class Context_with_username_condition {
+
+            @Test
+            @DisplayName("해당 조건을 무시한다")
+            void sut_query_should_create_where_username() {
+                final String usernameParam = "member1";
+                final Integer ageParam = null;
+
+                List<Member> members = searchMember(usernameParam, ageParam);
+                assertThat(members).hasSize(1);
+            }
+        }
     }
 
 }
