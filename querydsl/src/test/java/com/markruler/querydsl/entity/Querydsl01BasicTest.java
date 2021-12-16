@@ -6,6 +6,7 @@ import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -21,6 +22,7 @@ import java.util.List;
 
 import static com.markruler.querydsl.entity.QMember.member;
 import static com.markruler.querydsl.entity.QTeam.team;
+import static com.querydsl.jpa.JPAExpressions.select;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("Querydsl 기본 문법")
@@ -553,6 +555,101 @@ class Querydsl01BasicTest {
 
             assertThat(persistenceUnitUtil.isLoaded(findMember)).isTrue();
             assertThat(persistenceUnitUtil.isLoaded(findMember.getTeam())).as("fetch join 적용").isTrue();
+        }
+    }
+
+    @Nested
+    @DisplayName("서브 쿼리를 생성할 수 있다")
+    class Describe_sub_query {
+
+        @Test
+        @DisplayName("WHERE절")
+        void sut_sub_query_where() {
+
+            final QMember memberSub = new QMember("memberSub");
+
+        /*
+            select member1
+            from Member member1
+            where member1.age >= (
+                select avg(memberSub.age)
+                from Member memberSub
+            )
+         */
+            List<Member> fetchResult = queryFactory
+                    .selectFrom(member)
+                    // GOE = Greater than Or Equal
+                    // LOE = Less than Or Equal
+                    .where(member.age.goe(
+                            select(memberSub.age.avg())
+                                    .from(memberSub)
+                    ))
+                    .fetch();
+
+            assertThat(fetchResult)
+                    .extracting("age")
+                    .containsExactly(30, 40);
+        }
+
+        @Test
+        @DisplayName("IN절")
+        void sut_sub_query_in() {
+
+            final QMember memberSub = new QMember("memberSub");
+
+        /*
+            select member1
+            from Member member1
+            where member1.age in (
+                        select memberSub.age
+                        from Member memberSub
+                        where memberSub.age > ?1)
+         */
+            List<Member> fetchResult = queryFactory
+                    .selectFrom(member)
+                    .where(member.age.in(
+                            select(memberSub.age)
+                                    .from(memberSub)
+                                    .where(memberSub.age.gt(10))
+                    ))
+                    .fetch();
+
+            assertThat(fetchResult)
+                    .extracting("age")
+                    .containsExactly(20, 30, 40);
+        }
+
+        @Test
+        @DisplayName("SELECT절")
+        void sut_sub_query_select() {
+            final QMember memberSub = new QMember("memberSub");
+
+            List<Tuple> fetchMember = queryFactory
+                    .select(member.username,
+                            select(memberSub.age.avg())
+                                    .from(memberSub))
+                    .from(member)
+                    .fetch();
+
+            for (Tuple tuple : fetchMember) {
+                System.out.println(tuple);
+                System.out.println(tuple.get(member.username));
+                System.out.println(tuple.get(1, Double.class));
+            }
+
+            assertThat(fetchMember).hasSize(4);
+            assertThat(fetchMember.get(0).get(member.username)).isEqualTo("member1");
+            assertThat(fetchMember.get(0).get(1, Double.class)).isEqualTo(25D);
+        }
+
+        @Disabled("JPA JPQL 서브쿼리의 한계점 때문에")
+        @Test
+        @DisplayName("FROM 절의 서브 쿼리(인라인 뷰)는 지원하지 않는다")
+        void sut_sub_query_from_inline_view() {
+            // 해결방안
+            // 1. 서브쿼리를 Join으로 변경한다.
+            // 2. 애플리케이션에서 쿼리를 2번 분리해서 실행한다.
+            // 3. Native Query를 사용한다.
         }
     }
 
