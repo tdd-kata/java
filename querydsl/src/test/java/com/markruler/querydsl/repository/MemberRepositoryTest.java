@@ -11,6 +11,8 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
@@ -92,6 +94,39 @@ class MemberRepositoryTest {
             assertThat(members)
                     .extracting("username")
                     .containsExactly("member4");
+        }
+    }
+
+    @Nested
+    @DisplayName("페이징 쿼리를 생성할 수 있다")
+    class Describe_paging {
+
+        @Test
+        @DisplayName("Peprecated 데이터 조회 쿼리와 카운트 쿼리를 한번에 실행한다")
+        void sut_page_simple() {
+            MemberSearchCondition condition = new MemberSearchCondition();
+            condition.setAgeLoe(40);
+
+            PageRequest pageRequest = PageRequest.of(0, 3);
+            Page<MemberTeamDto> results = memberRepository.searchPageSimple(condition, pageRequest);
+
+            assertThat(results.getSize()).isEqualTo(3);
+            assertThat(results.getContent()).extracting("username")
+                    .containsExactly("member1", "member2", "member3");
+        }
+
+        @Test
+        @DisplayName("데이터 조회 쿼리와 카운트 쿼리를 분리해서 실행한다")
+        void sut_page_complex() {
+            MemberSearchCondition condition = new MemberSearchCondition();
+            condition.setAgeLoe(40);
+
+            PageRequest pageRequest = PageRequest.of(0, 3);
+            Page<MemberTeamDto> results = memberRepository.searchPageComplex(condition, pageRequest);
+
+            assertThat(results.getSize()).isEqualTo(3);
+            assertThat(results.getContent()).extracting("username")
+                    .containsExactly("member1", "member2", "member3");
         }
     }
 
