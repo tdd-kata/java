@@ -14,8 +14,10 @@ import java.util.UUID;
  * @see com.markruler.datajpa.entity.AuditEntity
  */
 @EnableJpaAuditing
-// @SpringBootApplication를 사용하면 아래 어노테이션 생략 가능
-// @EnableJpaRepositories(basePackages = "com.markruler.datajpa.repository")
+// @SpringBootApplication를 사용하면 @EnableJpaRepositories 어노테이션 생략 가능
+// @EnableJpaRepositories(
+//         basePackages = "com.markruler.datajpa.repository",
+//         repositoryImplementationPostfix = "Impl")
 @Configuration
 public class JpaConfig {
 
