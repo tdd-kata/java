@@ -31,6 +31,9 @@ class MemberRepositoryTest {
     @Autowired
     MemberRepository memberRepository;
 
+    @Autowired
+    MemberSupportRepository memberSupportRepository;
+
     @BeforeEach
     void setUp() {
         Team teamA = new Team("teamA");
@@ -150,4 +153,42 @@ class MemberRepositoryTest {
         assertThat(results).element(0).extracting("age").isEqualTo(10);
     }
 
+    @Nested
+    @DisplayName("QuerydslRepositorySupport를 사용해서 코드를 더 간결하게 만들 수 있다")
+    class Describe_querydsl_repository_support {
+
+        @Test
+        @DisplayName("PageableExecutionUtils")
+        void sut_querydsl_repository_support() {
+            MemberSearchCondition condition = new MemberSearchCondition();
+            condition.setAgeLoe(30);
+            condition.setAgeGoe(11);
+
+            PageRequest pageRequest = PageRequest.of(0, 3);
+
+            Page<Member> members = memberSupportRepository.applyPagination(condition, pageRequest);
+
+            assertThat(members).hasSize(2);
+            assertThat(members.getSize()).isEqualTo(3);
+            assertThat(members.getTotalElements()).isEqualTo(2);
+            assertThat(members).element(0).extracting("username").isEqualTo("member2");
+        }
+
+        @Test
+        @DisplayName("Count Query 분리")
+        void sut_querydsl_repository_support_count_query() {
+            MemberSearchCondition condition = new MemberSearchCondition();
+            condition.setAgeLoe(30);
+            condition.setAgeGoe(11);
+
+            PageRequest pageRequest = PageRequest.of(0, 3);
+
+            Page<Member> members = memberSupportRepository.applyPaginationComplex(condition, pageRequest);
+
+            assertThat(members).hasSize(2);
+            assertThat(members.getSize()).isEqualTo(3);
+            assertThat(members.getTotalElements()).isEqualTo(2);
+            assertThat(members).element(0).extracting("username").isEqualTo("member2");
+        }
+    }
 }
