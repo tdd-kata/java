@@ -44,6 +44,8 @@
 
 ![basic-flow-spring-data-jpa](images/basic-flow-spring-data-jpa.png)
 
+*출처: [Basic flow of Spring Data JPA - Terasoluna](https://terasolunaorg.github.io/guideline/5.1.0.RELEASE/en/ArchitectureInDetail/DataAccessJpa.html#about-spring-data-jpa)*
+
 # 공통 인터페이스 기능
 
 ## 순수 JPA 기반 리포지터리
