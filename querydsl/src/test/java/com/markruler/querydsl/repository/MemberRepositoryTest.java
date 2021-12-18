@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import java.util.List;
 
+import static com.markruler.querydsl.entity.QMember.member;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
@@ -128,6 +129,25 @@ class MemberRepositoryTest {
             assertThat(results.getContent()).extracting("username")
                     .containsExactly("member1", "member2", "member3");
         }
+    }
+
+    @Test
+    @DisplayName("QuerydslPredicateExecutor를 상속한 Repository는 Predicate를 인자로 전달할 수 있다")
+    void sut_querydsl_predicate_executor() {
+        /*
+            한계점
+            - 묵시적 조인은 가능하지만 Left JOIN이 불가능하다.
+            - 클라이언트가 Querydsl에 의존해야 한다. 서비스 클래스가 Querydsl이라는 구현 기술에 의존해야 한다.
+            - 복잡한 실무 환경에서 사용하기에는 한계가 명확하다.
+         */
+        Iterable<Member> results = memberRepository.findAll(
+                member.age.between(10, 40)
+                        .and(member.username.eq("member1"))
+        );
+
+        assertThat(results).hasSize(1);
+        assertThat(results).element(0).extracting("username").isEqualTo("member1");
+        assertThat(results).element(0).extracting("age").isEqualTo(10);
     }
 
 }
