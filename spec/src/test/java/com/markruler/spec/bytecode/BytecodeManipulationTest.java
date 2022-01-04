@@ -14,6 +14,7 @@ import static net.bytebuddy.matcher.ElementMatchers.named;
 import static org.assertj.core.api.Assertions.assertThat;
 
 // https://github.com/raphw/byte-buddy/blob/byte-buddy-1.12.6/byte-buddy-dep/src/test/java/net/bytebuddy/ByteBuddyTutorialExamplesTest.java
+@DisplayName("Bytecode Manipulation")
 class BytecodeManipulationTest {
 
     @Test
