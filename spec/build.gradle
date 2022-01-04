@@ -1,0 +1,23 @@
+plugins {
+    id 'java'
+}
+
+group 'com.markruler.spec'
+version '0.1.0'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // Bytecode manipulation
+    implementation 'net.bytebuddy:byte-buddy:1.12.6'
+
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
+    testImplementation 'org.assertj:assertj-core:3.21.0'
+}
+
+test {
+    useJUnitPlatform()
+}
