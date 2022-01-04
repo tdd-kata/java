@@ -44,6 +44,23 @@ class ReflectionTest {
     }
 
     @Test
+    @DisplayName("Class Type - public 필드에 접근하기")
+    void sut_class_type_public_modifier() throws NoSuchFieldException, IllegalAccessException {
+
+        final Class<Book> bookClass = Book.class;
+
+        final Field publicString = bookClass.getDeclaredField("publicString");
+        final int publicStringModifiers = publicString.getModifiers();
+        assertThat(Modifier.isPrivate(publicStringModifiers)).isFalse();
+        assertThat(Modifier.isStatic(publicStringModifiers)).isFalse();
+        assertThat(Modifier.isFinal(publicStringModifiers)).isFalse();
+
+        // static field가 아니기 때문에 Instance를 인자로 넘겨준다.
+        final Book book = new Book();
+        assertThat(publicString.get(book)).isEqualTo("public value");
+    }
+
+    @Test
     @DisplayName("Class Type - public이 아닌 메서드에 접근하기")
     void sut_class_type_methods() throws NoSuchMethodException {
 
