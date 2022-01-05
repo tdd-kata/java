@@ -1,5 +1,6 @@
 package com.markruler.spec.reflection;
 
+@MyAnnotation
 public class Book {
 
     private String privateString = "private";
@@ -8,7 +9,7 @@ public class Book {
 
     private static final String privateStaticFinal = "privateStaticFinal";
 
-    public String publicString = "public";
+    public String publicString = "public value";
 
     protected String protectedString = "protected";
 
