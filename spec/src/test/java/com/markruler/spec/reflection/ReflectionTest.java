@@ -30,7 +30,7 @@ class ReflectionTest {
 
         final Class<Book> bookClass = Book.class;
 
-        assertThat(bookClass.getDeclaredFields()).hasSize(5);
+        assertThat(bookClass.getDeclaredFields()).hasSize(6);
         assertThat(bookClass.getDeclaredField("privateStatic").toGenericString()).isEqualTo("private static java.lang.String com.markruler.spec.reflection.Book.privateStatic");
 
         final Field privateString = bookClass.getDeclaredField("privateStatic");
