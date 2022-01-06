@@ -1,6 +1,9 @@
 package com.markruler.spec.reflection.proxy;
 
 import com.markruler.spec.reflection.Book;
+import com.markruler.spec.reflection.proxy.BookService;
+import com.markruler.spec.reflection.proxy.BookServiceProxy;
+import com.markruler.spec.reflection.proxy.DefaultBookService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

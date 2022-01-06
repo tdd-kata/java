@@ -14,6 +14,11 @@ dependencies {
     implementation 'net.bytebuddy:byte-buddy:1.12.6'
     implementation 'cglib:cglib:3.3.0'
 
+    // annotationProcessor files("../annotation-processor-tmp/build/libs/annotation-processor-0.1.0.jar")
+    // implementation files("../annotation-processor-tmp/build/libs/annotation-processor-0.1.0.jar")
+    implementation project(':annotation')
+    annotationProcessor project(':annotation-processor')
+
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
     testImplementation 'org.assertj:assertj-core:3.21.0'

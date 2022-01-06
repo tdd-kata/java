@@ -1,5 +1,6 @@
 package com.markruler.spec.reflection;
 
+import com.markruler.spec.reflection.Book;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

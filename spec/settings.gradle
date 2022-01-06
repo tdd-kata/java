@@ -1,2 +1,5 @@
-rootProject.name = 'spec'
+rootProject.name = 'java-spec'
+include 'annotation-processor'
+include 'annotation'
+include 'manipulation'
 
