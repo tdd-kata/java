@@ -1,5 +1,6 @@
 package com.markruler.spec.bytecode;
 
+import com.markruler.spec.bytecode.AnyObject;
 import net.bytebuddy.ByteBuddy;
 import net.bytebuddy.dynamic.DynamicType;
 import net.bytebuddy.dynamic.loading.ClassLoadingStrategy;

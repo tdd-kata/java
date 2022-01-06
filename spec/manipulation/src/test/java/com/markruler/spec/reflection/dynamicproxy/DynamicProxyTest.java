@@ -1,6 +1,8 @@
 package com.markruler.spec.reflection.dynamicproxy;
 
 import com.markruler.spec.reflection.Book;
+import com.markruler.spec.reflection.dynamicproxy.BookService;
+import com.markruler.spec.reflection.dynamicproxy.DefaultBookService;
 import net.bytebuddy.ByteBuddy;
 import net.bytebuddy.dynamic.DynamicType;
 import net.bytebuddy.implementation.InvocationHandlerAdapter;
