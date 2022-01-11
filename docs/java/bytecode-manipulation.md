@@ -87,9 +87,9 @@ Spring 프레임워크를 사용할 경우 AOP를 사용한다.
 
 - 서브 클래스 기반의 프록시를 만들어야 하는 제약에서 벗어나기 위해서는 인터페이스를 만들자.
 
-![[Hands-On High Performance with Spring 5](https://www.amazon.com/Hands-High-Performance-Spring-applications/dp/1788838386)](images/dynamic-proxy.png)
+![dynamic-proxy](images/dynamic-proxy.png)
 
-[Hands-On High Performance with Spring 5](https://www.amazon.com/Hands-High-Performance-Spring-applications/dp/1788838386)
+*[Hands-On High Performance with Spring 5](https://www.amazon.com/Hands-High-Performance-Spring-applications/dp/1788838386)*
 
 기본적으로 Spring은 대상 오브젝트(target object)가 interface를 implement했다면 JDK dynamic proxy를 사용한다.
 대상 오브젝트가 아무런 interface도 implement하지 않았다면 Spring은 CGLIB 라이브러리를 사용해서 프록시 객체를 만든다.
@@ -97,25 +97,26 @@ Spring 프레임워크를 사용할 경우 AOP를 사용한다.
 ### JDK Dynamic Proxy
 
 대상 오브젝트의 인터페이스를 구현한 프록시 객체를 만든다.
-JDK의 `[java.lang.reflect.Proxy#newProxyInstance()](https://docs.oracle.com/javase/8/docs/api/java/lang/reflect/Proxy.html)` 를 사용한다. `com.sun.proxy.$Proxy` 접두사가 붙은 클래스가 만들어진다.
+JDK의 [java.lang.reflect.Proxy#newProxyInstance()](https://docs.oracle.com/javase/8/docs/api/java/lang/reflect/Proxy.html) 를 사용한다. `com.sun.proxy.$Proxy` 접두사가 붙은 클래스가 만들어진다.
 인터페이스를 구현하지 않은 클래스는 JDK Proxy 객체를 만들 수 없다.
 
 ![Pro Spring 5](images/jdk-proxy.png)
 
-*스프링 핵심 원리 (고급편) - 김영한*
-*Pro Spring 5, `*
+*Pro Spring 5*
 
 - 클래스 의존 관계
 
-![스프링 핵심 원리 (고급편) - 김영한](images/implement-proxy-class.png)
+![implement-proxy-class](images/implement-proxy-class.png)
 
-![스프링 핵심 원리 (고급편) - 김영한](images/jdk-proxy-class.png)
+![jdk-proxy-class](images/jdk-proxy-class.png)
 
 - 런타임 객체 의존 관계
 
-![스프링 핵심 원리 (고급편) - 김영한](images/implement-proxy-runtime.png)
+![implement-proxy-runtime](images/implement-proxy-runtime.png)
 
-![스프링 핵심 원리 (고급편) - 김영한](images/jdk-proxy-runtime.png)
+![jdk-proxy-runtime](images/jdk-proxy-runtime.png)
+
+*스프링 핵심 원리 (고급편) - 김영한*
 
 ### CGLib Proxy
 
@@ -127,19 +128,17 @@ CGLib의 [Enhancer](https://docs.spring.io/spring-framework/docs/5.3.13/javadoc-
 
 ![Pro Spring 5](images/cglib-proxy.png)
 
-Pro Spring 5
+*Pro Spring 5*
 
 - 클래스 의존 관계
 
-![스프링 핵심 원리 (고급편) - 김영한](images/cglib-proxy-class.png)
-
-스프링 핵심 원리 (고급편) - 김영한
+![cglib-proxy-class](images/cglib-proxy-class.png)
 
 - 런타임 객체 의존 관계
 
-![스프링 핵심 원리 (고급편) - 김영한](images/cglib-proxy-runtime.png)
+![cglib-proxy-runtime](images/cglib-proxy-runtime.png)
 
-스프링 핵심 원리 (고급편) - 김영한
+*출처: 스프링 핵심 원리 (고급편) - 김영한*
 
 ### Spring의 ProxyFactory
 
@@ -147,16 +146,14 @@ Pro Spring 5
 만약 인터페이스를 구현했다면 JDK Dynamic Proxy를 생성하고,
 구체 클래스(Concrete Class)라면 CGLib Proxy를 생성할 수 있다.
 
-![스프링 핵심 원리 (고급편) - 김영한](images/spring-proxy-factory.png)
-
-스프링 핵심 원리 (고급편) - 김영한
+![spring-proxy-factory](images/spring-proxy-factory.png)
 
 부가 기능을 구현하기 위해서는 JDK Dynamic Proxy에서 필요한 `InvocationHandler`와
 CGLib에서 필요한 `MethodInterceptor`가 호출하는 `Advice`만 만들면 된다.
 
-![스프링 핵심 원리 (고급편) - 김영한](images/spring-advice.png)
+![spring-advice](images/spring-advice.png)
 
-스프링 핵심 원리 (고급편) - 김영한
+*출처: 스프링 핵심 원리 (고급편) - 김영한*
 
 # Annotation Processor
 
