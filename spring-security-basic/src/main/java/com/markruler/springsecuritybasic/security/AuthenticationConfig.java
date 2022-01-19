@@ -1,12 +1,9 @@
 package com.markruler.springsecuritybasic.security;
 
-import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 import javax.servlet.FilterChain;
@@ -22,15 +19,15 @@ import java.util.logging.Logger;
  *
  * @see WebSecurityConfigurerAdapter#getHttp()
  */
-@Configuration
-@EnableWebSecurity
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
+// @org.springframework.context.annotation.Configuration
+// @EnableWebSecurity
+public class AuthenticationConfig extends WebSecurityConfigurerAdapter {
 
-    Logger log = Logger.getLogger(SecurityConfig.class.getName());
+    Logger log = Logger.getLogger(AuthenticationConfig.class.getName());
 
     private final UserDetailsService userDetailsService;
 
-    public SecurityConfig(UserDetailsService userDetailsService) {
+    public AuthenticationConfig(UserDetailsService userDetailsService) {
         this.userDetailsService = userDetailsService;
     }
 
@@ -43,20 +40,23 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
          */
         // http.httpBasic();
 
+        /**
+         * @see org.springframework.security.web.authentication.AnonymousAuthenticationFilter#doFilter(ServletRequest, ServletResponse, FilterChain)
+         */
         http.authorizeRequests()
-                /**
-                 * @see org.springframework.security.web.authentication.AnonymousAuthenticationFilter#doFilter(ServletRequest, ServletResponse, FilterChain)
-                 */
+                .antMatchers("/user").hasRole("USER")
+                .antMatchers("/admin/pay").hasRole("ADMIN")
+                .antMatchers("/admin/**").access("hasRole('ADMIN') or hasRole('SYS')")
                 .anyRequest().authenticated()
         ;
 
         http.formLogin()
-                // .loginPage("/loginPage") // 사용자 정의 로그인 페이지
+                // .loginPage("/loginPage") // 사용자 정의 로그인 페이지 (default: /login)
                 .defaultSuccessUrl("/") // 로그인 성공 후 이동
-                .failureUrl("/login?error=true") // 로그인 실패 후 이동
+                // .failureUrl("/login?error=true") // 로그인 실패 후 이동 (default: /login?error)
                 .usernameParameter("userId") // username 파라미터명
                 .passwordParameter("passWd") // password 파라미터명
-                .loginProcessingUrl("/login") // 로그인 Form Action URL
+                .loginProcessingUrl("/authentication") // 로그인 Form Action URL
                 .successHandler((request, response, authentication) -> {
                     /**
                      * 로그인 성공 후 핸들러
@@ -74,8 +74,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                      * @see org.springframework.security.web.authentication.AuthenticationFilter#doFilterInternal(HttpServletRequest, HttpServletResponse, FilterChain)
                      * @see org.springframework.security.web.authentication.AuthenticationFilter#unsuccessfulAuthentication(HttpServletRequest, HttpServletResponse, AuthenticationException)
                      */
-                    log.info("exception : " + exception.getMessage());
-                    response.sendRedirect("/login");
+                    log.info("Login Fail : " + exception.toString());
+                    response.sendRedirect("/login?error");
                 })
         // .permitAll()
         ;
@@ -134,7 +134,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                  */
                 .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
                 .maximumSessions(1) // 최대 허용 세션 수, -1 (무제한 세션 허용)
-                .maxSessionsPreventsLogin(true) // 동시 로그인 차단, false: 기존 세션을 만료시킨다(default)
+                // .maxSessionsPreventsLogin(true) // 동시 로그인 차단, false: 기존 세션을 만료시킨다(default)
                 // .invalidSessionUrl("/invalid") // 세션이 유효하지 않을 때
                 .expiredUrl("/expired") // 세션이 만료된 경우 이동할 페이지
         ;

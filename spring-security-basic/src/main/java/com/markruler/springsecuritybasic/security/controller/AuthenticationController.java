@@ -12,8 +12,17 @@ public class AuthenticationController {
     }
 
     @GetMapping("/loginPage")
-    public String login() {
+    public String loginPage() {
         return "loginPage";
     }
 
+    @GetMapping("/login")
+    public String login() {
+        return "login";
+    }
+
+    @GetMapping("/denied")
+    public String denied() {
+        return "Access is denied";
+    }
 }
