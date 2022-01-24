@@ -1,7 +1,5 @@
 package com.markruler.demo.interceptor;
 
-import com.markruler.demo.filter.MyHttpServletRequestWrapper;
-import com.markruler.demo.util.HttpServletRequestUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -16,15 +14,17 @@ public class GeneralInterceptor implements HandlerInterceptor {
 
     private static final Logger log = LoggerFactory.getLogger(GeneralInterceptor.class.getName());
 
+    /**
+     * @see <a href="https://meetup.toast.com/posts/44">Spring Interceptor(혹은 Servlet Filter)에서 POST 방식으로 전달된 JSON 데이터 처리하기</a>
+     */
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
             throws Exception {
-        final MyHttpServletRequestWrapper wrappedRequest = new MyHttpServletRequestWrapper(request);
         log.info("Pre handle method has been called");
-        log.info("User IP address: {}", HttpServletRequestUtil.getRemoteAddress(wrappedRequest));
-        log.info("Request Params: {}", HttpServletRequestUtil.getRequestParams(wrappedRequest));
-        log.info("Request Payload: {}", HttpServletRequestUtil.getPayLoad(wrappedRequest));
-        log.info("Exiting Pre handle method");
+
+        /**
+         * @see org.springframework.web.servlet.DispatcherServlet#doDispatch(HttpServletRequest, HttpServletResponse)
+         */
         return true;
     }
 
