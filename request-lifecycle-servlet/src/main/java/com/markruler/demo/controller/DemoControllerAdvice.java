@@ -1,5 +1,6 @@
 package com.markruler.demo.controller;
 
+import com.markruler.demo.fixtures.ErrorResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -15,9 +16,9 @@ public class DemoControllerAdvice {
 
     @ExceptionHandler({HttpClientErrorException.class})
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public String handleNotFound(HttpClientErrorException ex) {
+    public ErrorResponse handleNotFound(HttpClientErrorException ex) {
         // log.error(ex.toString(), ex);
         log.error(ex.toString());
-        return ex.toString();
+        return new ErrorResponse(ex.getLocalizedMessage());
     }
 }
