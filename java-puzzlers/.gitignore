@@ -1,0 +1,7 @@
+*.class
+*.ini
+build/
+out/
+.idea/
+.dcignore
+.DS_Store
