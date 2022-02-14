@@ -1,5 +1,6 @@
-package com.markruler;
+package com.markruler.plugin;
 
+import com.markruler.util.StringUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -16,16 +17,8 @@ class AppTest {
 
         @Test
         void shouldAnswerWithTrue() {
-
             String[] field = {"a", "b", "c", "d", "e"};
-
-            //concatenates strings using + in a loop
-            String s = "";
-            for (String value : field) {
-                s = s + value;
-            }
-
-            assertThat(s).isEqualTo("abcde");
+            assertThat(StringUtils.concatenate(field)).isEqualTo("abcde");
         }
     }
 }

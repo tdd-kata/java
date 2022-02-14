@@ -6,8 +6,14 @@
 
     <groupId>com.markruler</groupId>
     <artifactId>maven-plugins</artifactId>
-    <version>0.1.0</version>
     <name>maven-plugins</name>
+    <packaging>pom</packaging>
+    <version>0.1.0</version>
+    <modules>
+        <module>util</module>
+        <module>plugin</module>
+        <module>error</module>
+    </modules>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -30,38 +36,7 @@
             <version>3.21.0</version>
             <scope>test</scope>
         </dependency>
-
     </dependencies>
-
-    <reporting>
-        <!-- mvn site:site -->
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-project-info-reports-plugin</artifactId>
-                <version>2.6</version>
-                <reportSets>
-                    <reportSet>
-                        <reports>
-                            <report>index</report>
-                        </reports>
-                    </reportSet>
-                </reportSets>
-            </plugin>
-            <!-- JavaDoc -->
-            <!-- https://maven.apache.org/plugins/maven-javadoc-plugin/ -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.3.1</version>
-                <configuration>
-                    <!-- <stylesheetfile>${basedir}/src/main/javadoc/stylesheet.css</stylesheetfile> -->
-                    <show>package</show>
-                    <sourcepath>${basedir}/src/main/java/com/markruler</sourcepath>
-                </configuration>
-            </plugin>
-        </plugins>
-    </reporting>
 
     <build>
         <plugins>
@@ -99,6 +74,32 @@
             <plugin>
                 <artifactId>maven-site-plugin</artifactId>
                 <version>3.7.1</version>
+            </plugin>
+
+            <!-- JavaDoc -->
+            <!-- https://maven.apache.org/plugins/maven-javadoc-plugin/ -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.3.2</version>
+                <configuration>
+                    <!-- https://maven.apache.org/plugins/maven-javadoc-plugin/javadoc-mojo.html#show -->
+                    <show>public</show>
+                    <!--<reportOutputDirectory>${project.reporting.outputDirectory}</reportOutputDirectory>-->
+                    <reportOutputDirectory>${basedir}/target</reportOutputDirectory>
+                    <destDir>docs</destDir>
+                    <!-- <stylesheetfile>${basedir}/src/main/javadoc/stylesheet.css</stylesheetfile> -->
+                </configuration>
+                <executions>
+                    <!-- mvn javadoc:aggregate -->
+                    <!-- package마다 package-info.java 파일을 저장한다. -->
+                    <execution>
+                        <id>aggregate</id>
+                        <goals>
+                            <goal>aggregate</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
 
             <!-- SpotBugs -->
