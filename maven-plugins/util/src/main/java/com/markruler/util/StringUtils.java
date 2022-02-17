@@ -9,6 +9,10 @@ import com.markruler.error.StringConcatException;
  */
 public class StringUtils {
 
+    private StringUtils() {
+        throw new IllegalStateException("Utility class");
+    }
+
     /**
      * 문자열을 연결합니다.
      *

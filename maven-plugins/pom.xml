@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
@@ -9,6 +10,7 @@
     <name>maven-plugins</name>
     <packaging>pom</packaging>
     <version>0.1.0</version>
+
     <modules>
         <module>util</module>
         <module>plugin</module>
@@ -19,6 +21,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
+        <root.directory>${basedir}</root.directory>
     </properties>
 
     <dependencies>
@@ -38,6 +41,9 @@
         </dependency>
     </dependencies>
 
+    <!-- mvn help:describe -Dcmd=help:describe -->
+    <!-- mvn help:describe -Dplugin=org.apache.maven.plugins:maven-help-plugin -->
+    <!-- mvn help:describe -DgroupId=org.apache.maven.plugins -DartifactId=maven-help-plugin -->
     <build>
         <plugins>
             <!-- clean lifecycle, see https://maven.apache.org/ref/current/maven-core/lifecycles.html#clean_Lifecycle -->
@@ -104,6 +110,9 @@
 
             <!-- SpotBugs -->
             <!-- Findbugs is no longer maintained. -->
+            <!-- mvn compile spotbugs:check  -->
+            <!-- mvn compile spotbugs:gui  -->
+            <!-- https://find-sec-bugs.github.io/bugs.htm -->
             <plugin>
                 <groupId>com.github.spotbugs</groupId>
                 <artifactId>spotbugs-maven-plugin</artifactId>
@@ -116,6 +125,40 @@
                         <version>4.5.3</version>
                     </dependency>
                 </dependencies>
+                <configuration>
+                    <!-- https://spotbugs.readthedocs.io/en/latest/effort.html -->
+                    <effort>max</effort>
+                    <!-- https://spotbugs.readthedocs.io/en/latest/ant.html?highlight=threshold -->
+                    <threshold>low</threshold>
+                    <failOnError>false</failOnError>
+                    <debug>false</debug>
+                    <maxHeap>1024</maxHeap>
+
+                    <!-- This file format is read by Jenkins. -->
+                    <xmlOutput>true</xmlOutput>
+                    <xmlOutputDirectory>target/spotbugs-reports</xmlOutputDirectory>
+
+                    <!-- https://github.com/find-sec-bugs/find-sec-bugs/wiki/Maven-configuration -->
+                    <!-- https://find-sec-bugs.github.io/bugs.htm -->
+                    <includeFilterFile>${root.directory}/spotbugs-security-include.xml</includeFilterFile>
+                    <excludeFilterFile>${root.directory}/spotbugs-security-exclude.xml</excludeFilterFile>
+                    <plugins>
+                        <plugin>
+                            <groupId>com.h3xstream.findsecbugs</groupId>
+                            <artifactId>findsecbugs-plugin</artifactId>
+                            <version>1.10.1</version>
+                        </plugin>
+                    </plugins>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>spotbugs</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
 
             <!-- Checkstyle -->
@@ -137,7 +180,7 @@
                 </dependencies>
                 <executions>
                     <execution>
-                        <id>validate</id>
+                        <id>checkstyle</id>
                         <phase>validate</phase>
                         <goals>
                             <goal>check</goal>
@@ -147,6 +190,7 @@
             </plugin>
 
             <!-- JaCoCo -->
+            <!-- mvn help:describe -Dplugin=org.jacoco:jacoco-maven-plugin -->
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
@@ -184,8 +228,7 @@
                                         <limit>
                                             <counter>BRANCH</counter>
                                             <value>COVEREDRATIO</value>
-                                            <!--<minimum>0.01</minimum>-->
-                                            <minimum>0.00</minimum>
+                                            <minimum>0.50</minimum>
                                         </limit>
                                     </limits>
                                 </rule>

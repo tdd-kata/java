@@ -16,7 +16,8 @@ class AppTest {
         private String ip = "127.0.0.1";
 
         @Test
-        void shouldAnswerWithTrue() {
+        void shouldAnswerWithTrue()
+        {
             String[] field = {"a", "b", "c", "d", "e"};
             assertThat(StringUtils.concatenate(field)).isEqualTo("abcde");
         }
