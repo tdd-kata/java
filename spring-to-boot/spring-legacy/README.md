@@ -32,16 +32,6 @@ mvn clean install
 cp target/ROOT.war ${TOMCAT_HOME}/webapps
 ```
 
-- Database를 실행한다.
-
-```bash
-# 실행
-sudo docker-compose up -d
-
-# 중단
-sudo docker-compose down
-```
-
 - Tomcat을 실행한다.
   `startup.sh`과 `shutdown.sh` 스크립트는 결국 `catalina.sh`를 실행하기 때문에
   입맛에 맞게 사용하고 싶다면 `catalina.sh`를 실행해도 된다.
