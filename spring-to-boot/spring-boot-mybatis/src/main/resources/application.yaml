@@ -1,0 +1,25 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://127.0.0.1:5432/test?charSet=utf-8
+    username: mark
+    password: ruler
+  mvc:
+    view:
+      prefix: /WEB-INF/views/
+      suffix: .jsp
+
+mybatis:
+  mapper-locations: mappers/**/*.xml
+  configuration:
+    map-underscore-to-camel-case: true
+    jdbc-type-for-null: NULL
+    use-generated-keys: true
+
+server:
+  servlet:
+    encoding:
+      force-response: true
+
+logging:
+  level:
+    com.markruler.boot.users.dao: DEBUG
