@@ -1,18 +1,18 @@
 package com.markruler.boot.users.application;
 
-import com.markruler.boot.users.persistence.UserDao;
+import com.markruler.boot.users.persistence.UserMapper;
 import org.springframework.stereotype.Service;
 
 @Service
 public class UserService {
 
-    private final UserDao userDao;
+    private final UserMapper userMapper;
 
-    public UserService(UserDao userDao) {
-        this.userDao = userDao;
+    public UserService(UserMapper userMapper) {
+        this.userMapper = userMapper;
     }
 
     public String getUser() {
-        return userDao.getUser();
+        return userMapper.getUser();
     }
 }

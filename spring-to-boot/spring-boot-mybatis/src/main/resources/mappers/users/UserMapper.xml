@@ -2,7 +2,7 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.markruler.boot.users.persistence.UserDao">
+<mapper namespace="com.markruler.boot.users.persistence.UserMapper">
 
     <select id="getUser" resultType="string">
         select username

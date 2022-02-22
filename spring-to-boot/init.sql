@@ -5,3 +5,4 @@ create table IF NOT EXISTS users
 
 insert into users (username)
 values ('markruler');
+
