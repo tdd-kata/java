@@ -7,6 +7,8 @@ spring:
     view:
       prefix: /WEB-INF/views/
       suffix: .jsp
+  session:
+    store-type: redis
 
 mybatis:
   mapper-locations: mappers/**/*.xml
@@ -22,4 +24,7 @@ server:
 
 logging:
   level:
-    com.markruler.boot.users.dao: DEBUG
+    com.markruler.boot.users.dao: debug
+    org:
+      springframework:
+        session: debug
