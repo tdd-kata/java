@@ -57,7 +57,11 @@
     </appender>
 
     <!--<logger name="org.springframework" leveel="DEBUG" additivity="true" />-->
-    <logger name="org.springframework">
+    <logger name="org.springframework.web">
+        <level value="DEBUG"/>
+    </logger>
+
+    <logger name="org.springframework.security">
         <level value="DEBUG"/>
     </logger>
 

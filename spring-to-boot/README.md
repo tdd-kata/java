@@ -1,6 +1,8 @@
 # Spring Framework
 
-## Test Database
+## 테스트 환경 세팅
+
+### docker-compose 사용
 
 ```bash
 # 실행
@@ -8,6 +10,19 @@ sudo docker-compose up -d
 
 # 중단
 sudo docker-compose down
+```
+
+### docker 사용
+
+```bash
+sudo docker run --name rdb-local -d --restart=always -p 5432:5432 \
+  -e POSTGRES_DB=test \
+  -e POSTGRES_USER=mark \
+  -e POSTGRES_PASSWORD=ruler \
+  -v $(pwd)/init.sql:/docker-entrypoint-initdb.d/init.sql \
+  postgres:9.4-alpine
+
+sudo docker run --name redis-local -d --restart=always -p 6379:6379 redis:5.0.13
 ```
 
 ## Changelogs

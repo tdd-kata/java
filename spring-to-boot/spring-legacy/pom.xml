@@ -11,7 +11,13 @@
 
     <properties>
         <java-version>1.8</java-version>
-        <spring.version>3.2.18.RELEASE</spring.version>
+        <!-- org.springframework.core.env.Environment org.springframework.beans.factory.xml.XmlReaderContext.getEnvironment() -->
+        <!--<spring.version>3.2.18.RELEASE</spring.version>-->
+        <spring.version>5.2.0.RELEASE</spring.version>
+        <spring.security.version>5.2.0.RELEASE</spring.security.version>
+        <lettuce.version>5.2.0.RELEASE</lettuce.version>
+        <spring.session.version>2.2.1.RELEASE</spring.session.version>
+
         <slf4j.version>1.7.16</slf4j.version>
 
         <hikaricp.version>3.3.1</hikaricp.version>
@@ -46,15 +52,52 @@
             <artifactId>spring-webmvc</artifactId>
             <version>${spring.version}</version>
         </dependency>
+
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-aop</artifactId>
             <version>${spring.version}</version>
         </dependency>
+
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-jdbc</artifactId>
             <version>${spring.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-web</artifactId>
+            <version>${spring.security.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-config</artifactId>
+            <version>${spring.security.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-taglibs</artifactId>
+            <version>${spring.security.version}</version>
+        </dependency>
+
+        <!-- Session -->
+        <dependency>
+            <groupId>org.springframework.session</groupId>
+            <artifactId>spring-session-data-redis</artifactId>
+            <version>${spring.session.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.lettuce</groupId>
+            <artifactId>lettuce-core</artifactId>
+            <version>${lettuce.version}</version>
+        </dependency>
+
+        <!-- Object Mapper -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.9.7</version>
         </dependency>
 
         <!-- Database -->

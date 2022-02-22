@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:security="http://www.springframework.org/schema/security"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xsi:schemaLocation="http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-5.2.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <!-- org.springframework.security:spring-security-web:5.2.0.RELEASE -->
+    <!--create-session="stateless"-->
+    <security:http auto-config="false"
+                   use-expressions="true"
+                   access-decision-manager-ref="accessDecisionManager">
+
+        <security:intercept-url pattern="/login" access="permitAll()"/>
+        <security:intercept-url pattern="/loginProcess" access="permitAll()"/>
+        <security:intercept-url pattern="/**" access="isAuthenticated()"/>
+
+        <security:form-login
+                login-page="/login"
+                login-processing-url="/loginProcess"
+                authentication-failure-handler-ref="loginError"
+                authentication-success-handler-ref="defaultAuthenticationSuccessHandler"
+                username-parameter="username"
+                password-parameter="password"
+                default-target-url="/"
+                always-use-default-target="true"/>
+
+        <security:logout logout-url="/logoutProcess"
+                         invalidate-session="true"
+                         delete-cookies="JSESSIONID"
+                         logout-success-url="/login"/>
+
+        <security:session-management>
+            <security:concurrency-control max-sessions="1"
+                                          session-registry-ref="sessionRegistry"
+                                          expired-url="/logoutProcess"/>
+        </security:session-management>
+
+        <security:csrf disabled="true"/>
+
+        <security:headers>
+            <security:frame-options disabled="true"/>
+        </security:headers>
+
+        <security:remember-me services-ref="rememberMeServices"/>
+    </security:http>
+
+    <!-- https://docs.spring.io/spring-session/docs/2.2.x/reference/html/spring-security.html -->
+    <!--<bean id="sessionRegistry"-->
+    <!--      class="org.springframework.security.core.session.SessionRegistryImpl"/>-->
+    <bean id="sessionRegistry"
+          class="org.springframework.session.security.SpringSessionBackedSessionRegistry">
+        <!-- org.springframework.session.data.redis.config.annotation.web.http.RedisHttpSessionConfiguration -->
+        <constructor-arg ref="sessionRepository"/>
+        <!-- FindByIndexNameSessionRepository.PRINCIPAL_NAME_INDEX_NAME -->
+        <!-- RedisIndexedSessionRepository -->
+    </bean>
+
+    <bean id="rememberMeServices"
+          class="org.springframework.session.security.web.authentication.SpringSessionRememberMeServices"
+          p:alwaysRemember="true"/>
+
+    <bean id="accessDecisionManager"
+          class="org.springframework.security.access.vote.AffirmativeBased">
+        <constructor-arg>
+            <list>
+                <bean class="org.springframework.security.access.vote.RoleVoter">
+                    <property name="rolePrefix" value=""/>
+                </bean>
+                <bean class="org.springframework.security.access.vote.AuthenticatedVoter"/>
+                <bean class="org.springframework.security.web.access.expression.WebExpressionVoter"/>
+            </list>
+        </constructor-arg>
+    </bean>
+
+    <security:authentication-manager alias="authenticationManager">
+        <security:authentication-provider ref="defaultAuthenticationProvider"/>
+        <security:authentication-provider user-service-ref="loginUserDetailService">
+            <security:password-encoder ref="passwordEncoder"/>
+        </security:authentication-provider>
+    </security:authentication-manager>
+
+    <bean id="loginUserDetailService"
+          class="com.markruler.legacy.security.LoginUserDetailService"/>
+
+    <bean id="passwordEncoder"
+          class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder">
+        <constructor-arg name="strength" value="31"/>
+    </bean>
+
+    <bean id="defaultAuthenticationProvider"
+          class="org.springframework.security.authentication.dao.DaoAuthenticationProvider">
+        <property name="userDetailsService" ref="loginUserDetailService"/>
+        <property name="passwordEncoder" ref="passwordEncoder"/>
+    </bean>
+
+    <bean id="defaultAuthenticationSuccessHandler"
+          class="org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler">
+        <property name="useReferer" value="false"/>
+        <property name="defaultTargetUrl" value="/"/>
+    </bean>
+
+    <bean id="loginError"
+          class="org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler">
+        <property name="defaultFailureUrl" value="/login"/>
+    </bean>
+
+</beans>
