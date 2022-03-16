@@ -5,10 +5,10 @@
 <html lang="en">
 <head>
     <title>Welcome page</title>
-    <%--<link rel="stylesheet" type="text/css" href="resources/css/index.css"/>--%>
+    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/css/index.css"/>
 </head>
 <body>
-Hello, World!<br>
+<div id="greeting">Hello, World!</div>
 <a href="/users">users</a><br>
 <a href="/unknown">unknown page</a>
 </body>
