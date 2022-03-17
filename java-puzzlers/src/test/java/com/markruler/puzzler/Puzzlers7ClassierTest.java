@@ -21,7 +21,6 @@ class Puzzlers7ClassierTest {
             private String className = "Derived";
         }
 
-        // TODO: 내용 덧붙이기
         @Test
         @DisplayName("하이딩을 사용하지 마세요")
         void avoid_hiding() {
