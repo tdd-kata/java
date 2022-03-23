@@ -1,5 +1,6 @@
 package com.markruler.puzzler;
 
+import com.markruler.puzzler.fixture.Counter;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -45,6 +46,43 @@ class Puzzlers5ClassyTest {
             // 하지만 이렇게 오버로딩하는 것은 조금 이상합니다.
             // 일반적으로 API를 설계한다면 사용자가 이런 방식으로 자료형 변환을 하지 않아도 사용할 수 있게 설계하세요.
             // 기능이 다른 메서드라면 오버로딩하지 말고 다른 이름을 사용하기 바랍니다.
+        }
+    }
+
+    @Nested
+    @DisplayName("Puzzle 47: 착한 나의 강아지와 고양이")
+    class Describe_Well_Dog_My_Cats {
+
+        class Dog extends Counter {
+            public Dog() {
+            }
+
+            public void woof() {
+                increment();
+            }
+        }
+
+        class Cat extends Counter {
+            public Cat() {
+            }
+
+            public void meow() {
+                increment();
+            }
+        }
+
+        @Test
+        @DisplayName("is-a 관계라면 상속을, has-a 관계라면 합성을 사용하세요")
+        void favor_composition_over_inheritance() {
+            Dog[] dogs = {new Dog(), new Dog()};
+            for (Dog dog : dogs) dog.woof();
+
+            Cat[] cats = {new Cat(), new Cat(), new Cat()};
+            for (Cat cat : cats) cat.meow();
+
+            // 정적 변수는 선언된 클래스와 상속받은 모든 클래스가 공유합니다.
+            assertThat(Dog.getCount()).isEqualTo(5);
+            assertThat(Cat.getCount()).isEqualTo(5);
         }
     }
 

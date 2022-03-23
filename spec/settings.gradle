@@ -2,4 +2,4 @@ rootProject.name = 'java-spec'
 include 'annotation-processor'
 include 'annotation'
 include 'manipulation'
-
+include 'api'
