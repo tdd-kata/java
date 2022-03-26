@@ -1,9 +1,6 @@
 package org.xpdojo.spring;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,15 +11,16 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 
 @RestController
 public class MultipartController {
 
-    Logger log = LoggerFactory.getLogger(this.getClass());
+    private final MultipartService multipartService;
+
+    public MultipartController(MultipartService multipartService) {
+        this.multipartService = multipartService;
+    }
 
     /**
      * curl을 사용해서 테스트하는 경우
@@ -46,18 +44,7 @@ public class MultipartController {
     @PostMapping(path = "/upload")
     public String uploadFile(@RequestParam("file") MultipartFile file)
             throws IOException {
-
-        if (file.isEmpty()) {
-            throw new FileUploadException("File is empty.");
-        }
-
-        log.info("[file] original file name - {}", file.getOriginalFilename());
-        log.info("[file] size - {}", file.getSize());
-
-        final String fileContent = readFileToString(file.getInputStream());
-        log.info("[file] content - {}", fileContent);
-
-        return fileContent;
+        return multipartService.upload(file);
     }
 
     /**
@@ -77,25 +64,7 @@ public class MultipartController {
     @GetMapping(path = "/download/{fileName:.+}"/*, produces = MediaType.IMAGE_JPEG_VALUE*/)
     public byte[] downloadFile(@PathVariable String fileName)
             throws IOException {
-        final InputStream in = getClass().getResourceAsStream(fileName);
-        // return new InputStreamResource(in);
-        return IOUtils.toByteArray(in);
-    }
-
-    private String readFileToString(InputStream inputStream)
-            throws IOException {
-        StringBuilder resultStringBuilder = new StringBuilder();
-
-        try (
-                InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
-                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-        ) {
-            String line;
-            while ((line = bufferedReader.readLine()) != null) {
-                resultStringBuilder.append(line).append("\n");
-            }
-        }
-        return resultStringBuilder.toString();
+        return multipartService.download(fileName);
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)

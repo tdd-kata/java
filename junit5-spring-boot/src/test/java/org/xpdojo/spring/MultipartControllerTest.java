@@ -1,15 +1,25 @@
 package org.xpdojo.spring;
 
+import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.web.multipart.MultipartFile;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.containsString;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -20,6 +30,9 @@ class MultipartControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
+
+    @MockBean
+    private MultipartService multipartService;
 
     @Nested
     @DisplayName("POST /upload")
@@ -42,6 +55,9 @@ class MultipartControllerTest {
                                 fileContent.getBytes()
                         );
 
+                given(multipartService.upload(any(MultipartFile.class)))
+                        .willReturn(fileContent);
+
                 mockMvc.perform(multipart("/upload").file(file))
                         .andExpect(status().isOk())
                         .andExpect(content().string(containsString(fileContent)))
@@ -53,10 +69,15 @@ class MultipartControllerTest {
         @Nested
         @DisplayName("file은 있지만 내용이 없을 경우")
         class Context_with_empty_file {
+            final String errorMessage = "File is empty.";
 
             @Test
             @DisplayName("400 BAD REQUEST 상태 코드를 응답한다")
-            void whenFileUploaded_thenVerifyStatus2() throws Exception {
+            void should_respond_400_bad_request() throws Exception {
+
+                given(multipartService.upload(any(MultipartFile.class)))
+                        .willThrow(new FileUploadException(errorMessage));
+
                 final MockMultipartFile file =
                         new MockMultipartFile(
                                 "file",
@@ -67,7 +88,7 @@ class MultipartControllerTest {
 
                 mockMvc.perform(multipart("/upload").file(file))
                         .andExpect(status().isBadRequest())
-                        .andExpect(content().string(containsString("File is empty.")))
+                        .andExpect(content().string(containsString(errorMessage)))
                 ;
             }
         }
@@ -78,11 +99,39 @@ class MultipartControllerTest {
 
             @Test
             @DisplayName("400 BAD REQUEST 상태 코드를 응답한다")
-            void whenFileUploaded_thenVerifyStatus3() throws Exception {
+            void should_respond_400_bad_request() throws Exception {
                 mockMvc.perform(multipart("/upload"))
                         .andExpect(status().isBadRequest())
                 ;
             }
         }
     }
+
+    @Nested
+    @DisplayName("GET /download/{fileName}")
+    class Describe_download {
+
+        @Test
+        @DisplayName("파일을 응답한다")
+        void should_respond_file() throws Exception {
+            final String fileName = "filename.txt";
+
+            given(multipartService.download(fileName))
+                    .willReturn(new byte[1]);
+
+            MvcResult mvcResult = mockMvc.perform(
+                            get("/download/{fileName}", fileName)
+                                    .contentType(MediaType.APPLICATION_OCTET_STREAM))
+                    .andExpect(status().isOk())
+                    .andReturn()
+            ;
+
+            assertThat(mvcResult.getResponse().getContentAsByteArray()).isNotEmpty();
+
+            then(multipartService)
+                    .should()
+                    .download(anyString());
+        }
+    }
+
 }
