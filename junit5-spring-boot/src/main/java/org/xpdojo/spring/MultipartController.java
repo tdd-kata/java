@@ -1,10 +1,13 @@
 package org.xpdojo.spring;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -55,6 +58,28 @@ public class MultipartController {
         log.info("[file] content - {}", fileContent);
 
         return fileContent;
+    }
+
+    /**
+     * class 파일을 찾아서 응답한다.
+     *
+     * <pre>
+     * curl --verbose --request GET host.docker.internal:8080/download/Application.class -O
+     * </pre>
+     *
+     * @param fileName class 파일명
+     * @return 파일 데이터
+     * @throws IOException 파일을 찾을 수 없을 경우
+     * @see <a href="https://developer.mozilla.org/ko/docs/Web/HTTP/Basics_of_HTTP/MIME_types">MIME 타입</a>
+     * @see <a href="https://developer.mozilla.org/ko/docs/Web/HTTP/Basics_of_HTTP/MIME_types/Common_types">MIME 타입의 전체 목록</a>
+     * @see <a href="https://www.iana.org/assignments/media-types/media-types.xhtml">Media Types</a>
+     */
+    @GetMapping(path = "/download/{fileName:.+}"/*, produces = MediaType.IMAGE_JPEG_VALUE*/)
+    public byte[] downloadFile(@PathVariable String fileName)
+            throws IOException {
+        final InputStream in = getClass().getResourceAsStream(fileName);
+        // return new InputStreamResource(in);
+        return IOUtils.toByteArray(in);
     }
 
     private String readFileToString(InputStream inputStream)
