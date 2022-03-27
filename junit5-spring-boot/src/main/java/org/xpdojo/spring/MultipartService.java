@@ -8,9 +8,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 
 @Service
 public class MultipartService {
@@ -31,10 +33,24 @@ public class MultipartService {
         return fileContent;
     }
 
+    public byte[] uploadBinary(final InputStream inputStream) throws IOException {
+        // 바이너리 데이터를 그대로 반환하기 위한 스트림
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        IOUtils.copy(inputStream, byteArrayOutputStream);
+
+        // final String fileContent = readFileToString(inputStream);
+        // return IOUtils.toByteArray(inputStream);
+
+        final String fileContent = byteArrayOutputStream.toString(StandardCharsets.UTF_8);
+        log.info("[file] content - {}", fileContent);
+
+        return byteArrayOutputStream.toByteArray();
+    }
+
     public byte[] download(String fileName) throws IOException {
-        final InputStream in = getClass().getResourceAsStream(fileName);
-        // return new InputStreamResource(in);
-        return IOUtils.toByteArray(in);
+        final InputStream inputStream = getClass().getResourceAsStream(fileName);
+        // return new InputStreamResource(inputStream);
+        return IOUtils.toByteArray(inputStream);
     }
 
     private String readFileToString(InputStream inputStream)
@@ -52,5 +68,4 @@ public class MultipartService {
         }
         return resultStringBuilder.toString();
     }
-
 }
