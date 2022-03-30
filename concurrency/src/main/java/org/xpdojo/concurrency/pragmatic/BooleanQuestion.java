@@ -1,4 +1,4 @@
-package org.xpdojo.concurrency;
+package org.xpdojo.concurrency.pragmatic;
 
 public class BooleanQuestion extends Question {
     public BooleanQuestion(int id, String text) {

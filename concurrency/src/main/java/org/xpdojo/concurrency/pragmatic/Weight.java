@@ -1,4 +1,4 @@
-package org.xpdojo.concurrency;
+package org.xpdojo.concurrency.pragmatic;
 
 public enum Weight {
     MustMatch(Integer.MAX_VALUE),

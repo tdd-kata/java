@@ -1,4 +1,4 @@
-package org.xpdojo.concurrency;
+package org.xpdojo.concurrency.pragmatic;
 
 import java.util.HashMap;
 import java.util.List;

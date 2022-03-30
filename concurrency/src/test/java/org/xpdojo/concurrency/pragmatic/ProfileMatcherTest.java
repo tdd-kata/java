@@ -1,9 +1,19 @@
-package org.xpdojo.concurrency;
+package org.xpdojo.concurrency.pragmatic;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
+import org.xpdojo.concurrency.pragmatic.Answer;
+import org.xpdojo.concurrency.pragmatic.Bool;
+import org.xpdojo.concurrency.pragmatic.BooleanQuestion;
+import org.xpdojo.concurrency.pragmatic.Criteria;
+import org.xpdojo.concurrency.pragmatic.Criterion;
+import org.xpdojo.concurrency.pragmatic.MatchListener;
+import org.xpdojo.concurrency.pragmatic.MatchSet;
+import org.xpdojo.concurrency.pragmatic.Profile;
+import org.xpdojo.concurrency.pragmatic.ProfileMatcher;
+import org.xpdojo.concurrency.pragmatic.Weight;
 
 import java.util.ArrayList;
 import java.util.Collections;
