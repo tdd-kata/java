@@ -15,8 +15,10 @@
     - [Runtime Data Areas](#runtime-data-areas)
       - [PC Register](#pc-register)
       - [JVM Stack](#jvm-stack)
+        - [Frame](#frame)
       - [Heap](#heap)
       - [Method Area](#method-area)
+        - [런타임 상수 풀 (Runtime Constant Pool)](#런타임-상수-풀-runtime-constant-pool)
       - [Native Method Stack](#native-method-stack)
     - [Execution Engine](#execution-engine)
       - [Interpreter](#interpreter)
@@ -25,7 +27,7 @@
     - [JNI: Java Native Interface](#jni-java-native-interface)
       - [Native Method Library](#native-method-library)
   - [Hands on](#hands-on)
-    - [sdkman 설치](#sdkman-설치)
+    - [JDK 설치](#jdk-설치)
     - [JDK 도구](#jdk-도구)
     - [Java Compiler](#java-compiler)
 
@@ -56,7 +58,7 @@
 
 ![jdk-jre-jvm](images/jdk-jre-jvm.jpg)
 
-*출처: [Difference between JDK, JRE and JVM explained - getKT](https://getkt.com/blog/difference-between-jdk-jre-and-jvm-explained-java/)*
+_출처: [Difference between JDK, JRE and JVM explained - getKT](https://getkt.com/blog/difference-between-jdk-jre-and-jvm-explained-java/)_
 
 ### JDK: Java Development Kit
 
@@ -81,7 +83,9 @@ _출처: [The JVM Architecture Explained](https://dzone.com/articles/jvm-archite
   실행 엔진(Execution Engine)이 자바 바이트코드를 OS에 특화된 기계어로 변환하여 실행한다.
   - JVM 자체는 플랫폼에 종속적이지만, Java 언어를 플랫폼에 독립적으로 만들어준다.
 
-## [JVM의 특징](https://d2.naver.com/helloworld/1230)
+## JVM의 특징
+
+_출처: [JVM Internal](https://d2.naver.com/helloworld/1230) - Naver D2_
 
 - 스택 기반의 가상 머신
   - 대표적인 컴퓨터 아키텍처인 인텔 x86 아키텍처나 ARM 아키텍처와 같은 하드웨어는 레지스터 기반으로 동작한다.
@@ -128,7 +132,7 @@ Bootstrap Class Loader까지 확인해도 없으면 요청받은 클래스 로�
 
 ![classloader](images/jvm-classloader.png)
 
-*출처: [WHAT IS A CLASSLOADER? - Arpit Khandelwal](https://analyzejava.wordpress.com/2014/09/25/java-classloader-what-is-a-classloader/)*
+_출처: [WHAT IS A CLASSLOADER? - Arpit Khandelwal](https://analyzejava.wordpress.com/2014/09/25/java-classloader-what-is-a-classloader/)_
 
 - Bootstrap Class Loader
   - JVM을 기동할 때 생성되며, Object 클래스를 비롯하여 자바 API들을 로드한다.
@@ -169,21 +173,23 @@ Bootstrap Class Loader까지 확인해도 없으면 요청받은 클래스 로�
 
 ![jvm-stack-per-thread.png](images/jvm-stack-per-thread.png)
 
-*출처: [JVM Internal](https://d2.naver.com/helloworld/1230) - Naver D2*
+_출처: [JVM Internal](https://d2.naver.com/helloworld/1230) - Naver D2_
 
 JVM이라는 프로그램이 운영체제 위에서 실행되면서 할당받는 **메모리 영역**이다.
 런타임 데이터 영역은 6개의 영역으로 나눌 수 있다.
 PC 레지스터(PC Register), JVM 스택(JVM Stack), 네이티브 메서드 스택(Native Method Stack)은 스레드마다 하나씩 생성되며
 힙(Heap), 메서드 영역(Method Area), 런타임 상수 풀(Runtime Constant Pool)은 모든 스레드가 공유해서 사용한다.
 
-#### [PC Register](https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-2.html#jvms-2.5.1)
+#### PC Register
 
+- [Oracle Docs](https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-2.html#jvms-2.5.1)
 - PC(Program Counter) 레지스터는 각 스레드마다 하나씩 존재하며 스레드가 시작될 때 생성된다.
 - PC 레지스터는 현재 수행 중인 JVM 명령의 주소를 갖는다.
 
-#### [JVM Stack](https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-2.html#jvms-2.5.2)
+#### JVM Stack
 
-- JVM 스택은 각 스레드마다 하나씩 존재하며 스레드가 시작될 때 생성된다.
+- [Oracle Docs](https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-2.html#jvms-2.5.2)
+- JVM 스택은 각 JVM 스레드마다 하나씩 존재하며 스레드가 시작될 때 생성된다.
 - 스택 프레임(Stack Frame)이라는 구조체를 저장하는 스택으로, JVM은 오직 JVM 스택에 스택 프레임을 추가하고(push) 제거하는(pop) 동작만 수행한다.
 - 예외 발생 시 printStackTrace() 등의 메서드로 보여주는 Stack Trace의 각 라인은 하나의 스택 프레임을 표현한다.
 - 스택 프레임(Stack Frame)
@@ -198,32 +204,62 @@ PC 레지스터(PC Register), JVM 스택(JVM Stack), 네이티브 메서드 스�
     - 메서드의 실제 작업 공간이다.
     - 각 메서드는 피연산자 스택과 지역 변수 배열 사이에서 데이터를 교환하고, 다른 메서드 호출 결과를 추가하거나(push) 꺼낸다(pop).
     - 피연산자 스택 공간이 얼마나 필요한지는 컴파일할 때 결정할 수 있으므로, 피연산자 스택의 크기도 컴파일할 때 결정된다.
+- 스레드의 계산 작업(computation)에 허용된 것보다 더 큰 JVM Stack이 필요한 경우
+  JVM은 `StackOverflowError` 를 발생시킨다.
+- 새로운 스레드의 초기 JVM 스택을 생성하는 데 사용할 수 있는 메모리가 충분하지 않거나
+  JVM 스택을 동적으로 확장하는 데 사용할 수 있는 메모리가 충분하지 않은 경우
+  JVM은 `OutOfMemoryError` 를 발생시킨다.
 
-#### [Heap](https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-2.html#jvms-2.5.3)
+##### Frame
 
+- 메서드가 호출될 때마다 새 프레임이 생성된다.
+- 메서드 호출이 완료되면 정상적으로 완료되든 캐치되지 않은 예외가 던져져서 갑작스러운 완료가 되든 파괴된다.
+- JVM 스택에 할당된다.
+- 고유의 지역 변수 배열, 고유의 피연산자 스택, 런타임 상수 풀에 대한 레퍼런스
+
+#### Heap
+
+- [Oracle Docs](https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-2.html#jvms-2.5.3)
 - **인스턴스 또는 객체**를 저장하는 공간으로 **가비지 컬렉션 대상**이다.
 - JVM 성능 등의 이슈에서 가장 많이 언급되는 공간이다.
 - 힙 구성 방식이나 가비지 컬렉션 방법 등은 JVM 벤더의 재량이다.
 - 하나의 물리 머신에서 여러 개의 Java 애플리케이션이 실행 중이라면
   각 애플리케이션마다 `java` 명령어를 통해 JVM이 실행 중이라는 뜻이고, 힙 영역 또한 각 JVM마다 하나씩 독립적으로 존재한다.
+- ASM(automatic storage management)에서 사용할 수 있는 것보다 더 많은 Heap이 필요한 경우
+  JVM은 `OutOfMemoryError` 를 발생시킨다.
 
-#### [Method Area](https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-2.html#jvms-2.5.4)
+#### Method Area
 
+- [Oracle Docs](https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-2.html#jvms-2.5.4)
 - 메서드 영역은 모든 스레드가 공유하는 영역으로 JVM이 시작될 때 생성된다.
 - JVM이 읽어 들인 **각각의 클래스와 인터페이스에 대한 런타임 상수 풀, 필드와 메서드 정보, static 변수, 메서드의 바이트코드 등**을 보관한다.
 - 메서드 영역은 JVM 벤더마다 다양한 형태로 구현할 수 있으며, 오라클 핫스팟 JVM(HotSpot JVM)에서는 흔히 Permanent Area, 혹은 Permanent Generation(PermGen)이라고 부른다.
 - 메서드 영역에 대한 가비지 컬렉션은 JVM 벤더의 선택 사항이다.
-- [런타임 상수 풀 (Runtime Constant Pool)](https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-2.html#jvms-2.5.5)
-  - 클래스 파일 포맷에서 `constant_pool` 테이블에 해당하는 영역이다.
-  - 메서드 영역에 포함되는 영역이긴 하지만, JVM 동작에서 가장 핵심적인 역할을 수행하는 곳이기 때문에 JVM 명세에서도 따로 중요하게 기술한다.
-  - 각 클래스와 인터페이스의 상수뿐만 아니라, 메서드와 필드에 대한 모든 레퍼런스까지 담고 있는 테이블이다.
-  - 즉, 어떤 메서드나 필드를 참조할 때 JVM은 런타임 상수 풀을 통해 해당 메서드나 필드의 실제 메모리상 주소를 찾아서 참조한다.
+- Method Area가 더 이상 메모리를 할당 받을 수 없는 경우
+  JVM은 `OutOfMemoryError` 를 발생시킨다.
 
-#### [Native Method Stack](https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-2.html#jvms-2.5.6)
+##### 런타임 상수 풀 (Runtime Constant Pool)
 
+- [Oracle Docs](https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-2.html#jvms-2.5.5)
+- 클래스 파일 포맷에서 `constant_pool` 테이블에 해당하는 영역이다.
+- **Method Area에 포함되는 영역**이긴 하지만, JVM 동작에서 가장 핵심적인 역할을 수행하는 곳이기 때문에 JVM 명세에서도 따로 중요하게 기술한다.
+- 각 클래스와 인터페이스의 상수뿐만 아니라, 메서드와 필드에 대한 모든 레퍼런스까지 담고 있는 테이블이다.
+- 즉, 어떤 메서드나 필드를 참조할 때 JVM은 런타임 상수 풀을 통해 해당 메서드나 필드의 실제 메모리상 주소를 찾아서 참조한다.
+- 클래스 또는 인터페이스를 생성할 때 런타임 상수 풀의 구성에
+  JVM의 **Method Area**에서 사용할 수 있는 것보다 더 많은 메모리가 필요한 경우
+  JVM은 `OutOfMemoryError` 를 발생시킨다.
+
+#### Native Method Stack
+
+- [Oracle Docs](https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-2.html#jvms-2.5.6)
 - **자바 외의 언어로 작성된 네이티브 코드**를 위한 스택이다.
 - 즉, JNI(Java Native Interface)를 통해 호출하는 C/C++ 등의 코드를 수행하기 위한 스택으로,
   언어에 맞게 C 스택이나 C++ 스택이 생성된다.
+- 스레드의 계산 작업(computation)에 허용된 것보다 더 큰 JVM Stack이 필요한 경우
+  JVM은 `StackOverflowError` 를 발생시킨다.
+- 새로운 스레드의 초기 Native Method 스택을 생성하는 데 사용할 수 있는 메모리가 충분하지 않거나
+  Native Method 스택을 동적으로 확장하는 데 사용할 수 있는 메모리가 충분하지 않은 경우
+  JVM은 `OutOfMemoryError` 를 발생시킨다.
 
 ### Execution Engine
 
@@ -267,7 +303,9 @@ C, C++로 작성된 라이브러리다.
 
 ## Hands on
 
-### [sdkman](https://sdkman.io) 설치
+### JDK 설치
+
+- [sdkman](https://sdkman.io) 활용
 
 ```bash
 curl -s "https://get.sdkman.io" | bash
