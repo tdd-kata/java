@@ -36,8 +36,12 @@
 - [The Java® Virtual Machine Specification - Java SE 8 Edition](https://docs.oracle.com/javase/specs/jvms/se8/html/index.html) - Tim Lindholm, Frank Yellin, Gilad Bracha, Alex Buckley
 - [JVM Internal](http://blog.jamesdbloom.com/JVMInternals.html) - James Bloom
 - [Java Code To Byte Code](https://blog.jamesdbloom.com/JavaCodeToByteCode_PartOne.html) - James Bloom
-- [JVM Internal](https://d2.naver.com/helloworld/1230) - 박세훈
+- [JVM Internal](https://d2.naver.com/helloworld/1230) - Naver D2
+- [자바 애플리케이션 성능 튜닝의 도(道)](https://d2.naver.com/helloworld/184615) - Naver D2
+- [Garbage Collection 모니터링 방법](https://d2.naver.com/helloworld/6043) - Naver D2
 - [자바 최적화 (Optimizing Java)](https://www.aladin.co.kr/shop/wproduct.aspx?isbn=9791162241776) - 벤저민 J. 에번스, 제임스 고프, 크리스 뉴랜드
+- [JVM 메모리의 이해와 케이스 스터디](https://www.samsungsds.com/kr/insights/1232761_4627.html) - Samsung SDS
+- [Out Of Memory 오류](https://www.nextree.co.kr/p3878/) - 넥스트리소프트
 - [더 자바, 코드를 조작하는 다양한 방법](https://www.inflearn.com/course/the-java-code-manipulation/) - 백기선
 - [A Simple Java Native Interface (JNI) example in Java and Scala](https://schlining.medium.com/a-simple-java-native-interface-jni-example-in-java-and-scala-68fdafe76f5f) - Brian Schlining
 - [Java Classloaders](https://analyzejava.wordpress.com/category/core-java/java-classloaders/) - Arpit Khandelwal
@@ -52,7 +56,7 @@
   - [Introduction to JVM Code Cache](https://www.baeldung.com/jvm-code-cache) - Baeldung
 - [The Java HotSpot VM](https://ethz.ch/content/dam/ethz/special-interest/infk/inst-cs/lst-dam/documents/Education/Classes/Spring2018/210_Compiler_Design/Slides/2018-Compiler-Design-Guest-Talk.pdf) - Tobias Hartmann
 - [The Java HotSpot Performance Engine Architecture](https://www.oracle.com/java/technologies/whitepaper.html) - Oracle
-- [자바 최적화](https://www.aladin.co.kr/shop/wproduct.aspx?ISBN=9791162241776) - 벤저민 J. 에번스,제임스 고프,크리스 뉴랜드
+- [JVM의 default Heap Size가 궁금하세요?](https://sarc.io/index.php/java/1092-jvm-default-heap-size)
 
 ## JVM, JRE, JDK
 
