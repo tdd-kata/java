@@ -30,12 +30,20 @@ $ pip install -r requirements.txt
 ```bash
 $ ./exploit.py --url http://localhost:8080/rce/greeting
 [✘] http://localhost:8080/rce/greeting Not Vulnerable!
+```
 
-# application log
+### Application log
+
+```bash
+# BinderControllerAdvice 설정이 없을 때
 2022-04-04 10:56:02.632  INFO 1 --- [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
 2022-04-04 10:56:02.634  INFO 1 --- [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
 04-Apr-2022 10:56:05.099 INFO [Catalina-utility-1] org.apache.catalina.startup.HostConfig.deployDirectory Deploying web application directory [/usr/local/tomcat/webapps/ROOT]
 04-Apr-2022 10:56:05.123 INFO [Catalina-utility-1] org.apache.catalina.startup.HostConfig.deployDirectory Deployment of web application directory [/usr/local/tomcat/webapps/ROOT] has finished in [23] ms
+
+# BinderControllerAdvice 설정이 있을 때
+2022-04-04 10:56:02.632  INFO 1 --- [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2022-04-04 10:56:02.634  INFO 1 --- [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
 ```
 
 ```bash
