@@ -1,4 +1,4 @@
-package org.xpdojo.spring;
+package org.xpdojo.spring.multipart;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
