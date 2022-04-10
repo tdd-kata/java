@@ -27,12 +27,12 @@ class MockDoubleTest {
     void test_mockito() {
         MockitoDouble mockitoDouble = mock(MockitoDouble.class);
 
-        given(mockitoDouble.name(eq("markruler"))).willReturn("Hello markruler");
+        given(mockitoDouble.greeting(eq("markruler"))).willReturn("Hello markruler");
 
-        final String actual = mockitoDouble.name("markruler");
+        final String actual = mockitoDouble.greeting("markruler");
         assertThat(actual).isEqualTo("Hello markruler");
 
-        verify(mockitoDouble).name(anyString());
+        verify(mockitoDouble).greeting(anyString());
     }
 
     /**
