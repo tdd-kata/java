@@ -3,6 +3,9 @@ package org.xpdojo.spring.testdouble.fixture;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+/**
+ * xUnit Test Pattern
+ */
 public class TimeDisplay {
 
     private TimeProvider timeProvider;

@@ -4,11 +4,14 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 
-public class FlightManagementFacadeSpy implements FlightManagementFacade {
+/**
+ * xUnit Test Pattern
+ */
+public class FlightManagementFacadeImpl implements FlightManagementFacade {
     private Map<Integer, FlightDto> flights;
     private AuditLog auditLog;
 
-    public FlightManagementFacadeSpy() {
+    public FlightManagementFacadeImpl() {
         this.flights = new HashMap<>();
     }
 

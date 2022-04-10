@@ -9,14 +9,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.xpdojo.spring.testdouble.fixture.ActionCode;
 import org.xpdojo.spring.testdouble.fixture.AuditLogSpy;
 import org.xpdojo.spring.testdouble.fixture.FlightDto;
-import org.xpdojo.spring.testdouble.fixture.FlightManagementFacadeSpy;
+import org.xpdojo.spring.testdouble.fixture.FlightManagementFacadeImpl;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
@@ -49,14 +48,17 @@ class SpyDoubleTest {
         assertThat(mockList).hasSize(5);
     }
 
+    /**
+     * xUnit Test Pattern
+     */
     @Nested
     @DisplayName("Test Spy는 메서드를 호출한 내역을 기록할 수 있다")
     class TestSpy {
-        FlightManagementFacadeSpy flightManagementFacadeSpy = new FlightManagementFacadeSpy();
+        FlightManagementFacadeImpl facade = new FlightManagementFacadeImpl();
 
         private FlightDto createAnUnregisteredFlight() {
             FlightDto flight = new FlightDto(1, "LAX", "SFO");
-            flightManagementFacadeSpy.registerFlight(flight);
+            facade.registerFlight(flight);
             return flight;
         }
 
@@ -67,13 +69,13 @@ class SpyDoubleTest {
 
             // setup test double
             AuditLogSpy auditLogSpy = new AuditLogSpy();
-            flightManagementFacadeSpy.setAuditLog(auditLogSpy);
+            facade.setAuditLog(auditLogSpy);
 
             // 실행
-            flightManagementFacadeSpy.removeFlight(flightDto.getFlightNumber());
+            facade.removeFlight(flightDto.getFlightNumber());
 
             // 상태 검증
-            assertThat(flightManagementFacadeSpy.flightExists(flightDto.getFlightNumber())).isFalse();
+            assertThat(facade.flightExists(flightDto.getFlightNumber())).isFalse();
 
             // Test Spy의 검색 인터페이스로 간접 출력 검증
             assertThat(auditLogSpy.getNumberOfCalls()).isEqualTo(1);

@@ -1,5 +1,8 @@
 package org.xpdojo.spring.testdouble.fixture;
 
+/**
+ * xUnit Test Pattern
+ */
 public class FlightDto {
     private int flightNumber;
     private String from;
