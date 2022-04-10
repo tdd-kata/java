@@ -2,7 +2,9 @@ package org.xpdojo.spring.testdouble;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.invocation.MockHandler;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.mock.MockCreationSettings;
 import org.springframework.util.ObjectUtils;
 
@@ -11,8 +13,27 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
+@ExtendWith(MockitoExtension.class)
 class MockDoubleTest {
+
+    @Test
+    @DisplayName("Mockito를 사용해서 Mocking test")
+    void test_mockito() {
+        MockitoDouble mockitoDouble = mock(MockitoDouble.class);
+
+        given(mockitoDouble.name(eq("markruler"))).willReturn("Hello markruler");
+
+        final String actual = mockitoDouble.name("markruler");
+        assertThat(actual).isEqualTo("Hello markruler");
+
+        verify(mockitoDouble).name(anyString());
+    }
 
     /**
      * Mockito는 ByteBuddy를 사용하지만 여기서는 최대한 단순화시켰다.
@@ -21,7 +42,7 @@ class MockDoubleTest {
      */
     @Test
     @DisplayName("동적 프록시를 사용해서 Mocking test")
-    void testMockDouble() {
+    void test_mock_object() {
         InvocationHandler invocationHandler = new InvocationHandler() {
             @Override
             public Object invoke(Object proxy, Method method, Object[] args) {
