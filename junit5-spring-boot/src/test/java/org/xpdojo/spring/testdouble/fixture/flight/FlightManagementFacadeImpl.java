@@ -9,8 +9,12 @@ import java.util.concurrent.ConcurrentHashMap;
  * xUnit Test Pattern
  */
 public class FlightManagementFacadeImpl implements FlightManagementFacade {
+
+    // Mock, Stub을 사용하기 위한 딕셔너리
     private Map<Integer, FlightDto> flights;
+    // Fake 데이터베이스를 위한 인터페이스
     private AirportDao dao;
+    // Spy 테스트를 위한 인터페이스
     private AuditLog auditLog;
 
     public FlightManagementFacadeImpl() {
