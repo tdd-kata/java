@@ -1,7 +1,15 @@
 plugins {
-    id 'org.springframework.boot' version '2.6.5'
+    // Java
+    // id 'java'
+    id 'application'
+
+    // Spring
+    // https://docs.spring.io/spring-boot/docs/2.6.6/gradle-plugin/reference/htmlsingle/
+    id 'org.springframework.boot' version '2.6.6'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
-    id 'java'
+
+    // Asciidoctor
+    id 'org.asciidoctor.convert' version '2.4.0'
 }
 
 group 'org.xpdojo'
@@ -13,8 +21,23 @@ repositories {
 }
 
 dependencies {
+
+    // Spring Web
     implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'commons-io:commons-io:2.11.0'
+
+    // Java Bean Validation
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+    // Spring REST Docs
+    asciidoctor 'org.springframework.restdocs:spring-restdocs-asciidoctor'
+    testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+
+    // Utils
+    implementation 'commons-io:commons-io:2.11.+'
+
+    // Lombok
+    compileOnly 'org.projectlombok:lombok:1.18.+'
+    annotationProcessor 'org.projectlombok:lombok:1.18.+'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.assertj:assertj-core:3.22.0'
@@ -22,4 +45,8 @@ dependencies {
 
 test {
     useJUnitPlatform()
+}
+
+asciidoctor {
+    dependsOn(clean, test)
 }
