@@ -1,4 +1,4 @@
-package org.xpdojo.spring.testdouble.fixture;
+package org.xpdojo.spring.testdouble.fixture.flight;
 
 import java.time.LocalDate;
 

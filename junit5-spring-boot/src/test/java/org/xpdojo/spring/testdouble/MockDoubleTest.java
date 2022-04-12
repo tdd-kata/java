@@ -8,10 +8,10 @@ import org.mockito.invocation.MockHandler;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.mock.MockCreationSettings;
 import org.springframework.util.ObjectUtils;
-import org.xpdojo.spring.testdouble.fixture.ActionCode;
-import org.xpdojo.spring.testdouble.fixture.AuditLogConfigurableMock;
-import org.xpdojo.spring.testdouble.fixture.FlightDto;
-import org.xpdojo.spring.testdouble.fixture.FlightManagementFacadeImpl;
+import org.xpdojo.spring.testdouble.fixture.flight.ActionCode;
+import org.xpdojo.spring.testdouble.fixture.flight.AuditLogConfigurableMock;
+import org.xpdojo.spring.testdouble.fixture.flight.FlightDto;
+import org.xpdojo.spring.testdouble.fixture.flight.FlightManagementFacadeImpl;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;

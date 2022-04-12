@@ -6,10 +6,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.xpdojo.spring.testdouble.fixture.ActionCode;
-import org.xpdojo.spring.testdouble.fixture.AuditLogSpy;
-import org.xpdojo.spring.testdouble.fixture.FlightDto;
-import org.xpdojo.spring.testdouble.fixture.FlightManagementFacadeImpl;
+import org.xpdojo.spring.testdouble.fixture.flight.ActionCode;
+import org.xpdojo.spring.testdouble.fixture.flight.AuditLogSpy;
+import org.xpdojo.spring.testdouble.fixture.flight.FlightDto;
+import org.xpdojo.spring.testdouble.fixture.flight.FlightManagementFacadeImpl;
 
 import java.time.LocalDate;
 import java.util.ArrayList;

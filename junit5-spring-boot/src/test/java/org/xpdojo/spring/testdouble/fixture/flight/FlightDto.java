@@ -1,4 +1,4 @@
-package org.xpdojo.spring.testdouble.fixture;
+package org.xpdojo.spring.testdouble.fixture.flight;
 
 /**
  * xUnit Test Pattern
