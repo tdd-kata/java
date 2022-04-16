@@ -27,6 +27,12 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.response
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+/**
+ * @see <a href="https://beanvalidation.org/1.0/spec/">JSR 303: Bean Validation v1.0</a>
+ * @see <a href="https://jcp.org/en/jsr/detail?id=303">JSR 303: Bean Validation v1.0</a>
+ * @see <a href="https://jcp.org/en/jsr/detail?id=349">JSR 349: Bean Validation v1.1</a>
+ * @see <a href="https://jcp.org/en/jsr/detail?id=380">JSR 380: Bean Validation v2.0</a>
+ */
 @DisplayName("ValidationController 클래스")
 @WebMvcTest(ValidationController.class)
 @AutoConfigureRestDocs
