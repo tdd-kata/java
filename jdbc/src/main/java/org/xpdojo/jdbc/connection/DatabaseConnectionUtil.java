@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 @Slf4j
 public class DatabaseConnectionUtil {
@@ -21,7 +22,21 @@ public class DatabaseConnectionUtil {
         return connection;
     }
 
-    public static void closeConnection(Connection connection) {
-        log.info("Closing connection");
+    public static void closeConnection(Connection connection, Statement statement) {
+        if (statement != null) {
+            try {
+                statement.close();
+            } catch (SQLException e) {
+                log.error("Error closing statement", e);
+            }
+        }
+        if (connection != null) {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                log.error("Error closing statement", e);
+            }
+        }
+        log.info("Closing connection=[{}]", connection);
     }
 }
