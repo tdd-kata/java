@@ -49,8 +49,23 @@ public class DatabaseConnectionUtil {
 
     public static void closeConnectionByJdbcUtils(Connection connection, Statement statement, ResultSet resultSet) {
         JdbcUtils.closeConnection(connection);
-        JdbcUtils.closeStatement(statement);
+        closedByJdbcUtils(statement, resultSet);
+    }
+
+    /**
+     * Connection은 서비스 계층에서 열고 닫는다.
+     *
+     * @param statement
+     * @param resultSet
+     */
+    public static void closedByJdbcUtils(Statement statement, ResultSet resultSet) {
+        // JdbcUtils.closeConnection(connection);
+        closedByJdbcUtils(statement);
         JdbcUtils.closeResultSet(resultSet);
+    }
+
+    public static void closedByJdbcUtils(Statement statement) {
+        JdbcUtils.closeStatement(statement);
     }
 
     public static void closeConnection(Connection connection, Statement statement, ResultSet resultSet) {

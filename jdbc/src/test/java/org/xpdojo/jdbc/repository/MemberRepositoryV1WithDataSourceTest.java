@@ -19,9 +19,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-class MemberRepositoryWithDataSourceTest {
+class MemberRepositoryV1WithDataSourceTest {
 
-    MemberRepositoryWithDataSource memberRepository;
+    MemberRepositoryV1WithDataSource memberRepository;
 
     @BeforeEach
     void setDataSource() {
@@ -37,7 +37,7 @@ class MemberRepositoryWithDataSourceTest {
         // dataSource.setAutoCommit(false);
         dataSource.setConnectionTestQuery("SELECT 1");
 
-        memberRepository = new MemberRepositoryWithDataSource(dataSource);
+        memberRepository = new MemberRepositoryV1WithDataSource(dataSource);
     }
 
     @Nested
@@ -57,20 +57,21 @@ class MemberRepositoryWithDataSourceTest {
             assertThat(savedRowCount).isEqualTo(1);
 
             // select
-            Member savedMember = memberRepository.findById(member);
+            final String memberId = member.getId();
+            Member savedMember = memberRepository.findById(memberId);
             assertThat(savedMember).isEqualTo(member); // equals() 오버라이딩 필수
 
             // update
-            int updatedRowCount = memberRepository.update(member, 20_000);
+            int updatedRowCount = memberRepository.update(memberId, 20_000);
             assertThat(updatedRowCount).isEqualTo(1);
-            Member updatedMember = memberRepository.findById(member);
+            Member updatedMember = memberRepository.findById(memberId);
             assertThat(updatedMember).isNotEqualTo(member); // equals() 오버라이딩 필수
             assertThat(updatedMember.getMoney()).isEqualTo(20_000);
 
             // delete
-            int deletedRowCount = memberRepository.delete(member);
+            int deletedRowCount = memberRepository.delete(memberId);
             assertThat(deletedRowCount).isEqualTo(1);
-            assertThatThrownBy(() -> memberRepository.findById(member))
+            assertThatThrownBy(() -> memberRepository.findById(memberId))
                     .isInstanceOf(NoSuchElementException.class);
         }
     }

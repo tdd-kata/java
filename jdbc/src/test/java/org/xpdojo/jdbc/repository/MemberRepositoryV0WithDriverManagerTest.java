@@ -16,9 +16,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-class MemberRepositoryWithDriverManagerTest {
+class MemberRepositoryV0WithDriverManagerTest {
 
-    MemberRepositoryWithDriverManager memberRepository = new MemberRepositoryWithDriverManager();
+    MemberRepositoryV0WithDriverManager memberRepository = new MemberRepositoryV0WithDriverManager();
 
     @Nested
     @DisplayName("Member CRUD")
