@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.xpdojo.jdbc.connection.DatabaseConnectionUtil;
 import org.xpdojo.jdbc.domain.Member;
 
+import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -11,10 +12,16 @@ import java.sql.SQLException;
 import java.util.NoSuchElementException;
 
 /**
- * JDBC - Driver Manager
+ * JDBC - DataSource, JdbcUtils
  */
 @Slf4j
-public class MemberRepository {
+public class MemberRepositoryWithDataSource {
+
+    private final DataSource dataSource;
+
+    public MemberRepositoryWithDataSource(DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
 
     /**
      * 사용자를 DB에 저장한다.
@@ -30,7 +37,7 @@ public class MemberRepository {
         PreparedStatement preparedStatement = null;
 
         try {
-            connection = DatabaseConnectionUtil.getConnection();
+            connection = DatabaseConnectionUtil.getConnectionFromPool(dataSource);
             preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setString(1, member.getId());
             preparedStatement.setInt(2, member.getMoney());
@@ -61,13 +68,14 @@ public class MemberRepository {
 
         Connection connection = null;
         PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
 
         try {
-            connection = DatabaseConnectionUtil.getConnection();
+            connection = DatabaseConnectionUtil.getConnectionFromPool(dataSource);
             preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setString(1, member.getId());
 
-            ResultSet resultSet = preparedStatement.executeQuery();
+            resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
                 return Member.builder()
                         .id(resultSet.getString("member_id"))
@@ -80,7 +88,7 @@ public class MemberRepository {
             log.error(e.toString(), e);
             throw e;
         } finally {
-            DatabaseConnectionUtil.closeConnection(connection, preparedStatement);
+            DatabaseConnectionUtil.closeConnection(connection, preparedStatement, resultSet);
         }
     }
 
@@ -91,7 +99,7 @@ public class MemberRepository {
         PreparedStatement preparedStatement = null;
 
         try {
-            connection = DatabaseConnectionUtil.getConnection();
+            connection = DatabaseConnectionUtil.getConnectionFromPool(dataSource);
             preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setInt(1, money);
             preparedStatement.setString(2, member.getId());
@@ -120,7 +128,7 @@ public class MemberRepository {
         PreparedStatement preparedStatement = null;
 
         try {
-            connection = DatabaseConnectionUtil.getConnection();
+            connection = DatabaseConnectionUtil.getConnectionFromPool(dataSource);
             preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setString(1, member.getId());
             int rowCount = preparedStatement.executeUpdate();

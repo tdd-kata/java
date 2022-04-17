@@ -1,9 +1,12 @@
 package org.xpdojo.jdbc.connection;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.jdbc.support.JdbcUtils;
 
+import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
@@ -13,6 +16,11 @@ public class DatabaseConnectionUtil {
     private DatabaseConnectionUtil() {
     }
 
+    /**
+     * DriverManager를 사용해서 Connection을 가져온다.
+     *
+     * @return Connection
+     */
     public static Connection getConnection() throws SQLException {
         Connection connection = DriverManager.getConnection(
                 ConnectionConst.URL,
@@ -27,6 +35,36 @@ public class DatabaseConnectionUtil {
         return connection;
     }
 
+    /**
+     * DataSource를 사용해서 ConnectionPool에서 Connection을 가져온다.
+     *
+     * @param dataSource DataSource
+     * @return Connection
+     */
+    public static Connection getConnectionFromPool(DataSource dataSource) throws SQLException {
+        Connection connection = dataSource.getConnection();
+        log.info("Connection established=[{}], class=[{}]", connection, connection.getClass());
+        return connection;
+    }
+
+    public static void closeConnectionByJdbcUtils(Connection connection, Statement statement, ResultSet resultSet) {
+        JdbcUtils.closeConnection(connection);
+        JdbcUtils.closeStatement(statement);
+        JdbcUtils.closeResultSet(resultSet);
+    }
+
+    public static void closeConnection(Connection connection, Statement statement, ResultSet resultSet) {
+        closeConnection(connection, statement);
+
+        if (resultSet != null) {
+            try {
+                resultSet.close();
+            } catch (SQLException e) {
+                log.error("Error closing resultSet", e);
+            }
+        }
+    }
+
     public static void closeConnection(Connection connection, Statement statement) {
         log.info("Closing connection=[{}]", connection);
 
@@ -37,6 +75,7 @@ public class DatabaseConnectionUtil {
                 log.error("Error closing statement", e);
             }
         }
+
         if (connection != null) {
             try {
                 connection.rollback();
