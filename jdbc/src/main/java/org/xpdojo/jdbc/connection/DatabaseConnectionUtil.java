@@ -18,11 +18,18 @@ public class DatabaseConnectionUtil {
                 ConnectionConst.URL,
                 ConnectionConst.USERNAME,
                 ConnectionConst.PASSWORD);
+
+        // 테스트 시 commit 하지 않음
+        // rollback() 호출할 필요 없음
+        // connection.setAutoCommit(false);
+
         log.info("Connection established=[{}], class=[{}]", connection, connection.getClass());
         return connection;
     }
 
     public static void closeConnection(Connection connection, Statement statement) {
+        log.info("Closing connection=[{}]", connection);
+
         if (statement != null) {
             try {
                 statement.close();
@@ -32,11 +39,11 @@ public class DatabaseConnectionUtil {
         }
         if (connection != null) {
             try {
+                connection.rollback();
                 connection.close();
             } catch (SQLException e) {
                 log.error("Error closing statement", e);
             }
         }
-        log.info("Closing connection=[{}]", connection);
     }
 }

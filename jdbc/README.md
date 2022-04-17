@@ -2,8 +2,8 @@
 
 ## H2 Database 세팅
 
-```bash
-docker run -d -p 9092:9092 -p 8082:8080 -v $HOME/local/h2-data:/opt/h2-data -e H2_OPTIONS=-ifNotExists --name=h2-jdbc markruler/h2:1.4.200
+```sh
+docker run -d --restart=always -p 9092:9092 -p 8082:8080 -v $HOME/local/h2-data:/opt/h2-data -e H2_OPTIONS=-ifNotExists --name=h2-jdbc markruler/h2:1.4.200
 ```
 
 `http://localhost:8082` 에서 접속 확인
