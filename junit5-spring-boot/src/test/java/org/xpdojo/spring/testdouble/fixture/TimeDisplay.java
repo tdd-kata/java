@@ -2,6 +2,7 @@ package org.xpdojo.spring.testdouble.fixture;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 
 /**
  * xUnit Test Pattern
@@ -28,7 +29,7 @@ public class TimeDisplay {
             } else if ((time.getHour() == 12) && (time.getMinute() == 0)) {
                 sb.append("Noon");
             } else {
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("h:mm a");
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("h:mm a").withLocale(Locale.KOREA);
                 sb.append(time.format(formatter));
             }
 
