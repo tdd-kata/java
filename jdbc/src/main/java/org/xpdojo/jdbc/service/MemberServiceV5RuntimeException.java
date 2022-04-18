@@ -1,5 +1,6 @@
 package org.xpdojo.jdbc.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
 import org.xpdojo.jdbc.domain.Member;
 import org.xpdojo.jdbc.repository.MemberRepository;
@@ -9,6 +10,7 @@ import org.xpdojo.jdbc.repository.MemberRepository;
  *
  * @see org.xpdojo.jdbc.repository.MemberRepository
  */
+@Slf4j
 public class MemberServiceV5RuntimeException {
 
     private final MemberRepository memberRepository;
@@ -33,6 +35,7 @@ public class MemberServiceV5RuntimeException {
     private void logic(String fromId, String toId, int amount) {
         Member fromMember = memberRepository.findById(fromId);
         Member toMember = memberRepository.findById(toId);
+        log.info("fromMember : {}", fromMember.getId());
 
         memberRepository.update(fromId, fromMember.getMoney() - amount);
         validate(toMember);

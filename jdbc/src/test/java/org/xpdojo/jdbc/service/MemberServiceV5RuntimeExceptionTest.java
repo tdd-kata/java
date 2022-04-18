@@ -1,6 +1,7 @@
 package org.xpdojo.jdbc.service;
 
 import lombok.extern.slf4j.Slf4j;
+import org.h2.jdbc.JdbcSQLIntegrityConstraintViolationException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,7 +13,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.dao.DuplicateKeyException;
 import org.xpdojo.jdbc.domain.Member;
 import org.xpdojo.jdbc.repository.MemberRepository;
-import org.xpdojo.jdbc.repository.MemberRepositoryV6WithExceptionTranslator;
+import org.xpdojo.jdbc.repository.MemberRepositoryV7JdbcTemplate;
 
 import javax.sql.DataSource;
 
@@ -60,7 +61,8 @@ class MemberServiceV5RuntimeExceptionTest {
         @Bean
         MemberRepository memberRepository() {
             // return new MemberRepositoryV5WithRuntimeException(dataSource);
-            return new MemberRepositoryV6WithExceptionTranslator(dataSource);
+            // return new MemberRepositoryV6WithExceptionTranslator(dataSource);
+            return new MemberRepositoryV7JdbcTemplate(dataSource);
         }
 
         @Bean
