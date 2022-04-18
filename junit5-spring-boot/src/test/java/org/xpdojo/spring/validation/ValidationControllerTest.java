@@ -23,7 +23,10 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -53,11 +56,11 @@ class ValidationControllerTest {
 
     @Nested
     @DisplayName("GET /validation/get")
-    class describe_validation_get {
+    class Describe_validation_get {
 
         @Nested
         @DisplayName("유효성 검사가 실패한다면")
-        class context_invalid_request {
+        class Context_invalid_request {
 
             @Test
             @DisplayName("400 Bad Request를 응답한다")
@@ -69,7 +72,7 @@ class ValidationControllerTest {
 
         @Nested
         @DisplayName("유효성 검사가 통과한다면")
-        class context_valid_request {
+        class Context_valid_request {
 
             @Test
             @DisplayName("요청 데이터를 그대로 응답한다")
@@ -85,8 +88,9 @@ class ValidationControllerTest {
 
                 MockHttpServletRequestBuilder request =
                         RestDocumentationRequestBuilders.get("/validation/get")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(objectMapper.writeValueAsBytes(user));
+                                .param("email", user.getEmail())
+                                .param("name", user.getName())
+                                .param("age", String.valueOf(user.getAge()));
 
                 mockMvc.perform(request)
                         .andExpect(status().isOk())
@@ -94,6 +98,70 @@ class ValidationControllerTest {
                         .andDo(MockMvcRestDocumentation.document("users-get",
                                 ApiDocumentUtils.getDocumentRequest(),
                                 ApiDocumentUtils.getDocumentResponse(),
+                                requestParameters(
+                                        parameterWithName("email").description("이메일"),
+                                        parameterWithName("name").description("이름"),
+                                        parameterWithName("age").description("나이")
+                                ),
+                                responseFields(
+                                        fieldWithPath("email").type(JsonFieldType.STRING).description("이메일"),
+                                        fieldWithPath("name").type(JsonFieldType.STRING).description("이름"),
+                                        fieldWithPath("age").type(JsonFieldType.NUMBER).description("나이")
+                                )));
+
+                verify(userService).findUser(any(UserDto.class));
+            }
+        }
+    }
+
+    @Nested
+    @DisplayName("POST /validation/post")
+    class Describe_validation_post {
+
+        @Nested
+        @DisplayName("유효성 검사가 실패한다면")
+        class Context_invalid_request {
+
+            @Test
+            @DisplayName("400 Bad Request를 응답한다")
+            void should_respond_400_bad_request() throws Exception {
+                mockMvc.perform(MockMvcRequestBuilders.post("/validation/post"))
+                        .andExpect(status().isBadRequest());
+            }
+        }
+
+        @Nested
+        @DisplayName("유효성 검사가 통과한다면")
+        class Context_valid_request {
+
+            @Test
+            @DisplayName("요청 데이터를 그대로 응답한다")
+            void should_respond_request() throws Exception {
+                final UserDto user = UserDto.builder()
+                        .email("markruler@xpdojo.org")
+                        .name("test-markruler")
+                        .age(20)
+                        .build();
+
+                given(userService.findUser(any(UserDto.class)))
+                        .willReturn(user);
+
+                MockHttpServletRequestBuilder request =
+                        RestDocumentationRequestBuilders.post("/validation/post")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsBytes(user));
+
+                mockMvc.perform(request)
+                        .andExpect(status().isOk())
+                        .andExpect(jsonPath("$.name", containsString(user.getName())))
+                        .andDo(MockMvcRestDocumentation.document("users-post",
+                                ApiDocumentUtils.getDocumentRequest(),
+                                ApiDocumentUtils.getDocumentResponse(),
+                                requestFields(
+                                        fieldWithPath("email").type(JsonFieldType.STRING).description("이메일"),
+                                        fieldWithPath("name").type(JsonFieldType.STRING).description("이름"),
+                                        fieldWithPath("age").type(JsonFieldType.NUMBER).description("나이")
+                                ),
                                 // pathParameters(
                                 //         parameterWithName("id").description("식별자")),
                                 responseFields(
