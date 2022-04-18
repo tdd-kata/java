@@ -6,6 +6,15 @@
 docker run -d --restart=always -p 9092:9092 -p 8082:8080 -v $HOME/local/h2-data:/opt/h2-data -e H2_OPTIONS=-ifNotExists --name=h2-jdbc markruler/h2:1.4.200
 ```
 
+```sql
+drop table member if exists cascade;
+create table member (
+  member_id varchar(10),
+  money integer not null default 0,
+  primary key (member_id)
+);
+```
+
 `http://localhost:8082` 에서 접속 확인
 
 | Label        | Value                             |
