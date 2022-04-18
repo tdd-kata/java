@@ -3,6 +3,8 @@ package org.xpdojo.jdbc.repository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.jdbc.support.JdbcUtils;
+import org.springframework.jdbc.support.SQLErrorCodeSQLExceptionTranslator;
+import org.springframework.jdbc.support.SQLExceptionTranslator;
 import org.xpdojo.jdbc.domain.Member;
 import org.xpdojo.jdbc.repository.exception.SQLRuntimeException;
 
@@ -15,20 +17,24 @@ import java.sql.Statement;
 import java.util.NoSuchElementException;
 
 /**
- * 예외 누수 문제 해결
- * Checked Exception을 Runtime Exception으로 변경하는 것이 좋다.
- * <code>SQLExceptionq</code>을 제거하고 <code>RuntimeException</code>으로
- * 변경하면 예외 누수 문제를 해결할 수 있다.
- * @see SQLException
- * @see RuntimeException
+ * <code>sql-error-codes.xml</code> 파일에 각 DBMS 에러 코드들을 매핑해놓았다.
+ *
+ * @see org.springframework.jdbc.support.sql-error-codes.xml
+ * @see <a href="https://github.com/spring-projects/spring-framework/blob/v5.3.19/spring-jdbc/src/main/resources/org/springframework/jdbc/support/sql-error-codes.xml">sql-error-codes.xml</a>
+ * @see org.springframework.jdbc.support.SQLExceptionTranslator
+ * @see org.springframework.jdbc.support.SQLErrorCodeSQLExceptionTranslator
+ * @see org.springframework.jdbc.support.SQLExceptionSubclassTranslator
+ * @see org.springframework.jdbc.support.SQLStateSQLExceptionTranslator
  */
 @Slf4j
-public class MemberRepositoryV5WithRuntimeException implements MemberRepository {
+public class MemberRepositoryV6WithExceptionTranslator implements MemberRepository {
 
     private final DataSource dataSource;
+    private final SQLExceptionTranslator exceptionTranslator;
 
-    public MemberRepositoryV5WithRuntimeException(DataSource dataSource) {
+    public MemberRepositoryV6WithExceptionTranslator(DataSource dataSource) {
         this.dataSource = dataSource;
+        this.exceptionTranslator = new SQLErrorCodeSQLExceptionTranslator(dataSource);
     }
 
     /**
@@ -53,7 +59,7 @@ public class MemberRepositoryV5WithRuntimeException implements MemberRepository 
             return member;
         } catch (SQLException e) {
             log.error(e.toString(), e);
-            throw new SQLRuntimeException(e);
+            throw exceptionTranslator.translate("save 중 에러", sql, e);
         } finally {
             close(connection, preparedStatement);
         }
@@ -64,8 +70,6 @@ public class MemberRepositoryV5WithRuntimeException implements MemberRepository 
      *
      * @param memberId 사용자 ID
      * @return 사용자
-     * @throws SQLException
-     * @throws NoSuchElementException 조회된 사용자가 없는 경우
      * @see ResultSet#next()
      * @see org.h2.jdbc.JdbcResultSet#next()
      * @see com.zaxxer.hikari.pool.HikariProxyResultSet#next()
@@ -93,7 +97,7 @@ public class MemberRepositoryV5WithRuntimeException implements MemberRepository 
             }
         } catch (SQLException e) {
             log.error(e.toString(), e);
-            throw new SQLRuntimeException(e);
+            throw exceptionTranslator.translate("findById 중 에러", sql, e);
         } finally {
             close(connection, preparedStatement, resultSet);
         }
@@ -126,7 +130,6 @@ public class MemberRepositoryV5WithRuntimeException implements MemberRepository 
      *
      * @param memberId 사용자 ID
      * @return 삭제된 사용자 수
-     * @throws SQLException
      */
     public int delete(String memberId) {
         String sql = "DELETE FROM member WHERE member_id = ?";
@@ -143,7 +146,7 @@ public class MemberRepositoryV5WithRuntimeException implements MemberRepository 
             return rowCount;
         } catch (SQLException e) {
             log.error(e.toString(), e);
-            throw new SQLRuntimeException(e);
+            throw exceptionTranslator.translate("delete 중 에러", sql, e);
         } finally {
             close(connection, preparedStatement);
         }

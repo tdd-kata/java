@@ -23,7 +23,9 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-jdbc'
 
     // H2 Database
-    runtimeOnly 'com.h2database:h2'
+    runtimeOnly 'com.h2database:h2:1.4.200'
+    // 테스트에서 ErrorCode 사용
+    testCompileOnly 'com.h2database:h2:1.4.200'
 
     // Lombok
     compileOnly 'org.projectlombok:lombok'

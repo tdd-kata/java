@@ -9,9 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
+import org.springframework.dao.DuplicateKeyException;
 import org.xpdojo.jdbc.domain.Member;
 import org.xpdojo.jdbc.repository.MemberRepository;
-import org.xpdojo.jdbc.repository.MemberRepositoryV5WithRuntimeException;
+import org.xpdojo.jdbc.repository.MemberRepositoryV6WithExceptionTranslator;
 
 import javax.sql.DataSource;
 
@@ -47,7 +48,7 @@ class MemberServiceV5RuntimeExceptionTest {
         /**
          * 트랜잭션 처리를 위한 DataSource를 생성한다.
          * 설정 파일(application.yaml)에 별도로 설정하지 않으면 인메모리 DB를 사용한다.
-         *
+         * <p>
          * conn0: url=jdbc:h2:tcp://localhost:9092/test user=SA class=class com.zaxxer.hikari.pool.HikariProxyConnection
          */
         private final DataSource dataSource;
@@ -58,7 +59,8 @@ class MemberServiceV5RuntimeExceptionTest {
 
         @Bean
         MemberRepository memberRepository() {
-            return new MemberRepositoryV5WithRuntimeException(dataSource);
+            // return new MemberRepositoryV5WithRuntimeException(dataSource);
+            return new MemberRepositoryV6WithExceptionTranslator(dataSource);
         }
 
         @Bean
@@ -126,5 +128,21 @@ class MemberServiceV5RuntimeExceptionTest {
         Member findMemberException = memberRepository.findById(memberException.getId());
         assertThat(findMemberA.getMoney()).isEqualTo(10_000); // 정상적으로 rollback 된다.
         assertThat(findMemberException.getMoney()).isEqualTo(10_000);
+    }
+
+    @Test
+    @DisplayName("ExceptionHandler를 사용해서 예외 추상화")
+    void sut_exception_translator() {
+        // given
+        Member memberA1 = new Member(MEMBER_A, 10_000);
+        Member memberA2 = new Member(MEMBER_A, 10_000);
+
+        // when
+        memberRepository.save(memberA1);
+        assertThatThrownBy(() -> memberRepository.save(memberA2))
+                .isInstanceOf(DuplicateKeyException.class);
+
+        // tear down
+        memberRepository.delete(memberA1.getId());
     }
 }
