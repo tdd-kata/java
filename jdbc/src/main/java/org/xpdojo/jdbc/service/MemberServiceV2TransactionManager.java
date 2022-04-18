@@ -1,7 +1,6 @@
 package org.xpdojo.jdbc.service;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
@@ -11,7 +10,6 @@ import org.xpdojo.jdbc.repository.MemberRepositoryV3WithTransactionManager;
 import java.sql.SQLException;
 
 @Slf4j
-@Service
 public class MemberServiceV2TransactionManager {
 
     private final PlatformTransactionManager transactionManager;

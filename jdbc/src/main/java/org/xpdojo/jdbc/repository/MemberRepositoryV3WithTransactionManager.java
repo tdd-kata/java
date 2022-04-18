@@ -3,7 +3,6 @@ package org.xpdojo.jdbc.repository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.jdbc.support.JdbcUtils;
-import org.springframework.stereotype.Repository;
 import org.xpdojo.jdbc.domain.Member;
 
 import javax.sql.DataSource;
@@ -20,7 +19,6 @@ import java.util.NoSuchElementException;
  * @see org.springframework.transaction.PlatformTransactionManager
  */
 @Slf4j
-@Repository
 public class MemberRepositoryV3WithTransactionManager {
 
     private final DataSource dataSource;

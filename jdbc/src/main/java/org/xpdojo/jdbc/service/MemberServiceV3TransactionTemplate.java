@@ -1,7 +1,6 @@
 package org.xpdojo.jdbc.service;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
 import org.xpdojo.jdbc.domain.Member;
@@ -13,7 +12,6 @@ import java.sql.SQLException;
  * @see TransactionTemplate
  */
 @Slf4j
-@Service
 public class MemberServiceV3TransactionTemplate {
 
     private final TransactionTemplate transactionTemplate;

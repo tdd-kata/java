@@ -1,7 +1,6 @@
 package org.xpdojo.jdbc.repository;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Repository;
 import org.xpdojo.jdbc.connection.DatabaseConnectionUtil;
 import org.xpdojo.jdbc.domain.Member;
 
@@ -16,7 +15,6 @@ import java.util.NoSuchElementException;
  * JDBC - DataSource, JdbcUtils
  */
 @Slf4j
-@Repository
 public class MemberRepositoryV1WithDataSource {
 
     private final DataSource dataSource;

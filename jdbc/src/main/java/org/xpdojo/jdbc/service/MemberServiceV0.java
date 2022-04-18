@@ -1,6 +1,5 @@
 package org.xpdojo.jdbc.service;
 
-import org.springframework.stereotype.Service;
 import org.xpdojo.jdbc.domain.Member;
 import org.xpdojo.jdbc.repository.MemberRepositoryV1WithDataSource;
 
@@ -8,7 +7,6 @@ import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-@Service
 public class MemberServiceV0 {
 
     private final DataSource dataSource;

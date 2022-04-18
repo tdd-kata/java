@@ -1,7 +1,6 @@
 package org.xpdojo.jdbc.service;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
 import org.xpdojo.jdbc.domain.Member;
 import org.xpdojo.jdbc.repository.MemberRepositoryV2WithTransaction;
 
@@ -10,7 +9,6 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 @Slf4j
-@Service
 public class MemberServiceV1Transaction {
 
     private final DataSource dataSource;
