@@ -13,7 +13,7 @@ class BeanFactoryTest {
     void sut_bean_factory() {
         BeanFactory xmlFactory = new ClassPathXmlApplicationContext("config.xml");
         String hello = xmlFactory.getBean("hello", String.class);
-        assertThat(hello).isEqualTo("hello");
+        assertThat(hello).isEqualTo("hi");
 
         BeanFactory javaFactory = new AnnotationConfigApplicationContext(BeanFactoryConfig.class);
         String hi = javaFactory.getBean("hi", String.class);
