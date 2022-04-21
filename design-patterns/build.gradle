@@ -13,8 +13,21 @@ repositories {
 }
 
 dependencies {
+
+    // Sprig boot
     implementation 'org.springframework.boot:spring-boot-starter'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+
+    // Spring test
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+    // Lombok
+    compileOnly 'org.projectlombok:lombok:1.18.+'
+    annotationProcessor 'org.projectlombok:lombok:1.18.+'
+
+    // Lombok for test
+    testCompileOnly 'org.projectlombok:lombok:1.18.+'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.+'
 }
 
 tasks.named('test') {
