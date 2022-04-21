@@ -1,4 +1,7 @@
-package org.xpdojo.designpatterns._01_creational_patterns._03_builder;
+package org.xpdojo.designpatterns._01_creational_patterns._03_builder.tour.director;
+
+import org.xpdojo.designpatterns._01_creational_patterns._03_builder.tour.plan.TourPlan;
+import org.xpdojo.designpatterns._01_creational_patterns._03_builder.tour.builder.TourPlanBuilder;
 
 import java.time.LocalDate;
 

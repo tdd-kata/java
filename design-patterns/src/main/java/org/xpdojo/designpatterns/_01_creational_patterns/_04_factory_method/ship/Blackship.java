@@ -1,4 +1,4 @@
-package org.xpdojo.designpatterns._01_creational_patterns._04_factory_method;
+package org.xpdojo.designpatterns._01_creational_patterns._04_factory_method.ship;
 
 public class Blackship extends Ship {
 
