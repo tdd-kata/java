@@ -1,6 +1,9 @@
 package org.xpdojo.designpatterns._01_creational_patterns._05_abstract_factory;
 
 import org.junit.jupiter.api.Test;
+import org.xpdojo.designpatterns._01_creational_patterns._05_abstract_factory.factory.GUIFactory;
+import org.xpdojo.designpatterns._01_creational_patterns._05_abstract_factory.factory.MacFactory;
+import org.xpdojo.designpatterns._01_creational_patterns._05_abstract_factory.factory.WindowsFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.fail;

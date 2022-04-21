@@ -1,6 +1,10 @@
 package org.xpdojo.designpatterns._01_creational_patterns._04_factory_method;
 
 import org.junit.jupiter.api.Test;
+import org.xpdojo.designpatterns._01_creational_patterns._04_factory_method.factory.BlackshipFactory;
+import org.xpdojo.designpatterns._01_creational_patterns._04_factory_method.factory.ShipFactory;
+import org.xpdojo.designpatterns._01_creational_patterns._04_factory_method.factory.WhiteshipFactory;
+import org.xpdojo.designpatterns._01_creational_patterns._04_factory_method.ship.Ship;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

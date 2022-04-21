@@ -3,6 +3,10 @@ package org.xpdojo.designpatterns._01_creational_patterns._03_builder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.xpdojo.designpatterns._01_creational_patterns._03_builder.tour.builder.DefaultTourBuilder;
+import org.xpdojo.designpatterns._01_creational_patterns._03_builder.tour.director.TourDirector;
+import org.xpdojo.designpatterns._01_creational_patterns._03_builder.tour.plan.DetailPlan;
+import org.xpdojo.designpatterns._01_creational_patterns._03_builder.tour.plan.TourPlan;
 
 import java.util.List;
 
