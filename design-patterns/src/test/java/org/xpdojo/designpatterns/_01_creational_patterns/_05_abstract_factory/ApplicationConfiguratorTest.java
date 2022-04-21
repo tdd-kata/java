@@ -32,8 +32,8 @@ class ApplicationConfiguratorTest {
         Application app = new Application(factory);
         app.createUI();
 
-        assertThat(app.paint()).isEqualTo("Windows button");
-        assertThat(app.isChecked()).isTrue();
+        assertThat(app.paint()).isEqualTo("Mac button");
+        assertThat(app.isChecked()).isFalse();
     }
 
     private GUIFactory getGuiFactory(String osName) {
