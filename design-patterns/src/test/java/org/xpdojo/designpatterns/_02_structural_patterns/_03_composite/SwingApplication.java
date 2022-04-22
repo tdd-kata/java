@@ -8,7 +8,7 @@ public class SwingApplication {
 
     private SwingApplication() {
     }
-    
+
     public static void main(String[] args) {
         // JFrame == Composite
         // java.awt.Component == Component
