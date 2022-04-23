@@ -41,14 +41,14 @@ class ConsoleTest {
         ExecutorService executorService = Executors.newFixedThreadPool(1);
         executorService.submit(light::on);
         executorService.submit(game::start);
-        Thread.sleep(1_000);
+        Thread.sleep(500);
 
         assertThat(light.isOn()).isTrue();
         assertThat(game.isStarted()).isTrue();
 
         executorService.submit(game::stop);
         executorService.submit(light::off);
-        Thread.sleep(1_000);
+        Thread.sleep(500);
 
         assertThat(game.isStarted()).isFalse();
         assertThat(light.isOn()).isFalse();
