@@ -12,7 +12,7 @@
     <groupId>com.markruler</groupId>
     <artifactId>batch</artifactId>
     <version>0.1.0</version>
-    <name>spring-batch-boot</name>
+    <name>spring-boot-batch</name>
     <description>Batch project with Spring Boot</description>
 
     <properties>
