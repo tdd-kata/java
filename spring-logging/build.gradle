@@ -28,6 +28,16 @@ dependencies {
     // Spring Web
     implementation 'org.springframework.boot:spring-boot-starter-web'
 
+    // Spring Boot JDBC
+    implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+
+    // in-memory DB
+    implementation 'com.h2database:h2'
+
+    // Data Processing -> spring-boot-starter-web
+    // implementation 'com.fasterxml.jackson.core:jackson-core:2.13.2.2'
+    // implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.2.2'
+
     // Jackson YAML for Log4j2 yaml configuration
     implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.13.2'
 

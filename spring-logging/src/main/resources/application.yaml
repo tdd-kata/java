@@ -5,3 +5,17 @@ logging:
     org.springframework.web: info
   #  config: classpath:bak/log4j2.xml
   config: classpath:log4j2.yaml
+
+spring:
+  datasource:
+    embedded-database-connection: h2
+    hikari:
+      # http://www.h2database.com/html/features.html
+      # DB2, Derby, HSQLDB, MSSQLServer, MySQL, Oracle, PostgreSQL
+      jdbc-url: jdbc:h2:mem:test;MODE=PostgreSQL
+      username: sa
+      password:
+  h2:
+    console:
+      enabled: true
+      path: /h2-console

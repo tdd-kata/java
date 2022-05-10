@@ -55,6 +55,9 @@
         <Logger name="org.springframework" level="info">
             <AppenderRef ref="Async"/>
         </Logger>
+
+        <Logger name="org.springframework.jdbc" level="debug"/>
+
     </Loggers>
 
 </Configuration>
