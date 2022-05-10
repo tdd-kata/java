@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- https://logging.apache.org/log4j/2.x/manual/configuration.html -->
+<Configuration status="warn" strict="true" name="MyApp">
+    <Properties>
+        <Property name="baseDir" value="${sys:user.home}/markruler/logs"/>
+        <Property name="defaultPatternLayout" value="[%d{yyyy-MM-dd HH:mm:ss}:%X{dd.trace_id:-0} %X{dd.span_id:-0}] %-5level %logger{35} - %msg%n"/>
+    </Properties>
+
+    <Appenders>
+        <Console name="STDOUT" target="SYSTEM_OUT">
+            <PatternLayout pattern="${defaultPatternLayout}"/>
+        </Console>
+
+        <RollingFile name="DefaultRollingFile"
+                     fileName="${baseDir}/info.log"
+                     filePattern="${baseDir}/archive/info.%d{yyyy-MM-dd_HH}.%i.log">
+            <PatternLayout pattern="${defaultPatternLayout}"/>
+            <TimeBasedTriggeringPolicy interval="10" modulate="true"/>
+            <SizeBasedTriggeringPolicy size="200"/>
+        </RollingFile>
+
+        <RollingFile name="ErrorRollingFile"
+                     fileName="${baseDir}/error.log"
+                     filePattern="${baseDir}/archive/error.%d{yyyy-MM-dd_HH}.%i.log">
+            <Filters>
+                <ThresholdFilter level="error" onMatch="accept" onMismatch="deny"/>
+            </Filters>
+            <PatternLayout pattern="${defaultPatternLayout}"/>
+            <TimeBasedTriggeringPolicy interval="2" modulate="true"/>
+            <SizeBasedTriggeringPolicy size="200KB"/>
+        </RollingFile>
+
+        <RollingFile name="JsonRollingFile"
+                     fileName="${baseDir}/json.log"
+                     filePattern="${baseDir}/archive/json.%d{yyyy-MM-dd_HH}.%i.log">
+            <JsonLayout properties="true"/>
+            <TimeBasedTriggeringPolicy interval="2" modulate="true"/>
+            <SizeBasedTriggeringPolicy size="200KB"/>
+        </RollingFile>
+
+        <Async name="Async" bufferSize="2048">
+            <AppenderRef ref="DefaultRollingFile"/>
+            <AppenderRef ref="ErrorRollingFile"/>
+            <AppenderRef ref="JsonRollingFile"/>
+        </Async>
+    </Appenders>
+
+    <Loggers>
+        <Root level="debug">
+            <AppenderRef ref="STDOUT"/>
+            <AppenderRef ref="Async"/>
+        </Root>
+
+        <Logger name="org.springframework" level="info">
+            <AppenderRef ref="Async"/>
+        </Logger>
+    </Loggers>
+
+</Configuration>

@@ -1,0 +1,84 @@
+# com.fasterxml.jackson.dataformat:jackson-dataformat-yaml 라이브러리 필요
+Configuration:
+  status: warn
+
+  Properties:
+    Property:
+      - name: baseDir
+        value: ${sys:user.home}/markruler/logs
+      - name: defaultPattern
+        value: "[%d{yyyy-MM-dd HH:mm:ss}:%X{dd.trace_id:-0} %X{dd.span_id:-0}] %-5level %logger{35} - %msg%n"
+
+  Appenders:
+    Console:
+      name: STDOUT
+      PatternLayout:
+        Pattern: ${defaultPattern}
+
+    RollingFile:
+      - name: DefaultRollingFile
+        fileName: ${baseDir}/info.log
+        filePattern: "${baseDir}/archive/info.%d{yyyy-MM-dd_HH}.%i.log"
+        PatternLayout:
+          Pattern: ${defaultPattern}
+        Policies:
+          TimeBasedTriggeringPolicy:
+            interval: 2 # 2 hour
+            modulate: true # 0시를 기준으로 시간을 조정해서 rollout
+          SizeBasedTriggeringPolicy:
+            size: 200KB
+        DefaultRollOverStrategy:
+          max: 10
+      - name: ErrorRollingFile
+        fileName: ${baseDir}/error.log
+        filePattern: "${baseDir}/archive/error.%d{yyyy-MM-dd_HH}.%i.log"
+        Filters:
+          ThresholdFilter:
+            level: error
+            onMatch: accept
+            onMismatch: deny
+        PatternLayout:
+          Pattern: ${defaultPattern}
+        Policies:
+          TimeBasedTriggeringPolicy:
+            interval: 2 # 2 hour
+            modulate: true # 0시를 기준으로 시간을 조정해서 rollout
+          SizeBasedTriggeringPolicy:
+            size: 200KB
+        DefaultRollOverStrategy:
+          max: 10
+      - name: JsonRollingFile
+        fileName: ${baseDir}/json.log
+        filePattern: "${baseDir}/archive/json.%d{yyyy-MM-dd_HH}.%i.log"
+        JsonLayout:
+          properties: true
+        Policies:
+          TimeBasedTriggeringPolicy:
+            interval: 1 # 2 hour
+            modulate: true # 0시를 기준으로 시간을 조정해서 rollout
+          SizeBasedTriggeringPolicy:
+            size: 300KB
+        DefaultRollOverStrategy:
+          max: 10
+
+    Async:
+      - name: AsyncLog
+        bufferSize: 2048
+        AppenderRef:
+          - ref: DefaultRollingFile
+          - ref: ErrorRollingFile
+          - ref: JsonRollingFile
+
+  Loggers:
+    Logger:
+      - name: org.springframework
+        level: debug
+        additivity: true
+        AppenderRef:
+          - ref: AsyncLog
+
+    Root:
+      level: info
+      AppenderRef:
+        - ref: STDOUT
+        - ref: AsyncLog

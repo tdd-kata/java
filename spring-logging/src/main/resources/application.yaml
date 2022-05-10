@@ -1,0 +1,7 @@
+# logback
+logging:
+  level:
+    root: debug
+    org.springframework.web: info
+  #  config: classpath:bak/log4j2.xml
+  config: classpath:log4j2.yaml
