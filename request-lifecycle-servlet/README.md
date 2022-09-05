@@ -1,6 +1,6 @@
 # 요청 흐름 순서
 
-![Request Lifecycle](request-lifecycle.png)
+![Request Lifecycle](http-servlet-request-flow.png)
 
 ```bash
 $ gradle bootRun
