@@ -1,0 +1,51 @@
+plugins {
+    // Java
+    id 'java'
+
+    // Spring
+    id 'org.springframework.boot' version '2.6.3'
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+}
+
+group = 'com.markruler'
+// version = '0.1.0'
+sourceCompatibility = '1.8'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+
+    // Spring Web, MVC
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+
+    // Spring AOP
+    // implementation 'org.aspectj:aspectjweaver:1.9.7'
+    implementation 'org.springframework.boot:spring-boot-starter-aop'
+
+    // Jackson for JSON
+    implementation 'com.fasterxml.jackson.core:jackson-core:2.11.3'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.11.3'
+
+    // Spring Validation
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+    // Spring Testing
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
+
+bootRun {
+    jvmArgs = [
+            "-javaagent:/home/markruler/dd-java-agent.jar",
+            "-XX:FlightRecorderOptions=stackdepth=256",
+            "-Ddd.profiling.enabled=true",
+            "-Ddd.logs.injection=true",
+            "-Ddd.service=dd-demo",
+            "-Ddd.env=production",
+    ]
+}

@@ -1,0 +1,5 @@
+logging:
+  level:
+    root: info
+#  pattern:
+#    console: "%highlight(%d{ISO8601}) %red(%-5level) [%blue(%t)] %yellow(%C{1.}): %msg%n%throwable"
