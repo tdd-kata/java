@@ -2,6 +2,9 @@ plugins {
     id 'org.springframework.boot' version '2.7.3'
     id 'io.spring.dependency-management' version '1.0.13.RELEASE'
     id 'java'
+
+    // https://docs.gradle.org/7.5.1/userguide/checkstyle_plugin.html
+    id 'checkstyle'
 }
 
 group = 'org.xpdojo'
@@ -47,3 +50,8 @@ bootRun {
     environment("spring.profiles.active", profile)
 }
 
+// ./gradlew :admin:check
+// ./gradlew :admin:build
+checkstyle {
+    toolVersion = '9.3'
+}
