@@ -38,6 +38,8 @@ dependencies {
 tasks.named('test') {
     useJUnitPlatform()
 }
+test.dependsOn(':search:test')
+test.dependsOn(':aggregate:test')
 
 def profile = "local"
 bootRun {
