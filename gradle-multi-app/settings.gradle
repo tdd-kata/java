@@ -1,0 +1,10 @@
+rootProject.name = 'gradle-multi-app'
+
+// applications
+include 'admin'
+include 'demo'
+
+// modules
+include 'search'
+include 'aggregate'
+
