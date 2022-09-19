@@ -1,0 +1,5 @@
+rootProject.name = 'gradle-module'
+include 'demo'
+include 'search'
+include 'aggregate'
+
