@@ -1,6 +1,5 @@
 plugins {
     id 'java'
-    id 'org.ec4j.editorconfig' version '0.0.3'
     id 'checkstyle'
 }
 
@@ -17,18 +16,10 @@ allprojects {
 // https://docs.gradle.org/7.5.1/dsl/org.gradle.api.Project.html#org.gradle.api.Project:subprojects(groovy.lang.Closure)
 subprojects {
     apply plugin: 'java'
-    apply plugin: 'org.ec4j.editorconfig'
     apply plugin: 'checkstyle'
 
     sourceCompatibility = JavaVersion.VERSION_1_8
     targetCompatibility = JavaVersion.VERSION_1_8
-
-
-    editorconfig {
-        excludes = ["build"]
-    }
-
-    check.dependsOn editorconfigCheck
 
     checkstyle {
         configFile = file("${project.rootDir}/config/checkstyle/checkstyle.xml")
@@ -38,7 +29,7 @@ subprojects {
         maxWarnings = 0
     }
 
-    tasks.named('test') {
+    test {
         useJUnitPlatform()
     }
 
