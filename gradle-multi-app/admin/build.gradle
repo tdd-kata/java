@@ -7,18 +7,12 @@ plugins {
     id 'checkstyle'
 }
 
-group = 'org.xpdojo'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '1.8'
 
 configurations {
     compileOnly {
         extendsFrom annotationProcessor
     }
-}
-
-repositories {
-    mavenCentral()
 }
 
 dependencies {
@@ -38,9 +32,6 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
-tasks.named('test') {
-    useJUnitPlatform()
-}
 test.dependsOn(':search:test')
 test.dependsOn(':aggregate:test')
 
@@ -48,10 +39,4 @@ def profile = "local"
 bootRun {
     // args = ["--spring.profiles.active=" + profile]
     environment("spring.profiles.active", profile)
-}
-
-// ./gradlew :admin:check
-// ./gradlew :admin:build
-checkstyle {
-    toolVersion = '9.3'
 }
