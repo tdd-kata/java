@@ -18,7 +18,7 @@ configurations {
 dependencies {
     // Modules
     implementation project(':search')
-    implementation project(':aggregate')
+    implementation project(':aggregation')
 
     // Web Application
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
@@ -33,7 +33,7 @@ dependencies {
 }
 
 test.dependsOn(':search:test')
-test.dependsOn(':aggregate:test')
+test.dependsOn(':aggregation:test')
 
 def profile = "local"
 bootRun {

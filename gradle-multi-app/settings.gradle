@@ -6,5 +6,5 @@ include 'demo'
 
 // modules
 include 'search'
-include 'aggregate'
+include 'aggregation'
 
