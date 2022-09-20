@@ -2,10 +2,10 @@ package org.xpdojo.admin.api;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.xpdojo.aggregate.application.CountOptionsService;
-import org.xpdojo.aggregate.dto.Option;
-import org.xpdojo.search.application.SearchVehicleService;
-import org.xpdojo.search.dto.Product;
+import org.xpdojo.aggregation.application.CountOptionsService;
+import org.xpdojo.aggregation.dto.Option;
+import org.xpdojo.search.SearchVehicleService;
+import org.xpdojo.search.ProductDto;
 
 import java.util.List;
 
@@ -29,7 +29,7 @@ public class AdminRestController {
     }
 
     @GetMapping("/products")
-    public List<Product> listProducts() {
+    public List<ProductDto> listProducts() {
         return searchVehicleService.listProducts();
     }
 
