@@ -22,8 +22,11 @@ import java.util.concurrent.TimeUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+// @org.springframework.test.context.ActiveProfiles("standalone") // 해당 profile을 사용하도록 설정됨.
+@org.junit.jupiter.api.condition.EnabledIfSystemProperty(named = "spring.profiles.active", matches = "standalone") // 특정 profile일 때만 실행됨.
+// @org.springframework.context.annotation.Profile("standalone") // SpringBootTest 에 적용안됨.
 @SpringBootTest
-class RedisTemplateTest {
+class RedisStandaloneTemplateTest {
 
     private final String testKey = "test-key";
 

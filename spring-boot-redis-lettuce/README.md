@@ -2,13 +2,15 @@
 
 ## Redis 실행
 
+- [xpdojo/kv-store/redis](https://github.com/xpdojo/kv-store/blob/main/redis)
+
 ```shell
-sudo docker run \
-  --name=redis-local \
-  --detach \
-  --restart=always \
-  --publish 6379:6379 \
-  redis:7.0.5-alpine
+#sudo docker run \
+#  --name=redis-local \
+#  --detach \
+#  --restart=always \
+#  --publish 6379:6379 \
+#  redis:7.0.5-alpine
 ```
 
 ## 테스트 실행

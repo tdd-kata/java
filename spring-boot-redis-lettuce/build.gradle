@@ -24,6 +24,7 @@ dependencies {
 
     // Redis
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.14.1'
 
     // Lombok
     compileOnly 'org.projectlombok:lombok'
@@ -34,6 +35,22 @@ dependencies {
     testImplementation 'org.assertj:assertj-core:3.23.+'
 }
 
+// https://docs.spring.io/spring-boot/docs/2.7.4/gradle-plugin/reference/htmlsingle/#running-your-application.passing-arguments
+// ./gradlew bootRun --args='--spring.profiles.active=dev'
+bootRun {
+    // java -jar demo/build/libs/demo-0.0.1-SNAPSHOT.jar --spring.profiles.active=dev
+    // args = ["--spring.profiles.active=" + profile]
+
+    // def profile = "dev"
+    // environment("spring.profiles.active", profile)
+
+    // https://docs.spring.io/spring-boot/docs/2.7.4/gradle-plugin/reference/htmlsingle/#running-your-application.passing-system-properties
+    // ./gradlew bootRun -P profile=dev
+    systemProperty("spring.profiles.active", findProperty("profile") ?: "standalone")
+    systemProperty("spring.output.ansi.enabled", "always") // coloring application output
+}
+
 tasks.named('test') {
     useJUnitPlatform()
+    systemProperty("spring.profiles.active", findProperty("profile") ?: "cluster")
 }
