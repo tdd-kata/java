@@ -1,12 +1,16 @@
 package org.xpdojo.webspringcontainer;
 
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Objects;
 
-@RequestMapping("/hello")
+/**
+ * Spring Container는
+ * <code>@Controller</code>에 매핑 정보가 담겨 있을 거라고 추측하고
+ * 매핑 정보를 찾아서 처리한다.
+ */
+@RestController
 public class HelloController {
 
     private final HelloService helloService;
@@ -15,8 +19,7 @@ public class HelloController {
         this.helloService = helloService;
     }
 
-    @GetMapping
-    @ResponseBody
+    @GetMapping("/hello")
     public String hello(String name) {
         return helloService.sayHello(Objects.requireNonNull(name));
     }
