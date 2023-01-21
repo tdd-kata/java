@@ -17,12 +17,14 @@ import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.MediaType.TEXT_PLAIN_VALUE;
 
 /**
- * <pre>
- *     ./gradlew bootRun
- * </pre>
+ * Web Container는 Web 요청을 처리하고 응답하기 위한 Web Component를 가진다.
+ * Web Container는 Web Component를 관리하고 실행한다.
+ * <p>
+ * Java에서 Web Container는 Servlet Container라고 명명했다.
+ * Servlet Container는 Servlet, Filter, Listener를 관리하고 실행한다.
  *
  * <pre>
- *     http -v :8080/hello
+ *     ./gradlew bootRun
  * </pre>
  */
 public class DemoApplication {
@@ -41,7 +43,7 @@ public class DemoApplication {
                                 throws ServletException, IOException {
                             if (request.getRequestURI().equals("/hello")
                                     && request.getMethod().equals(GET.name())) {
-                                // http -v GET ":8080/hello?name=World"
+                                // http -v get ":8080/hello?name=Spring"
                                 String name = request.getParameter("name");
                                 response.setStatus(OK.value());
                                 response.setHeader(CONTENT_TYPE, TEXT_PLAIN_VALUE);
@@ -49,12 +51,12 @@ public class DemoApplication {
                             } else if (request.getRequestURI().equals("/user")) {
                                 //
                             } else {
-                                // http -v POST ":8080/hello?name=World"
+                                // http -v post ":8080/hello?name=World"
                                 response.setStatus(NOT_FOUND.value());
                             }
                         }
                     })
-                    .addMapping("/hello");
+                    .addMapping("/*");
         });
 
         webServer.start();
