@@ -92,8 +92,9 @@ spring init --list
 ```
 
 ```sh
-spring init -d=web,jpa --type=maven-project demo
-spring init -d=web,lombok --type=gradle-project demo
+# spring init -d=web,jpa --type=maven-project demo
+# spring init -d=web,lombok --type=gradle-project demo
+spring init --boot-version=2.7.8 --java-version=11 --dependencies=web --type=gradle-project --group-id=org.xpdojo --version=0.1.0 web-spring-container
 ```
 
 ### cURL
