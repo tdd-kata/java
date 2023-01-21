@@ -9,21 +9,26 @@ import org.springframework.web.servlet.DispatcherServlet;
 public class DemoApplication {
 
     public static void main(String[] args) {
-        GenericWebApplicationContext applicationContext = new GenericWebApplicationContext();
+        GenericWebApplicationContext applicationContext = new GenericWebApplicationContext() {
+            @Override
+            protected void onRefresh() {
+                super.onRefresh();
+
+                ServletWebServerFactory factory = new TomcatServletWebServerFactory();
+
+                WebServer webServer = factory.getWebServer(servletContext -> {
+                    servletContext.addServlet("dispatcherServlet",
+                                    new DispatcherServlet(this)) // require GenericWebApplicationContext
+                            .addMapping("/*");
+                });
+
+                webServer.start();
+            }
+        };
         // Bean 등록 순서와 상관없이 DI가 가능하다.
         applicationContext.registerBean(HelloController.class);
         applicationContext.registerBean(SimpleHelloService.class);
         applicationContext.refresh();
-
-        ServletWebServerFactory factory = new TomcatServletWebServerFactory();
-
-        WebServer webServer = factory.getWebServer(servletContext -> {
-            servletContext.addServlet("dispatcherServlet",
-                            new DispatcherServlet(applicationContext)) // require GenericWebApplicationContext
-                    .addMapping("/*");
-        });
-
-        webServer.start();
     }
 
 }
