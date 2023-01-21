@@ -3,6 +3,7 @@ package org.xpdojo.webspringcontainer;
 import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
 import org.springframework.boot.web.server.WebServer;
 import org.springframework.boot.web.servlet.server.ServletWebServerFactory;
+import org.springframework.context.support.GenericApplicationContext;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -19,11 +20,13 @@ import static org.springframework.http.MediaType.TEXT_PLAIN_VALUE;
 public class DemoApplication {
 
     public static void main(String[] args) {
+        GenericApplicationContext applicationContext = new GenericApplicationContext();
+        applicationContext.registerBean(HelloController.class);
+        applicationContext.refresh();
+
         ServletWebServerFactory factory = new TomcatServletWebServerFactory();
 
         WebServer webServer = factory.getWebServer(servletContext -> {
-            HelloController helloController = new HelloController();
-
             servletContext.addServlet("front-controller", new HttpServlet() {
                         @Override
                         protected void service(
@@ -34,6 +37,7 @@ public class DemoApplication {
                                     && request.getMethod().equals(GET.name())) {
                                 // http -v GET ":8080/hello?name=World"
                                 String name = request.getParameter("name");
+                                HelloController helloController = applicationContext.getBean(HelloController.class);
                                 response.setStatus(OK.value());
                                 response.setHeader(CONTENT_TYPE, TEXT_PLAIN_VALUE);
                                 response.getWriter().write(helloController.hello() + name);
