@@ -2,6 +2,7 @@ package org.xpdojo.app;
 
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.condition.ConditionEvaluationReport;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.env.Environment;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -31,6 +32,21 @@ public class DemoApplication {
         };
     }
 
+    /**
+     * -Ddebug
+     *
+     * <pre>
+     * ============================
+     * CONDITIONS EVALUATION REPORT
+     * ============================
+     * Positive matches:
+     * -----------------
+     * Negative matches:
+     * -----------------
+     * Exclusions:
+     * -----------
+     * </pre>
+     */
     public static void main(String[] args) {
         // MySpringApplication에서는 properties를 읽지 못함.
         // MySpringApplication.run(DemoApplication.class, args);

@@ -1,13 +1,17 @@
 package org.xpdojo.app.repository;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.xpdojo.MySpringBootTest;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
+/**
+ * <pre>
+ *     <code>@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)</code>
+ *     <code>@Transactional</code>
+ * </pre>
+ */
 @MySpringBootTest
 // @Rollback(false)
 class HelloRepositoryTest {

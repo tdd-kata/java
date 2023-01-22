@@ -8,6 +8,9 @@ import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+/**
+ * @see org.springframework.boot.test.autoconfigure.jdbc.JdbcTest
+ */
 @MySpringBootTest
 class DataSourceTest {
 

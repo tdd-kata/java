@@ -9,6 +9,12 @@ import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+/**
+ * <pre>
+ *     <code>@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)</code>
+ *     <code>@Transactional</code>
+ * </pre>
+ */
 @MySpringBootTest
 class HelloServiceCountTest {
 

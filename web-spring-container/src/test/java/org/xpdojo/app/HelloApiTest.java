@@ -10,6 +10,13 @@ import org.springframework.http.ResponseEntity;
 
 /**
  * 서버를 미리 실행시켜야 한다.
+ * <p>
+ * Spring Boot를 사용한다면 아래와 같이 DEFINED_PORT를 사용하면 된다.
+ *
+ * <pre>
+ *     <code>@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)</code>
+ *     <code>@Transactional</code>
+ * </pre>
  */
 class HelloApiTest {
 
