@@ -3,6 +3,9 @@ package org.xpdojo.autoconfigure.property;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 
+/**
+ * @see org.springframework.boot.autoconfigure.context.PropertyPlaceholderAutoConfiguration
+ */
 public class PropertyPlaceholderConfig {
 
     /**

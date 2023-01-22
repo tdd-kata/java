@@ -9,6 +9,9 @@ import org.springframework.core.env.Environment;
 
 import java.util.Map;
 
+/**
+ * @see org.springframework.boot.context.properties.ConfigurationPropertiesBindingPostProcessor
+ */
 // @MyAutoConfiguration
 public class PropertyPostProcessorConfig {
     @Bean

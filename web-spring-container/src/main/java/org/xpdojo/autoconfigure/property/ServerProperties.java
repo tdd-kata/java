@@ -1,5 +1,8 @@
 package org.xpdojo.autoconfigure.property;
 
+/**
+ * @see org.springframework.boot.autoconfigure.web.ServerProperties
+ */
 @MyConfigurationProperties(prefix = "localhost")
 public class ServerProperties {
 

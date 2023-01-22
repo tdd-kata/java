@@ -5,3 +5,4 @@ org.xpdojo.autoconfigure.JettyWebServerConfiguration
 org.xpdojo.autoconfigure.UndertowWebServerConfiguration
 #org.xpdojo.autoconfigure.property.PropertyPlaceholderConfig
 org.xpdojo.autoconfigure.property.PropertyPostProcessorConfig
+org.xpdojo.autoconfigure.datasource.DataSourceConfig

@@ -25,7 +25,7 @@ import java.lang.annotation.Target;
  * @see org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
+@Target({ElementType.TYPE, ElementType.METHOD})
 @Conditional(MyOnClassCondition.class)
 public @interface ConditionalOnMyClass {
     String value();
