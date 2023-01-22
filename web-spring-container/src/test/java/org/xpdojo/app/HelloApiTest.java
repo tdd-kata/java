@@ -13,11 +13,14 @@ import org.springframework.http.ResponseEntity;
  */
 class HelloApiTest {
 
+    String contextPath = "/api";
+    int port = 9090;
+
     @Test
     void helloApi() {
-        // http localhost:8080/hello?name=Spring
+        // http ${context}/hello?name=Spring
         TestRestTemplate rest = new TestRestTemplate();
-        ResponseEntity<String> response = rest.getForEntity("http://localhost:8080/hello?name={name}", String.class, "Spring");
+        ResponseEntity<String> response = rest.getForEntity("http://localhost:" + port + contextPath + "/hello?name={name}", String.class, "Spring");
 
         // status code 200
         // header(content-type) text/plain
@@ -32,9 +35,9 @@ class HelloApiTest {
 
     @Test
     void failsHelloApi() {
-        // http localhost:8080/hello
+        // http ${context}/hello
         TestRestTemplate rest = new TestRestTemplate();
-        ResponseEntity<String> response = rest.getForEntity("http://localhost:8080/hello", String.class);
+        ResponseEntity<String> response = rest.getForEntity("http://localhost:" + port + contextPath + "/hello", String.class);
 
         // status code 200
         // header(content-type) text/plain

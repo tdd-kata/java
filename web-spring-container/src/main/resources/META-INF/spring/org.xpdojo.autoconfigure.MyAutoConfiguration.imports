@@ -1,6 +1,7 @@
-# org.springframework.boot.autoconfigure.AutoConfiguration.imports
+#org.springframework.boot.autoconfigure.AutoConfiguration.imports
 org.xpdojo.autoconfigure.DispatcherServletConfiguration
 org.xpdojo.autoconfigure.TomcatWebServerConfiguration
 org.xpdojo.autoconfigure.JettyWebServerConfiguration
 org.xpdojo.autoconfigure.UndertowWebServerConfiguration
-org.xpdojo.autoconfigure.property.PropertyPlaceholderConfig
+#org.xpdojo.autoconfigure.property.PropertyPlaceholderConfig
+org.xpdojo.autoconfigure.property.PropertyPostProcessorConfig
