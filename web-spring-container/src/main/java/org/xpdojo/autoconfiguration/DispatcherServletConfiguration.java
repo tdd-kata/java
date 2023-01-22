@@ -1,10 +1,9 @@
 package org.xpdojo.autoconfiguration;
 
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.DispatcherServlet;
 
-@Configuration
+// @Configuration
 public class DispatcherServletConfiguration {
 
     @Bean

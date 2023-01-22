@@ -1,0 +1,2 @@
+org.xpdojo.autoconfiguration.DispatcherServletConfiguration
+org.xpdojo.autoconfiguration.WebServerConfiguration
