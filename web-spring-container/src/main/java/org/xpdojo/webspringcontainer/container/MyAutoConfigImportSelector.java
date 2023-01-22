@@ -3,7 +3,7 @@ package org.xpdojo.webspringcontainer.container;
 import org.springframework.boot.context.annotation.ImportCandidates;
 import org.springframework.context.annotation.DeferredImportSelector;
 import org.springframework.core.type.AnnotationMetadata;
-import org.xpdojo.autoconfiguration.MyAutoConfiguration;
+import org.xpdojo.autoconfigure.MyAutoConfiguration;
 
 import java.util.stream.StreamSupport;
 

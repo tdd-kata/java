@@ -1,0 +1,3 @@
+# org.springframework.boot.autoconfigure.AutoConfiguration.imports
+org.xpdojo.autoconfigure.DispatcherServletConfiguration
+org.xpdojo.autoconfigure.WebServerConfiguration

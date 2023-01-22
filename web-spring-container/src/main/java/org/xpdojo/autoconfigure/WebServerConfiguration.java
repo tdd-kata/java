@@ -1,4 +1,4 @@
-package org.xpdojo.autoconfiguration;
+package org.xpdojo.autoconfigure;
 
 import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
 import org.springframework.boot.web.servlet.server.ServletWebServerFactory;

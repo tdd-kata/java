@@ -1,4 +1,4 @@
-package org.xpdojo.autoconfiguration;
+package org.xpdojo.autoconfigure;
 
 import org.springframework.context.annotation.Configuration;
 
