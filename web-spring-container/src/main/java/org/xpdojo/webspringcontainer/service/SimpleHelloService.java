@@ -1,6 +1,6 @@
 package org.xpdojo.webspringcontainer.service;
 
-import org.xpdojo.webspringcontainer.MyComponent;
+import org.xpdojo.webspringcontainer.container.MyComponent;
 
 @MyComponent
 public class SimpleHelloService implements HelloService {
