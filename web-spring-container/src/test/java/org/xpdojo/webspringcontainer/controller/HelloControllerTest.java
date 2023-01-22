@@ -1,6 +1,7 @@
-package org.xpdojo.webspringcontainer;
+package org.xpdojo.webspringcontainer.controller;
 
 import org.junit.jupiter.api.Test;
+import org.xpdojo.webspringcontainer.controller.HelloController;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
