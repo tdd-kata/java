@@ -15,12 +15,12 @@ repositories {
 // ./gradlew dependencies --configuration compileClasspath
 dependencies {
 	implementation('org.springframework.boot:spring-boot-starter-web') {
-		exclude group: 'org.springframework.boot', module: 'spring-boot-starter-tomcat'
+		// exclude group: 'org.springframework.boot', module: 'spring-boot-starter-tomcat'
 	}
 
 	// https://docs.spring.io/spring-boot/docs/2.7.8/reference/htmlsingle/#using.build-systems.starters
 	// implementation 'org.springframework.boot:spring-boot-starter-jetty'
-	implementation 'org.springframework.boot:spring-boot-starter-undertow'
+	// implementation 'org.springframework.boot:spring-boot-starter-undertow'
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
