@@ -1,4 +1,4 @@
-package org.xpdojo.webspringcontainer.container;
+package org.xpdojo.container;
 
 import org.springframework.boot.web.server.WebServer;
 import org.springframework.boot.web.servlet.context.AnnotationConfigServletWebApplicationContext;

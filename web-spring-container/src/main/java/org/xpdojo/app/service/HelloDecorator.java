@@ -1,4 +1,4 @@
-package org.xpdojo.webspringcontainer.service;
+package org.xpdojo.app.service;
 
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;

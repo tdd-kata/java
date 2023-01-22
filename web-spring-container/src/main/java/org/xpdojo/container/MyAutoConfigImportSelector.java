@@ -1,4 +1,4 @@
-package org.xpdojo.webspringcontainer.container;
+package org.xpdojo.container;
 
 import org.springframework.boot.context.annotation.ImportCandidates;
 import org.springframework.context.annotation.DeferredImportSelector;

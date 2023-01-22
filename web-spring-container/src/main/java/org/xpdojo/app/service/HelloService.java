@@ -1,4 +1,4 @@
-package org.xpdojo.webspringcontainer.service;
+package org.xpdojo.app.service;
 
 public interface HelloService {
     String sayHello(String name);

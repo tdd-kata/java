@@ -1,4 +1,4 @@
-package org.xpdojo.webspringcontainer.service;
+package org.xpdojo.app.service;
 
 import org.junit.jupiter.api.Test;
 

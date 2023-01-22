@@ -1,4 +1,4 @@
-package org.xpdojo.webspringcontainer.container;
+package org.xpdojo.container;
 
 import org.springframework.stereotype.Component;
 
