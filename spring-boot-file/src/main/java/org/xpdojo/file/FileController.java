@@ -75,6 +75,23 @@ public class FileController {
         return "redirect:/";
     }
 
+    /**
+     * @see <a href="https://pqina.nl/filepond/docs/api/server/#load">Load</a>
+     * @see <a href="https://pqina.nl/filepond/docs/api/instance/properties/#files">Files</a>
+     */
+    @GetMapping(path = "/fileload/{path}")
+    public ResponseEntity<Resource> fileload(@PathVariable String path) throws IOException {
+        UrlResource resource = new UrlResource("file:" + fileService.getDirectory() + path);
+
+        String encodedUploadFileName = UriUtils.encode(path, StandardCharsets.UTF_8);
+        String contentDisposition = "inline; filename=\"" + encodedUploadFileName + "\"";
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, contentDisposition)
+                .header(HttpHeaders.CONTENT_TYPE, "image/" + path.substring(path.lastIndexOf(".") + 1))
+                .body(resource);
+    }
+
     @PostMapping(path = "/servlet", consumes = "multipart/form-data")
     public String servlet(
             HttpServletRequest servletRequest
@@ -97,7 +114,6 @@ public class FileController {
     @ResponseBody
     public Resource showImage(@PathVariable String path)
             throws MalformedURLException {
-        // 이미지 저장 먼저
         return new UrlResource("file:" + fileService.getDirectory() + path);
     }
 

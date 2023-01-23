@@ -47,7 +47,8 @@
 <table>
     <tr th:each="path, iter : ${filePaths}">
         <td><span th:text="${iter.count}"></span></td>
-        <td><img th:src="@{${'/images/' + path}}" alt="directory 확인 부탁"/></td>
+        <td><img th:src="@{${'/images/' + path}}" alt="directory 확인 부탁" style="max-height: 100px"/>
+        </td>
         <td><span th:text="${path}"></span></td>
         <td><a th:href="@{${'/download/' + path}}">download</a></td>
     </tr>
@@ -90,8 +91,29 @@
     // https://pqina.nl/filepond/docs/api/plugins/image-preview/
     FilePond.registerPlugin(FilePondPluginImagePreview);
 
+    const initialFileNames = [
+        '61.111.18.175_8080_main.png',
+        '6700 series.jpg',
+        '7500ars (7513).jpg',
+    ];
+
+    let initialFiles = [];
+
+    for (const initialFileName of initialFileNames) {
+        initialFiles.push({
+            // the server file reference
+            source: initialFileName,
+
+            // set type to local to indicate an already uploaded file
+            options: {
+                type: 'local',
+            },
+        });
+    }
+
     // https://pqina.nl/filepond/docs/
-    const pond = FilePond.create({
+    const pond = FilePond.create();
+    pond.setOptions({
         maxFiles: 100,
         instantUpload: false, // drop 하자마자 자동 업로드되지 않도록
         allowProcess: true, // 업로드 버튼을 눌러야 업로드되도록
@@ -106,13 +128,22 @@
         server: {
             // https://pqina.nl/filepond/docs/api/server/
             // url: 'http://localhost:8080',
-            process:'/filepond',
+            process: '/filepond',
+            load: '/fileload/',
         },
 
         // image-preview
         imagePreviewMinHeight: 100,
         imagePreviewMaxHeight: 100,
+
+        oninit: () => {
+            console.log("oninit");
+        },
+
+        // https://pqina.nl/filepond/docs/api/instance/properties/#files
+        files: initialFiles
     });
+
     // FilePond.parse(document.body);
     document.getElementById('filepond').appendChild(pond.element);
 
