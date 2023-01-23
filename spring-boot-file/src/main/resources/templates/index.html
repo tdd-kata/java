@@ -1,0 +1,137 @@
+<!DOCTYPE HTML>
+<head>
+    <meta charset="utf-8">
+
+    <link th:href="@{/css/filepond.min.css}" rel="stylesheet">
+    <link th:href="@{/css/filepond-plugin-image-preview.min.css}" rel="stylesheet">
+    <script th:src="@{/js/filepond.js}"></script>
+    <script th:src="@{/js/filepond-plugin-image-preview.js}"></script>
+
+    <style>
+        /* https://pqina.nl/filepond/docs/api/style/ */
+        .filepond--item {
+            width: calc(50% - 0.5em);
+        }
+
+        .filepond--root {
+            max-height: 100em;
+        }
+
+        input {
+            display: block;
+            margin: 10px;
+        }
+
+        .area {
+            border-color: #000;
+            border-width: 1em;
+            transition: all .3s ease-in;
+            padding: 10px;
+        }
+
+        table {
+            width: 100%;
+            border: 1px solid #444444;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        th, td {
+            border: 1px solid #444444;
+        }
+
+    </style>
+</head>
+<body>
+
+<table>
+    <tr th:each="path, iter : ${filePaths}">
+        <td><span th:text="${iter.count}"></span></td>
+        <td><img th:src="@{${'/images/' + path}}" alt="directory 확인 부탁"/></td>
+        <td><span th:text="${path}"></span></td>
+        <td><a th:href="@{${'/download/' + path}}">download</a></td>
+    </tr>
+</table>
+
+<div class="area" style="border-style: solid;">
+    <h1>Spring MultipartFile</h1>
+    <form action="/multipart" method="post" enctype="multipart/form-data">
+        <h4>단일 파일 업로드</h4>
+        <input type="file" name="singleFile">
+
+        <h4>다중 파일 업로드</h4>
+        <input type="file" multiple="multiple" name="multipleFiles">
+
+        <input type="submit"/>
+    </form>
+</div>
+
+<div class="area" style="border-style: dashed;">
+    <h1>Servlet</h1>
+    <form action="/servlet" method="post" enctype="multipart/form-data">
+        <h4>단일 파일 업로드</h4>
+        <input type="file" name="singleFile">
+
+        <h4>다중 파일 업로드</h4>
+        <input type="file" multiple="multiple" name="multipleFiles">
+
+        <input type="submit"/>
+    </form>
+</div>
+
+<div class="area" style="border-style: double;">
+    <h1>FilePond</h1>
+    <div id="filepond"></div>
+    <button onclick="uploadFilePond()">upload</button>
+</div>
+
+</body>
+<script>
+    // https://pqina.nl/filepond/docs/api/plugins/image-preview/
+    FilePond.registerPlugin(FilePondPluginImagePreview);
+
+    // https://pqina.nl/filepond/docs/
+    const pond = FilePond.create({
+        maxFiles: 100,
+        instantUpload: false, // drop 하자마자 자동 업로드되지 않도록
+        allowProcess: true, // 업로드 버튼을 눌러야 업로드되도록
+        maxParallelUploads: 3,
+        multiple: true, // 한번에 여러 파일을 선택할 수 있도록
+        name: 'files',
+
+        allowReorder: true,
+        allowMultiple: true,
+        chunkUploads: true,
+
+        server: {
+            // https://pqina.nl/filepond/docs/api/server/
+            // url: 'http://localhost:8080',
+            process:'/filepond',
+        },
+
+        // image-preview
+        imagePreviewMinHeight: 100,
+        imagePreviewMaxHeight: 100,
+    });
+    // FilePond.parse(document.body);
+    document.getElementById('filepond').appendChild(pond.element);
+
+    function uploadFilePond() {
+        // https://pqina.nl/filepond/docs/api/file-item/
+        let uploadFiles = pond.getFiles();
+        console.log("upload files...");
+        for (const uploadFile of uploadFiles) {
+            console.log(uploadFile.file.name);
+        }
+
+        // upload
+        pond.processFiles()
+            .then((successFiles) => {
+                console.log("success files,,,");
+                for (const successFile of successFiles) {
+                    console.log(successFile.file.name);
+                }
+            })
+    }
+</script>
+</html>
