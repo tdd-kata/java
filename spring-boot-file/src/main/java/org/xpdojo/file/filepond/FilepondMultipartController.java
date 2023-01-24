@@ -44,6 +44,7 @@ public class FilepondMultipartController {
     }
 
     /**
+     * file.getMetadata() -> {color: null}
      * Resolved [org.springframework.web.multipart.support.MissingServletRequestPartException: Required request part 'multipleFiles' is not present]
      * <p>
      * org.thymeleaf.TemplateEngine             : [THYMELEAF][http-nio-8080-exec-3] Exception processing template "filepond/1": Error resolving template [filepond/1], template might not exist or might not be accessible by any of the configured Template Resolvers

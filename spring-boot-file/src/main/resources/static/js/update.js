@@ -102,6 +102,7 @@ window.onload = async function () {
     // FilePond.parse(document.body);
     document.getElementById('filepond').appendChild(pond.element);
 
+    listFilePond();
 }
 
 function uploadFilePond() {
@@ -120,4 +121,14 @@ function uploadFilePond() {
                 console.log(successFile.file.name);
             }
         })
+}
+
+function listFilePond() {
+    let files = pond.getFiles();
+    for (const file of files) {
+        console.log(`id: ${file.id}`);
+        console.log(`serverId: ${file.serverId}`);
+        console.log(`file.name: ${file.file.name}`);
+    }
+    return files;
 }

@@ -29,7 +29,9 @@ window.onload = async function () {
             // https://pqina.nl/filepond/docs/api/server/
             // url: 'http://localhost:8080',
             process: '/filepond',
-            // load: `/fileload/${id}/`,
+            load: null,
+            revert: null,
+            remove: null,
         },
 
         // image-preview
@@ -50,7 +52,6 @@ window.onload = async function () {
 
     // FilePond.parse(document.body);
     document.getElementById('filepond').appendChild(pond.element);
-
 }
 
 function uploadFilePond() {

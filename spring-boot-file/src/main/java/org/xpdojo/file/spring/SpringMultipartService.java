@@ -9,11 +9,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.xpdojo.file.storage.Storage;
 
-import javax.servlet.http.Part;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Collection;
 import java.util.List;
 
 @Slf4j
@@ -23,6 +21,12 @@ public class SpringMultipartService {
 
     private final Storage storage;
 
+    /**
+     * Spring multipart/form-data 저장
+     *
+     * @param files multiple multipart/form-data
+     * @throws IOException 파일 저장 실패
+     */
     public void saveMultipart(List<MultipartFile> files)
             throws IOException {
 
@@ -42,6 +46,11 @@ public class SpringMultipartService {
         }
     }
 
+    /**
+     * Spring multipart/form-data 로그
+     *
+     * @param multipartFile multipart/form-data
+     */
     public void printMultipartFile(MultipartFile multipartFile) {
         log.info("{}", multipartFile.getOriginalFilename());
         log.debug("{}", multipartFile.getName());
@@ -53,6 +62,13 @@ public class SpringMultipartService {
         log.debug("{}", UnitFormatter.formatAsUnit(multipartFile.getSize(), UnitSystem.JEDEC, "B"));
     }
 
+    /**
+     * Spring multipart/form-data 저장
+     *
+     * @param id            디렉토리 ID
+     * @param multipartFile multipart/form-data
+     * @throws IOException 파일 저장 실패
+     */
     public void saveMultipartFile(String id, MultipartFile multipartFile) throws IOException {
         String directory = storage.getUploadDirectory() + id;
         Files.createDirectories(Paths.get(directory));
@@ -60,28 +76,6 @@ public class SpringMultipartService {
         String fullPath = directory + "/" + multipartFile.getOriginalFilename();
         log.info("fullPath {}", fullPath);
         multipartFile.transferTo(Paths.get(fullPath));
-    }
-
-    public void printPart(Part part) {
-        log.info("{}", part.getSubmittedFileName());
-        log.debug("{}", part.getName());
-        log.debug("{}", part.getContentType());
-        // InputStream inputStream = part.getInputStream();
-        // String text =
-        //         new BufferedReader(
-        //                 new InputStreamReader(inputStream, StandardCharsets.UTF_8))
-        //                 .lines()
-        //                 .collect(Collectors.joining("\n"));
-        // log.info(text);
-        Collection<String> headerNames = part.getHeaderNames();
-        for (String headerName : headerNames) {
-            log.debug("{}: {}", headerName, part.getHeader(headerName));
-        }
-        log.debug("{}", part.getSize() + " Bytes");
-        log.debug("{}", FileUtils.byteCountToDisplaySize(part.getSize()));
-        log.debug("{}", UnitFormatter.formatAsUnit(part.getSize(), UnitSystem.SI, "B"));
-        log.debug("{}", UnitFormatter.formatAsUnit(part.getSize(), UnitSystem.IEC, "B"));
-        log.debug("{}", UnitFormatter.formatAsUnit(part.getSize(), UnitSystem.JEDEC, "B"));
     }
 
     /**
