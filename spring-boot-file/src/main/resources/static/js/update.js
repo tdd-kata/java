@@ -24,7 +24,6 @@ window.onload = async function () {
         .then(response => response.json())
         .then(data => {
             initialFileNames.push(...data);
-            console.log(initialFileNames);
         });
 
     let initialFiles = [];
@@ -56,13 +55,29 @@ window.onload = async function () {
 
         allowReorder: true,
         allowMultiple: true,
+
+        // application/offset+octet-stream
+        // https://pqina.nl/filepond/docs/api/server/#process-chunks
         // chunkUploads: true,
+
+        // https://pqina.nl/filepond/docs/api/server/#revert
+        allowRevert: false,
+        allowRemove: true,
 
         server: {
             // https://pqina.nl/filepond/docs/api/server/
             // url: 'http://localhost:8080',
             process: `/filepond-append/${id}`,
             load: `/fileload/${id}/`,
+            revert: null,
+            remove: async (source, load, _) => {
+                await fetch(`/filepond/${id}/${source}`, {
+                    method: 'DELETE',
+                });
+
+                // Should call the load method when done, no parameters required
+                load();
+            },
         },
 
         // image-preview

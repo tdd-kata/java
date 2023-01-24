@@ -7,6 +7,7 @@ import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -79,6 +80,20 @@ public class FilepondMultipartController {
                 .header(HttpHeaders.CONTENT_DISPOSITION, contentDisposition)
                 .header(HttpHeaders.CONTENT_TYPE, "image/" + path.substring(path.lastIndexOf(".") + 1))
                 .body(resource);
+    }
+
+    /**
+     * 파일 삭제
+     *
+     * @param id       디렉토리 ID
+     * @param filename 삭제할 파일
+     */
+    @DeleteMapping("/filepond/{id}/{filename}")
+    @ResponseBody
+    public void removeFilepond(
+            @PathVariable String id,
+            @PathVariable String filename) {
+        springMultipartService.removeMultipart(id, filename);
     }
 
 }

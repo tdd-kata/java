@@ -108,4 +108,20 @@ public class SpringMultipartService {
             }
         }
     }
+
+    /**
+     * 파일 삭제
+     *
+     * @param id       디렉토리 ID
+     * @param filename 삭제할 파일명
+     */
+    public void removeMultipart(String id, String filename) {
+        String fullPath = storage.getUploadDirectory() + id + "/" + filename;
+        log.info("fullPath {}", fullPath);
+        try {
+            Files.delete(Paths.get(fullPath));
+        } catch (IOException e) {
+            log.error("{}", e.getMessage());
+        }
+    }
 }
