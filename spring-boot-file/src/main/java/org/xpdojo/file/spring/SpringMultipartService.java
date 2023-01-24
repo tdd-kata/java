@@ -1,50 +1,45 @@
-package org.xpdojo.file;
+package org.xpdojo.file.spring;
 
 import com.trivago.triava.util.UnitFormatter;
 import com.trivago.triava.util.UnitSystem;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.xpdojo.file.storage.Storage;
 
 import javax.servlet.http.Part;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.List;
 
 @Slf4j
 @Service
-public class FileService {
+@RequiredArgsConstructor
+public class SpringMultipartService {
 
-    // private final String userHome = System.getProperty("user.home");
-    @Value("${file.upload.dir}")
-    private String directory;
+    private final Storage storage;
 
-    public Set<String> listFile() throws IOException {
+    public void saveMultipart(List<MultipartFile> files)
+            throws IOException {
 
-        // Set<String> paths = Stream.of(new File(directory).listFiles())
-        //         .filter(file -> !file.isDirectory())
-        //         .map(File::getName)
-        //         .collect(Collectors.toSet());
-
-        try (Stream<Path> stream = Files.list(Paths.get(directory))) {
-            return stream
-                    .filter(file -> !Files.isDirectory(file))
-                    .map(Path::getFileName)
-                    .map(Path::toString)
-                    .filter(fileName -> !fileName.startsWith(".")) // like .DS_Store
-                    .collect(Collectors.toSet());
+        // if (singleFile.getSize() != 0) {
+        //     log.info("### singleFile ###");
+        //     DIRECTORY_ID++;
+        //     printMultipartFile(singleFile);
+        //     saveMultipartfile(singleFile);
+        // }
+        if (files.get(0).getSize() != 0) {
+            log.info("### multipleFiles ###");
+            int id = storage.increaseDirectoryId();
+            for (MultipartFile file : files) {
+                printMultipartFile(file);
+                saveMultipartFile(String.valueOf(id), file);
+            }
         }
-    }
-
-    public String getDirectory() {
-        return directory;
     }
 
     public void printMultipartFile(MultipartFile multipartFile) {
@@ -58,11 +53,11 @@ public class FileService {
         log.debug("{}", UnitFormatter.formatAsUnit(multipartFile.getSize(), UnitSystem.JEDEC, "B"));
     }
 
-    public void saveMultipartfile(MultipartFile multipartFile) throws IOException {
+    public void saveMultipartFile(String id, MultipartFile multipartFile) throws IOException {
+        String directory = storage.getUploadDirectory() + id;
         Files.createDirectories(Paths.get(directory));
-        log.info("directory {}", directory);
 
-        String fullPath = directory + multipartFile.getOriginalFilename();
+        String fullPath = directory + "/" + multipartFile.getOriginalFilename();
         log.info("fullPath {}", fullPath);
         multipartFile.transferTo(Paths.get(fullPath));
     }
@@ -89,14 +84,28 @@ public class FileService {
         log.debug("{}", UnitFormatter.formatAsUnit(part.getSize(), UnitSystem.JEDEC, "B"));
     }
 
-    public void savePart(Part part) throws IOException {
-        Files.createDirectories(Paths.get(directory));
-        log.info("directory {}", directory);
+    /**
+     * 기존 디렉토리에 파일 추가
+     *
+     * @param id    디렉토리 ID
+     * @param files 추가할 파일
+     * @throws IOException 파일 저장 실패
+     */
+    public void addMultipart(
+            String id,
+            List<MultipartFile> files)
+            throws IOException {
 
-        String fullPath = directory + part.getSubmittedFileName();
-        log.info("fullPath {}", fullPath);
+        if (files == null || files.isEmpty()) {
+            throw new IllegalArgumentException("files not found");
+        }
 
-        part.write(fullPath);
+        if (files.get(0).getSize() != 0) {
+            log.info("### multipleFiles ###");
+            for (MultipartFile file : files) {
+                printMultipartFile(file);
+                saveMultipartFile(id, file);
+            }
+        }
     }
-
 }

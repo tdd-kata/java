@@ -1,0 +1,40 @@
+<!DOCTYPE HTML>
+<head>
+    <meta charset="utf-8">
+
+    <style>
+        input {
+            display: block;
+            margin: 10px;
+        }
+
+        .area {
+            border-color: #000;
+            border-width: 1em;
+            transition: all .3s ease-in;
+            padding: 10px;
+        }
+
+    </style>
+</head>
+<body>
+
+<h1>
+    <a href="/">HOME</a>
+</h1>
+
+<div class="area" style="border-style: solid;">
+    <h1>Spring MultipartFile</h1>
+    <form action="/multipart" method="post" enctype="multipart/form-data">
+        <s><h2>단일 파일 업로드</h2></s>
+        <input type="file" name="singleFile" disabled>
+
+        <h2>다중 파일 업로드</h2>
+        <input type="file" multiple="multiple" name="multipleFiles">
+
+        <input type="submit"/>
+    </form>
+</div>
+
+</body>
+</html>
