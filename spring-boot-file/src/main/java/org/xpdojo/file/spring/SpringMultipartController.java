@@ -25,6 +25,16 @@ public class SpringMultipartController {
         return "multipart";
     }
 
+    @GetMapping("/blur")
+    public String blur() {
+        return "blur";
+    }
+
+    @GetMapping("/pixelate")
+    public String pixelate() {
+        return "pixelate";
+    }
+
     @PostMapping(path = "/multipart", consumes = "multipart/form-data")
     public String multipart(
             // @RequestParam("singleFile") MultipartFile singleFile,
