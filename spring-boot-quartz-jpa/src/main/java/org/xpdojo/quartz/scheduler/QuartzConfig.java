@@ -36,7 +36,7 @@ public class QuartzConfig {
             scheduler.getListenerManager().addJobListener(new QuartzJobListener());
             scheduler.getListenerManager().addTriggerListener(new QuartzTriggerListener());
 
-            final JobDetail detail = job(LoggingJob.class, new HashMap<>());
+            final JobDetail detail = job(ListShippingJob.class, new HashMap<>());
             final Trigger trigger = cronTrigger("0/3 * * * * ?");
 
             // 스케줄러에 Job 등록
