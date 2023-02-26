@@ -1,10 +1,19 @@
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+
 plugins {
+    // Java Application
     id 'java'
+
+    // Publish
+    id 'maven-publish'
+
+    // Spring
     id 'org.springframework.boot' version '2.7.8'
     id 'io.spring.dependency-management' version '1.0.15.RELEASE'
 }
 
-group = 'org.xpdojo'
+group = 'com.markruler'
 version = '0.1.0'
 sourceCompatibility = '17'
 
@@ -32,4 +41,30 @@ bootRun {
 
 bootJar {
     archiveFileName = "apiserver.jar"
+}
+
+//JAVA_HOME=$HOME/.sdkman/candidates/java/17.0.6-zulu ./gradlew publish
+// curl -v -u admin:admin -LO http://localhost:8081/repository/maven-releases/com%2Fmarkruler%2Fapiserver%2F230226173240%2Fapiserver-230226173240.jar
+publishing {
+    publications {
+        markruler(MavenPublication) {
+            artifact bootJar
+            groupId = project.group
+            artifactId = project.name
+            LocalDateTime now = LocalDateTime.now()
+            DateTimeFormatter pattern = DateTimeFormatter.ofPattern("yyMMddHHmmss")
+            version = now.format(pattern)
+        }
+    }
+    repositories {
+        maven {
+            name = "local-nexus"
+            url = uri("http://localhost:8081/repository/maven-releases/")
+            allowInsecureProtocol = true
+            credentials {
+                username = System.getenv("NEXUS_USERNAME") ?: "admin"
+                password = System.getenv("NEXUS_PASSWORD") ?: "admin"
+            }
+        }
+    }
 }
