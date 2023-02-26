@@ -23,3 +23,13 @@ dependencies {
 tasks.named('test') {
     useJUnitPlatform()
 }
+
+def profile = "local"
+bootRun {
+    // args = ["--spring.profiles.active=" + profile]
+    environment("spring.profiles.active", profile)
+}
+
+bootJar {
+    archiveFileName = "apiserver.jar"
+}
