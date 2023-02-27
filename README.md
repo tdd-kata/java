@@ -1,6 +1,7 @@
 # Java
 
 - [Java](#java)
+  - [JetBrains Toolbox](#jetbrains-toolbox)
   - [Maven project](#maven-project)
   - [Gradle project](#gradle-project)
     - [기존에 있는 Maven 프로젝트에서 Gradle로 변환](#기존에-있는-maven-프로젝트에서-gradle로-변환)
@@ -15,6 +16,24 @@
   - [HTTPie](#httpie)
     - [Usages](#usages)
   - [cURL](#curl-1)
+
+## JetBrains Toolbox
+
+- [Command-line interface](https://www.jetbrains.com/help/idea/working-with-the-ide-features-from-command-line.html) - JetBrains
+
+> Toolbox > Settings > Tools > Shell scripts location
+
+```sh
+echo "export PATH=\$PATH:\$HOME/.local/share/JetBrains/Toolbox/scripts" >> $HOME/.zshrc
+```
+
+```sh
+source $HOME/.zshrc
+```
+
+```sh
+idea ${project-dir}
+```
 
 ## Maven project
 
@@ -187,4 +206,3 @@ curl -X POST \
   -d @data-file.json \
   localhost:8080
 ```
-
