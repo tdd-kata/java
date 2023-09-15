@@ -3,10 +3,13 @@ logging:
     root: info
     com.demo: debug
 
-# FeignGlobalConfig.java? ??
+# FeignGlobalConfig.java로 대체
+# https://cloud.spring.io/spring-cloud-netflix/multi/multi_spring-cloud-feign.html
 #feign:
 #  client:
 #    config:
 #      default:
-#        loggerLevel: BASIC
-#        connectTimeout: 60000
+#        logger-level: full
+#        read-timeout: 3_000
+#        connect-timeout: 5_000
+#        follow-redirects: true
