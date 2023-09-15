@@ -1,0 +1,50 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '2.7.15'
+    id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+}
+
+group = 'com.demo'
+version = '0.1.0'
+
+java {
+    sourceCompatibility = '17'
+}
+
+repositories {
+    mavenCentral()
+}
+
+// https://spring.io/projects/spring-cloud
+ext {
+    // https://stackoverflow.com/questions/75162914/error-with-spring-ecossystem-and-openfeign
+    set('springCloudVersion', "2021.0.5")
+}
+dependencyManagement {
+    imports {
+        // https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-dependencies
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+    }
+}
+
+dependencies {
+    // Lombok
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+
+    // Spring Web
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+
+    // Spring Cloud OpenFeign
+    implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
+    // implementation 'io.github.openfeign:feign-httpclient'
+
+    // Testing
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    // Testing Open Feign Client
+    testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
