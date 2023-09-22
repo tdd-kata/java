@@ -1,0 +1,12 @@
+version: "3.8"
+
+services:
+  apiserver:
+    container_name: apiserver
+    build:
+      context: ../apiserver
+      dockerfile: Dockerfile
+    # image: markruler/apiserver:latest
+    restart: unless-stopped
+    ports:
+      - "8080:8080"

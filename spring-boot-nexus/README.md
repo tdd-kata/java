@@ -18,8 +18,13 @@ JAVA_HOME=$HOME/.sdkman/candidates/java/17.0.6-zulu ./gradlew clean assemble -i
 
 ### Docker
 
+`--progress=plain`을 설정해야 모든 container output을 확인할 수 있다.
+아니면 자동(`auto`)으로 축약해버린다.
+
+- [참조](https://docs.docker.com/engine/reference/commandline/buildx_build/#options)
+
 ```shell
-docker compose -f ./scripts/docker-compose.yaml up --build
+sudo docker compose -f ./scripts/docker-compose.yaml build --no-cache --progress=plain
 ```
 
 ### Gradle Wrapper
