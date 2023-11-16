@@ -1,0 +1,15 @@
+version: "3.8"
+services:
+  local-rabbitmq:
+    image: rabbitmq:3.12.8-management
+    container_name: local-rabbitmq
+    hostname: my-rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      # 지정하지 않으면 guest/guest
+      RABBITMQ_DEFAULT_USER: admin
+      # echo -n "test" | sha256sum
+      # echo -n "test" | openssl dgst -sha256
+      RABBITMQ_DEFAULT_PASS: f2ca1bb6c7e907d06dafe4687e579fce76b37e4e93b7605022da52e6ccc26fd2
