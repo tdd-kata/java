@@ -16,9 +16,9 @@ public class SomeFeignConfig {
      */
     @Bean
     public Retryer.Default retryer() {
-        long period = 1_000L;
-        long maxPeriod = 3_000L;
-        int maxAttempts = 2;
+        long period = 3_000L;
+        long maxPeriod = 5_000L;
+        int maxAttempts = 5;
         return new Retryer.Default(
                 period,
                 maxPeriod,
