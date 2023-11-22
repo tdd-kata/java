@@ -1,0 +1,18 @@
+spring:
+  servlet:
+    multipart:
+      # org.apache.tomcat.util.http.fileupload.impl.FileSizeLimitExceededException:
+      # The field chunk exceeds its maximum permitted size of 1048576 bytes.
+      max-file-size: 50MB
+      # org.apache.tomcat.util.http.fileupload.impl.SizeLimitExceededException:
+      # the request was rejected because its size (10486156) exceeds the configured maximum (10485760)
+      max-request-size: 50MB
+
+logging:
+  level:
+    root: info
+    com.example.demo: debug
+
+video:
+  upload:
+    path: local-video
