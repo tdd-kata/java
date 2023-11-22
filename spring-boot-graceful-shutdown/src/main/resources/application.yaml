@@ -1,7 +1,9 @@
 # org.springframework.boot.autoconfigure.web.ServerProperties
 server:
   # org.springframework.boot.web.server.Shutdown#GRACEFUL
+  # default: IMMEDIATE
   shutdown: graceful
+  # kill -TERM $PID
   # org.springframework.boot.web.embedded.tomcat.GracefulShutdown:
   # Commencing graceful shutdown. Waiting for active requests to complete
 
@@ -10,7 +12,8 @@ server:
 # Timeout per Shutdown Phase
 spring:
   lifecycle:
-    timeout-per-shutdown-phase: 30s
+    # default: 30s
+    timeout-per-shutdown-phase: 20s
     # org.springframework.boot.web.embedded.tomcat.GracefulShutdown:
     # Graceful shutdown aborted with one or more requests still active
 
