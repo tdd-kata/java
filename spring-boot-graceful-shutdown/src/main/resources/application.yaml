@@ -1,0 +1,21 @@
+# org.springframework.boot.autoconfigure.web.ServerProperties
+server:
+  # org.springframework.boot.web.server.Shutdown#GRACEFUL
+  shutdown: graceful
+  # org.springframework.boot.web.embedded.tomcat.GracefulShutdown:
+  # Commencing graceful shutdown. Waiting for active requests to complete
+
+# grace period for graceful shutdown
+# org.springframework.boot.autoconfigure.context.LifecycleProperties
+# Timeout per Shutdown Phase
+spring:
+  lifecycle:
+    timeout-per-shutdown-phase: 30s
+    # org.springframework.boot.web.embedded.tomcat.GracefulShutdown:
+    # Graceful shutdown aborted with one or more requests still active
+
+# Logging
+logging:
+  level:
+    root: info
+    com.example.demo: debug
