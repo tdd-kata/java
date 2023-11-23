@@ -10,6 +10,31 @@
 <button onclick="sendVideoChunks()">업로드</button>
 <div id="result"></div>
 
+<section style="display: flex; align-items: start;" th:each="filename: ${filelist}">
+    <div>
+        <h3>normal</h3>
+        <video
+                th:src="@{/vod/{vod_name}(vod_name=${filename})}"
+                width="360px"
+                height="240px"
+                autoplay
+                muted
+                controls>
+        </video>
+    </div>
+    <div>
+        <h3>chunk - 시작 속도가 더 빠르고, 중간에 다운로드 실패 시 다시 다운로드하는 기능을 추가할 수 있음.</h3>
+        <video
+                th:src="@{/vod/chunk/{vod_name}(vod_name=${filename})}"
+                width="360px"
+                height="240px"
+                autoplay
+                muted
+                controls>
+        </video>
+    </div>
+</section>
+
 </body>
 <script>
     const sendVideoChunks = () => {

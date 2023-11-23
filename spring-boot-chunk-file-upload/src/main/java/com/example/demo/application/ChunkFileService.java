@@ -2,6 +2,8 @@ package com.example.demo.application;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -12,6 +14,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
 
 @Slf4j
@@ -21,6 +25,18 @@ public class ChunkFileService {
     // 파일 업로드 위치
     @Value("${video.upload.path}")
     private String uploadPath;
+
+    public List<String> listFiles() {
+        File dir = new File(uploadPath);
+
+        // 파일 목록
+        String[] files = dir.list();
+        if (files != null) {
+            return List.of(files);
+        }
+
+        return Collections.emptyList();
+    }
 
     public boolean chunkUpload(
             MultipartFile file,
@@ -67,4 +83,7 @@ public class ChunkFileService {
         return false;
     }
 
+    public Resource getFilePath(String filename) {
+        return new FileSystemResource(uploadPath + "/" + filename);
+    }
 }
