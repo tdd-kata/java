@@ -39,7 +39,7 @@
 <script>
     const sendVideoChunks = () => {
         const ONE_MB = 1024 * 1024;
-        const chunk_size = 20 * ONE_MB;
+        const chunk_size = 10 * ONE_MB;
         const file = document.getElementById("video-file").files[0];
         const resultElement = document.getElementById("result");
 
@@ -81,7 +81,7 @@
                     resp.text().then(data => resultElement.textContent = data);
                 }
             }).catch(err => {
-                console.error("Error uploading video chunk");
+                console.error("Error uploading video chunk", err);
             });
         };
 
