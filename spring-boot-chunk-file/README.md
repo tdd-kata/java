@@ -1,5 +1,7 @@
 # 파일 분할 업로드
 
+- MOVED TO [markruler/spring-boot-media](https://github.com/markruler/spring-boot-media)
+
 ```shell
 spring init \
   --boot-version=2.7.17 \
