@@ -18,14 +18,14 @@ public class DemoService {
 
     private final DemoFeignClient demoFeignClient;
 
-    public void hello() {
+    public String hello() {
         URI uri = URI.create("http://localhost:38080/hello");
 
         // FeignClient headers가 null이면 아래 에러 발생
         // java.lang.NullPointerException: Cannot invoke "Object.getClass()" because "object" is null
         Map<String, String> headers = Collections.emptyMap();
 
-        DemoDto demoDto = new DemoDto();
+        DemoDto demoDto = new DemoDto("markruler", 20);
 
         DemoApiResponse callback =
                 demoFeignClient.callback(
@@ -35,6 +35,7 @@ public class DemoService {
                 );
 
         log.debug("callback={}", callback);
+        return callback.getMessage();
     }
 
 }

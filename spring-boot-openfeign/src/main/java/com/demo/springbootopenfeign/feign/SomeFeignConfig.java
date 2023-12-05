@@ -31,9 +31,9 @@ public class SomeFeignConfig {
      */
     @Bean
     public Request.Options options() {
-        long connectTimeout = 1_000L;
+        long connectTimeout = 2_000L;
         // read timeout이 server의 응답시간(time.sleep(2))보다 짧으면 타임 아웃 발생
-        long readTimeout = 1_000L;
+        long readTimeout = 3_000L;
         boolean followRedirects = true;
         return new Request.Options(
                 connectTimeout,

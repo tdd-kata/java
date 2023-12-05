@@ -14,9 +14,9 @@ public class DemoController {
     private final DemoService demoService;
 
     @GetMapping("/hello")
-    public DemoResponse<Void> hello() {
-        demoService.hello();
-        return success();
+    // public DemoResponse<Void> hello() {
+    public DemoResponse<String> hello() {
+        return success(demoService.hello());
     }
 
 }

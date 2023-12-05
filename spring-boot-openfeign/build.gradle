@@ -45,6 +45,24 @@ dependencies {
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
 }
 
+// ./gradlew test --rerun
 tasks.named('test') {
-    useJUnitPlatform()
+    useJUnitPlatform {
+        // 통합 테스트 제외 - Unit test만 실행
+        excludeTags(
+                'end-to-end',
+                'integration',
+        )
+    }
+}
+
+// ./gradlew e2e --rerun
+tasks.register('e2e', Test) {
+    useJUnitPlatform {
+        // 단위 테스트 제외 - Integration test만 실행
+        includeTags(
+                'end-to-end',
+                'integration',
+        )
+    }
 }
