@@ -21,8 +21,8 @@ import static org.assertj.core.api.Assertions.assertThat;
  * wiremock을 사용한 FeignClient Mocking 테스트
  */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@AutoConfigureWireMock(port = 38080)
-class MockingDemoFeignClientTest {
+@AutoConfigureWireMock(port = 38080) // Service 레이어에서 URL을 직접 전달하기 때문에 실제 호스트의 경우 문제있음
+class MockingServerTest {
 
     @Autowired
     private DemoService demoService;
