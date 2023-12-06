@@ -13,7 +13,7 @@ import java.util.Map;
 
 @FeignClient(
         name = "apiCallbackClient",
-        url = "$",
+        url = "$", // java.net.URI을 인수로 받음
         configuration = SomeFeignConfig.class
 )
 public interface DemoFeignClient {

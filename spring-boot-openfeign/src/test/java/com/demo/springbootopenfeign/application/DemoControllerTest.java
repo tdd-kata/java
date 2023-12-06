@@ -1,5 +1,6 @@
 package com.demo.springbootopenfeign.application;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,10 +22,13 @@ class DemoControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @Tag("end-to-end")
     @Test
-    void test_hello() throws Exception {
+    @Tag("end-to-end")
+    @DisplayName("Controller를 Mocking해서 실제 외부 서버에 요청하는 테스트")
+    // @Disabled
+    void test_hello_with_real_server() throws Exception {
 
+        // Controller 부분을 Mocking
         final MockHttpServletRequestBuilder request = get("/hello");
 
         mockMvc
