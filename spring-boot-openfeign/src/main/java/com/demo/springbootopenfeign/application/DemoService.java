@@ -3,6 +3,7 @@ package com.demo.springbootopenfeign.application;
 import com.demo.springbootopenfeign.application.dto.DemoApiResponse;
 import com.demo.springbootopenfeign.application.dto.DemoDto;
 import com.demo.springbootopenfeign.feign.DemoFeignClient;
+import com.demo.springbootopenfeign.feign.UrlFeignClient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,8 @@ import java.util.Map;
 public class DemoService {
 
     private final DemoFeignClient demoFeignClient;
+
+    private final UrlFeignClient urlFeignClient;
 
     public String hello() {
         URI uri = URI.create("http://localhost:38080/hello");
@@ -38,4 +41,12 @@ public class DemoService {
         return callback.getMessage();
     }
 
+    public String hello2() {
+        DemoDto demoDto = new DemoDto("markruler", 20);
+
+        DemoApiResponse callback = urlFeignClient.callback(demoDto);
+
+        log.debug("callback={}", callback);
+        return callback.getMessage();
+    }
 }

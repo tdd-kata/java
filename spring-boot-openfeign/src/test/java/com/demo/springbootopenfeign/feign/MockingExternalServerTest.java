@@ -18,11 +18,19 @@ import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * wiremock을 사용한 FeignClient 대상 로컬 서버(제어할 수 있는 의존성)를 Mocking해서 테스트
+ * wiremock을 사용한 FeignClient 대상 외부 서버(제어할 수 없는 의존성)를 Mocking해서 테스트.
+ * <p>
+ * NOTE: url을 properties로 전달함.
  */
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@AutoConfigureWireMock(port = 38080) // Service 레이어에서 URL을 직접 전달하기 때문에 실제 호스트의 경우 문제있음
-class MockingLocalServerTest {
+@SpringBootTest(
+        webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
+        properties = {
+                "api.callback.url=http://localhost:${wiremock.server.port}"
+        }
+)
+// @AutoConfigureMockMvc
+@AutoConfigureWireMock(port = 0)
+class MockingExternalServerTest {
 
     @Autowired
     private DemoService demoService;
@@ -33,12 +41,12 @@ class MockingLocalServerTest {
     @Nested
     class Describe_FeignClientMock {
 
-        final DemoApiResponse demoApiResponse = new DemoApiResponse("Hello World");
+        final DemoApiResponse demoApiResponse = new DemoApiResponse("Hello2 World");
 
         @BeforeEach
         void setUp() throws JsonProcessingException {
             WireMock.stubFor(
-                    WireMock.post(WireMock.urlEqualTo("/hello"))
+                    WireMock.post(WireMock.urlEqualTo("/hello2"))
                             .willReturn(
                                     aResponse()
                                             .withStatus(200)
@@ -52,8 +60,8 @@ class MockingLocalServerTest {
         // @Tag("e2e")
         @DisplayName("외부 API 서버를 Mocking해서 테스트")
         void test_mocking_server_with_temp_message() {
-            String message = demoService.hello();
-            assertThat(message).isEqualTo("Hello World");
+            String message = demoService.hello2();
+            assertThat(message).isEqualTo("Hello2 World");
         }
     }
 

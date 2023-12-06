@@ -13,3 +13,7 @@ logging:
 #        read-timeout: 3_000
 #        connect-timeout: 5_000
 #        follow-redirects: true
+
+api:
+  callback:
+    url: http://localhost:38080
