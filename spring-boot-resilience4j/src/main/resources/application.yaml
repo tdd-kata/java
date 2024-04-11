@@ -1,0 +1,15 @@
+logging:
+  level:
+    root: info
+    com.demo: debug
+
+#resilience4j:
+#  ratelimiter:
+#    configs:
+#      default:
+#        limitForPeriod: 1 # 기간 동안 허용되는 호출 수
+#        limitRefreshPeriod: 1s # 제한이 새로 고침되는 기간
+#        timeoutDuration: 0s # 요청이 대기하는 시간
+#    instances:
+#      simpleApiRateLimiter:
+#        baseConfig: default

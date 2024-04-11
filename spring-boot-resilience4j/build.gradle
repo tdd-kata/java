@@ -1,0 +1,33 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '2.7.18'
+    id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+}
+
+group = 'com.demo'
+version = '0.1.0'
+
+java {
+    sourceCompatibility = '17'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // Lombok
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+
+    // Spring Web
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+
+    // Spring Boot 3는 resilience4j-spring-boot3 사용
+    implementation 'io.github.resilience4j:resilience4j-spring-boot2:2.2.0'
+    // @RateLimiter 애노테이션 사용하려면 디펜던시 추가 필요
+    implementation 'org.springframework.boot:spring-boot-starter-aop'
+
+    // Testing
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
