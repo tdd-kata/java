@@ -28,6 +28,10 @@ dependencies {
     // @RateLimiter 애노테이션 사용하려면 디펜던시 추가 필요
     implementation 'org.springframework.boot:spring-boot-starter-aop'
 
+    // per user rate limiter
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+    implementation 'org.redisson:redisson-spring-boot-starter:3.27.2'
+
     // Testing
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }

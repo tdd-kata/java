@@ -13,3 +13,8 @@ logging:
 #    instances:
 #      simpleApiRateLimiter:
 #        baseConfig: default
+
+spring:
+  redis:
+    host: localhost
+    port: 6379
